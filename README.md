@@ -1,2 +1,2 @@
-# TI4MapGenerator
-Generates balanced randomized maps for Twilight Imperium 4th Edition games.
+# Twilight Imperium 4th Edition Map Generator
+Generates randomized balanced maps for Twilight Imperium 4th Edition games.
