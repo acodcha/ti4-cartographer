@@ -1,0 +1,26 @@
+#pragma once
+
+#include <algorithm>
+#include <array>
+#include <cctype>
+#include <chrono>
+#include <climits>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <experimental/filesystem>
+#include <fstream>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
+#include <limits>
+#include <map>
+#include <optional>
+#include <set>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
