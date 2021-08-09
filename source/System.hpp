@@ -11,13 +11,17 @@ public:
   System() noexcept {}
 
   System(
+    const uint8_t id,
     const std::string& name,
+    const SystemCategory category,
     const std::set<SystemPlacementType>& valid_placements,
     const std::set<Planet>& planets = {},
     const std::set<WormholeType> wormholes = {},
     const std::set<AnomalyType> anomalies = {}
   ) noexcept :
+    id_(id),
     name_(name),
+    category_(category),
     valid_placements_(valid_placements),
     planets_(planets),
     wormholes_(wormholes),
@@ -27,8 +31,16 @@ public:
     check_number_of_planets();
   }
 
+  uint8_t id() const noexcept {
+    return id_;
+  }
+
   const std::string& name() const noexcept {
     return name_;
+  }
+
+  SystemCategory category() const noexcept {
+    return category_;
   }
 
   const std::set<SystemPlacementType>& valid_placements() const noexcept {
@@ -82,7 +94,7 @@ public:
   }
 
   std::string print() const noexcept {
-    std::string text{name_};
+    std::string text{"#" + std::to_string(id_) + " " + name_ + " (" + label(category_) + ")"};
     uint8_t counter{0};
     text += ": ";
     for (const Planet& planet : planets_) {
@@ -119,13 +131,17 @@ public:
 
   struct sort {
     bool operator()(const System& system_1, const System& system_2) const noexcept {
-      return system_1.name_ < system_2.name_;
+      return system_1.id_ < system_2.id_;
     }
   };
 
 protected:
 
+  uint8_t id_{0};
+
   std::string name_;
+
+  SystemCategory category_{SystemCategory::Planetary};
 
   std::set<SystemPlacementType> valid_placements_;
 
@@ -206,7 +222,7 @@ namespace std {
 
   template <> struct hash<TI4MapGenerator::System> {
     size_t operator()(const TI4MapGenerator::System& system) const {
-      return hash<std::string>()(system.name());
+      return hash<uint8_t>()(system.id());
     }
   };
 

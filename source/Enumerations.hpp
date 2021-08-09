@@ -157,6 +157,39 @@ template <> const std::unordered_map<std::string, LegendaryPlanet> spellings<Leg
   {"primor", LegendaryPlanet::Primor}
 };
 
+enum class SystemCategory : uint8_t {
+  Planetary,
+  WormholeAnomalyEmpty,
+  Home,
+  MecatolRex,
+  WormholeNexus,
+  CreussGate
+};
+
+template <> const std::map<SystemCategory, std::string> labels<SystemCategory>{
+  {SystemCategory::Planetary, "Planetary System"},
+  {SystemCategory::WormholeAnomalyEmpty, "Wormhole/Anomaly/Empty System"},
+  {SystemCategory::Home, "Home System"},
+  {SystemCategory::MecatolRex, "Mecatol Rex System"},
+  {SystemCategory::WormholeNexus, "Wormhole Nexus System"},
+  {SystemCategory::CreussGate, "Creuss Gate System"}
+};
+
+template <> const std::unordered_map<std::string, SystemCategory> spellings<SystemCategory>{
+  {"planetary", SystemCategory::Planetary},
+  {"planetarysystem", SystemCategory::Planetary},
+  {"wormholeanomalyempty", SystemCategory::WormholeAnomalyEmpty},
+  {"wormholeanomalyemptysystem", SystemCategory::WormholeAnomalyEmpty},
+  {"home", SystemCategory::Home},
+  {"homesystem", SystemCategory::Home},
+  {"mecatolrex", SystemCategory::MecatolRex},
+  {"mecatolrexsystem", SystemCategory::MecatolRex},
+  {"wormholenexus", SystemCategory::WormholeNexus},
+  {"wormholenexussystem", SystemCategory::WormholeNexus},
+  {"creussgate", SystemCategory::CreussGate},
+  {"creussgatesystem", SystemCategory::CreussGate}
+};
+
 enum class AnomalyType : uint8_t {
   AsteroidField,
   GravityRift,
