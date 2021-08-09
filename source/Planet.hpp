@@ -16,14 +16,14 @@ public:
     const uint8_t influence,
     const std::optional<PlanetTrait>& trait = {},
     const std::optional<TechnologyType>& technology_specialty = {},
-    const std::optional<LegendaryPlanetType>& legendary_planet_type = {}
+    const std::optional<LegendaryPlanet>& legendary_planet = {}
   ) noexcept :
     name_(name),
     resources_(resources),
     influence_(influence),
     trait_(trait),
     technology_specialty_(technology_specialty),
-    legendary_planet_type_(legendary_planet_type)
+    legendary_planet_(legendary_planet)
   {}
 
   const std::string& name() const noexcept {
@@ -46,12 +46,12 @@ public:
     return technology_specialty_;
   }
 
-  const std::optional<LegendaryPlanetType>& legendary_planet_type() const noexcept {
-    return legendary_planet_type_;
+  const std::optional<LegendaryPlanet>& legendary_planet() const noexcept {
+    return legendary_planet_;
   }
 
   bool is_legendary() const noexcept {
-    return legendary_planet_type_.has_value();
+    return legendary_planet_.has_value();
   }
 
   double score() const noexcept {
@@ -60,13 +60,14 @@ public:
 
   std::string print() const noexcept {
     std::string text{name_};
-    text += " " + std::to_string(resources_) + "/" + std::to_string(influence_);
+    text += " (" + std::to_string(resources_) + "/" + std::to_string(influence_);
     if (technology_specialty_.has_value()) {
       text += "/" + abbreviation(technology_specialty_);
     }
     if (trait_.has_value()) {
-      text += " (" + label(trait_) + ")";
+      text += " " + label(trait_);
     }
+    text += ")";
     return text;
   }
 
@@ -88,7 +89,7 @@ protected:
 
   std::optional<TechnologyType> technology_specialty_;
 
-  std::optional<LegendaryPlanetType> legendary_planet_type_;
+  std::optional<LegendaryPlanet> legendary_planet_;
 
   /// \brief This is the main component of a planet's score: it is what the planet is used for when it is exhausted.
   double utility_score() const noexcept {
@@ -149,18 +150,18 @@ protected:
 
   /// \brief Legendary planets grant bonus component actions. Some are preferable to others.
   double legendary_planet_component_action_score() const noexcept {
-    if (legendary_planet_type_.has_value()) {
-      switch (legendary_planet_type_.value()) {
-        case LegendaryPlanetType::HopesEnd:
+    if (legendary_planet_.has_value()) {
+      switch (legendary_planet_.value()) {
+        case LegendaryPlanet::HopesEnd:
           return 3.0;
           break;
-        case LegendaryPlanetType::Mallice:
+        case LegendaryPlanet::Mallice:
           return 3.0;
           break;
-        case LegendaryPlanetType::Mirage:
+        case LegendaryPlanet::Mirage:
           return 1.5;
           break;
-        case LegendaryPlanetType::Primor:
+        case LegendaryPlanet::Primor:
           return 2.0;
           break;
       }

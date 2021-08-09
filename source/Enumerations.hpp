@@ -136,25 +136,71 @@ template <> const std::unordered_map<std::string, TechnologyType> spellings<Tech
   {"red", TechnologyType::Warfare}
 };
 
-enum class LegendaryPlanetType : uint8_t {
+enum class LegendaryPlanet : uint8_t {
   HopesEnd,
   Mallice,
   Mirage,
   Primor
 };
 
-template <> const std::map<LegendaryPlanetType, std::string> labels<LegendaryPlanetType>{
-  {LegendaryPlanetType::HopesEnd, "HopesEnd"},
-  {LegendaryPlanetType::Mallice, "Mallice"},
-  {LegendaryPlanetType::Mirage, "Mirage"},
-  {LegendaryPlanetType::Primor, "Primor"}
+template <> const std::map<LegendaryPlanet, std::string> labels<LegendaryPlanet>{
+  {LegendaryPlanet::HopesEnd, "Hope's End"},
+  {LegendaryPlanet::Mallice, "Mallice"},
+  {LegendaryPlanet::Mirage, "Mirage"},
+  {LegendaryPlanet::Primor, "Primor"}
 };
 
-template <> const std::unordered_map<std::string, LegendaryPlanetType> spellings<LegendaryPlanetType>{
-  {"hopesend", LegendaryPlanetType::HopesEnd},
-  {"mallice", LegendaryPlanetType::Mallice},
-  {"mirage", LegendaryPlanetType::Mirage},
-  {"primor", LegendaryPlanetType::Primor}
+template <> const std::unordered_map<std::string, LegendaryPlanet> spellings<LegendaryPlanet>{
+  {"hopesend", LegendaryPlanet::HopesEnd},
+  {"mallice", LegendaryPlanet::Mallice},
+  {"mirage", LegendaryPlanet::Mirage},
+  {"primor", LegendaryPlanet::Primor}
+};
+
+enum class AnomalyType : uint8_t {
+  AsteroidField,
+  GravityRift,
+  Nebula,
+  Supernova
+};
+
+template <> const std::map<AnomalyType, std::string> labels<AnomalyType>{
+  {AnomalyType::AsteroidField, "Asteroid Field"},
+  {AnomalyType::GravityRift, "Gravity Rift"},
+  {AnomalyType::Nebula, "Nebula"},
+  {AnomalyType::Supernova, "Supernova"}
+};
+
+template <> const std::unordered_map<std::string, AnomalyType> spellings<AnomalyType>{
+  {"asteroidfield", AnomalyType::AsteroidField},
+  {"gravityrift", AnomalyType::GravityRift},
+  {"nebula", AnomalyType::Nebula},
+  {"supernova", AnomalyType::Supernova}
+};
+
+enum class WormholeType : uint8_t {
+  Alpha,
+  Beta,
+  Gamma,
+  Delta
+};
+
+template <> const std::map<WormholeType, std::string> labels<WormholeType>{
+  {WormholeType::Alpha, "Alpha Wormhole"},
+  {WormholeType::Beta, "Beta Wormhole"},
+  {WormholeType::Gamma, "Gamma Wormhole"},
+  {WormholeType::Delta, "Delta Wormhole"}
+};
+
+template <> const std::unordered_map<std::string, WormholeType> spellings<WormholeType>{
+  {"alpha", WormholeType::Alpha},
+  {"alphawormhole", WormholeType::Alpha},
+  {"beta", WormholeType::Beta},
+  {"betawormhole", WormholeType::Beta},
+  {"gamma", WormholeType::Gamma},
+  {"gammawormhole", WormholeType::Gamma},
+  {"delta", WormholeType::Delta},
+  {"deltawormhole", WormholeType::Delta}
 };
 
 } // namespace TI4MapGenerator
