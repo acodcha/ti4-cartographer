@@ -59,4 +59,68 @@ template <> const std::unordered_map<std::string, MapLayout> spellings<MapLayout
   {"standard", MapLayout::Standard}
 };
 
+enum class PlanetTrait : uint8_t {
+  Cultural,
+  Industrial,
+  Hazardous
+};
+
+template <> const std::map<PlanetTrait, std::string> labels<PlanetTrait>{
+  {PlanetTrait::Cultural, "Cultural"},
+  {PlanetTrait::Hazardous, "Hazardous"},
+  {PlanetTrait::Industrial, "Industrial"},
+};
+
+template <> const std::unordered_map<std::string, PlanetTrait> spellings<PlanetTrait>{
+  {"cultural", PlanetTrait::Cultural},
+  {"hazardous", PlanetTrait::Hazardous},
+  {"industrial", PlanetTrait::Industrial}
+};
+
+enum class TechnologyType : uint8_t {
+  Propulsion,
+  Biotic,
+  Cybernetic,
+  Warfare
+};
+
+template <> const std::map<TechnologyType, std::string> labels<TechnologyType>{
+  {TechnologyType::Propulsion, "Propulsion"},
+  {TechnologyType::Biotic, "Biotic"},
+  {TechnologyType::Cybernetic, "Cybernetic"},
+  {TechnologyType::Warfare, "Warfare"}
+};
+
+template <> const std::unordered_map<std::string, TechnologyType> spellings<TechnologyType>{
+  {"propulsion", TechnologyType::Propulsion},
+  {"blue", TechnologyType::Propulsion},
+  {"biotic", TechnologyType::Biotic},
+  {"green", TechnologyType::Biotic},
+  {"cybernetic", TechnologyType::Cybernetic},
+  {"yellow", TechnologyType::Cybernetic},
+  {"warfare", TechnologyType::Warfare},
+  {"red", TechnologyType::Warfare}
+};
+
+enum class LegendaryPlanetType : uint8_t {
+  HopesEnd,
+  Mallice,
+  Mirage,
+  Primor
+};
+
+template <> const std::map<LegendaryPlanetType, std::string> labels<LegendaryPlanetType>{
+  {LegendaryPlanetType::HopesEnd, "HopesEnd"},
+  {LegendaryPlanetType::Mallice, "Mallice"},
+  {LegendaryPlanetType::Mirage, "Mirage"},
+  {LegendaryPlanetType::Primor, "Primor"}
+};
+
+template <> const std::unordered_map<std::string, LegendaryPlanetType> spellings<LegendaryPlanetType>{
+  {"hopesend", LegendaryPlanetType::HopesEnd},
+  {"mallice", LegendaryPlanetType::Mallice},
+  {"mirage", LegendaryPlanetType::Mirage},
+  {"primor", LegendaryPlanetType::Primor}
+};
+
 } // namespace TI4MapGenerator
