@@ -4,12 +4,39 @@
 
 namespace TI4MapGenerator {
 
-template <typename Type> const std::map<Type, std::string> labels;
+template <typename Enumeration> const std::map<Enumeration, std::string> labels;
 
-template <typename Type> std::string label(const Type type) noexcept {
-  const typename std::map<Type, std::string>::const_iterator found{labels<Type>.find(type)};
-  if (found != labels<Type>.cend()) {
+template <typename Enumeration> std::string label(const Enumeration& type) noexcept {
+  const typename std::map<Enumeration, std::string>::const_iterator found{labels<Enumeration>.find(type)};
+  if (found != labels<Enumeration>.cend()) {
     return found->second;
+  } else {
+    return {};
+  }
+}
+
+template <typename Enumeration> std::string label(const std::optional<Enumeration>& type) noexcept {
+  if (type.has_value()) {
+    return label(type.value());
+  } else {
+    return {};
+  }
+}
+
+template <typename Enumeration> const std::map<Enumeration, std::string> abbreviations;
+
+template <typename Enumeration> std::string abbreviation(const Enumeration& type) noexcept {
+  const typename std::map<Enumeration, std::string>::const_iterator found{abbreviations<Enumeration>.find(type)};
+  if (found != abbreviations<Enumeration>.cend()) {
+    return found->second;
+  } else {
+    return {};
+  }
+}
+
+template <typename Enumeration> std::string abbreviation(const std::optional<Enumeration>& type) noexcept {
+  if (type.has_value()) {
+    return abbreviation(type.value());
   } else {
     return {};
   }
@@ -89,6 +116,13 @@ template <> const std::map<TechnologyType, std::string> labels<TechnologyType>{
   {TechnologyType::Biotic, "Biotic"},
   {TechnologyType::Cybernetic, "Cybernetic"},
   {TechnologyType::Warfare, "Warfare"}
+};
+
+template <> const std::map<TechnologyType, std::string> abbreviations<TechnologyType>{
+  {TechnologyType::Propulsion, "B"},
+  {TechnologyType::Biotic, "G"},
+  {TechnologyType::Cybernetic, "Y"},
+  {TechnologyType::Warfare, "R"}
 };
 
 template <> const std::unordered_map<std::string, TechnologyType> spellings<TechnologyType>{
