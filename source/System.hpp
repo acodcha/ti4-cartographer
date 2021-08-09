@@ -12,20 +12,27 @@ public:
 
   System(
     const std::string& name,
+    const std::set<SystemPlacementType>& valid_placements,
     const std::set<Planet>& planets = {},
     const std::set<WormholeType> wormholes = {},
     const std::set<AnomalyType> anomalies = {}
   ) noexcept :
     name_(name),
+    valid_placements_(valid_placements),
     planets_(planets),
     wormholes_(wormholes),
     anomalies_(anomalies)
   {
+    check_at_least_one_valid_placement();
     check_number_of_planets();
   }
 
   const std::string& name() const noexcept {
     return name_;
+  }
+
+  const std::set<SystemPlacementType>& valid_placements() const noexcept {
+    return valid_placements_;
   }
 
   const std::set<Planet>& planets() const noexcept {
@@ -77,9 +84,7 @@ public:
   std::string print() const noexcept {
     std::string text{name_};
     uint8_t counter{0};
-    if (!planets_.empty() || !wormholes_.empty() || !anomalies_.empty()) {
-      text += ": ";
-    }
+    text += ": ";
     for (const Planet& planet : planets_) {
       if (counter > 0) {
         text += ", ";
@@ -101,6 +106,13 @@ public:
       text += label(anomaly);
       ++counter;
     }
+    for (const SystemPlacementType& placement : valid_placements_) {
+      if (counter > 0) {
+        text += ", ";
+      }
+      text += label(placement);
+      ++counter;
+    }
     text += ".";
     return text;
   }
@@ -115,11 +127,19 @@ protected:
 
   std::string name_;
 
+  std::set<SystemPlacementType> valid_placements_;
+
   std::set<Planet> planets_;
 
   std::set<WormholeType> wormholes_;
 
   std::set<AnomalyType> anomalies_;
+
+  void check_at_least_one_valid_placement() const {
+    if (valid_placements_.empty()) {
+      error("A system needs at least one valid placement option.");
+    }
+  }
 
   void check_number_of_planets() const {
     if (planets_.size() > 3) {
