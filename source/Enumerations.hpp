@@ -74,16 +74,16 @@ template <> const std::unordered_map<std::string, GameVersion> spellings<GameVer
   {"pok", GameVersion::ProphecyOfKingsExpansion}
 };
 
-enum class MapLayout : uint8_t {
+enum class BoardLayout : uint8_t {
   Standard
 };
 
-template <> const std::map<MapLayout, std::string> labels<MapLayout>{
-  {MapLayout::Standard, "Standard"}
+template <> const std::map<BoardLayout, std::string> labels<BoardLayout>{
+  {BoardLayout::Standard, "Standard"}
 };
 
-template <> const std::unordered_map<std::string, MapLayout> spellings<MapLayout>{
-  {"standard", MapLayout::Standard}
+template <> const std::unordered_map<std::string, BoardLayout> spellings<BoardLayout>{
+  {"standard", BoardLayout::Standard}
 };
 
 enum class PlanetTrait : uint8_t {
@@ -159,7 +159,7 @@ template <> const std::unordered_map<std::string, LegendaryPlanet> spellings<Leg
 
 enum class SystemCategory : uint8_t {
   Planetary,
-  WormholeAnomalyEmpty,
+  AnomalyWormholeEmpty,
   Home,
   MecatolRex,
   WormholeNexus,
@@ -168,7 +168,7 @@ enum class SystemCategory : uint8_t {
 
 template <> const std::map<SystemCategory, std::string> labels<SystemCategory>{
   {SystemCategory::Planetary, "Planetary System"},
-  {SystemCategory::WormholeAnomalyEmpty, "Wormhole/Anomaly/Empty System"},
+  {SystemCategory::AnomalyWormholeEmpty, "Anomaly/Wormhole/Empty System"},
   {SystemCategory::Home, "Home System"},
   {SystemCategory::MecatolRex, "Mecatol Rex System"},
   {SystemCategory::WormholeNexus, "Wormhole Nexus System"},
@@ -178,8 +178,8 @@ template <> const std::map<SystemCategory, std::string> labels<SystemCategory>{
 template <> const std::unordered_map<std::string, SystemCategory> spellings<SystemCategory>{
   {"planetary", SystemCategory::Planetary},
   {"planetarysystem", SystemCategory::Planetary},
-  {"wormholeanomalyempty", SystemCategory::WormholeAnomalyEmpty},
-  {"wormholeanomalyemptysystem", SystemCategory::WormholeAnomalyEmpty},
+  {"anomalywormholeempty", SystemCategory::AnomalyWormholeEmpty},
+  {"anomalywormholeemptysystem", SystemCategory::AnomalyWormholeEmpty},
   {"home", SystemCategory::Home},
   {"homesystem", SystemCategory::Home},
   {"mecatolrex", SystemCategory::MecatolRex},
@@ -190,50 +190,50 @@ template <> const std::unordered_map<std::string, SystemCategory> spellings<Syst
   {"creussgatesystem", SystemCategory::CreussGate}
 };
 
-enum class AnomalyType : uint8_t {
+enum class Anomaly : uint8_t {
   AsteroidField,
   GravityRift,
   Nebula,
   Supernova
 };
 
-template <> const std::map<AnomalyType, std::string> labels<AnomalyType>{
-  {AnomalyType::AsteroidField, "Asteroid Field"},
-  {AnomalyType::GravityRift, "Gravity Rift"},
-  {AnomalyType::Nebula, "Nebula"},
-  {AnomalyType::Supernova, "Supernova"}
+template <> const std::map<Anomaly, std::string> labels<Anomaly>{
+  {Anomaly::AsteroidField, "Asteroid Field"},
+  {Anomaly::GravityRift, "Gravity Rift"},
+  {Anomaly::Nebula, "Nebula"},
+  {Anomaly::Supernova, "Supernova"}
 };
 
-template <> const std::unordered_map<std::string, AnomalyType> spellings<AnomalyType>{
-  {"asteroidfield", AnomalyType::AsteroidField},
-  {"gravityrift", AnomalyType::GravityRift},
-  {"nebula", AnomalyType::Nebula},
-  {"supernova", AnomalyType::Supernova}
+template <> const std::unordered_map<std::string, Anomaly> spellings<Anomaly>{
+  {"asteroidfield", Anomaly::AsteroidField},
+  {"gravityrift", Anomaly::GravityRift},
+  {"nebula", Anomaly::Nebula},
+  {"supernova", Anomaly::Supernova}
 };
 
-enum class WormholeType : uint8_t {
+enum class Wormhole : uint8_t {
   Alpha,
   Beta,
   Gamma,
   Delta
 };
 
-template <> const std::map<WormholeType, std::string> labels<WormholeType>{
-  {WormholeType::Alpha, "Alpha Wormhole"},
-  {WormholeType::Beta, "Beta Wormhole"},
-  {WormholeType::Gamma, "Gamma Wormhole"},
-  {WormholeType::Delta, "Delta Wormhole"}
+template <> const std::map<Wormhole, std::string> labels<Wormhole>{
+  {Wormhole::Alpha, "Alpha Wormhole"},
+  {Wormhole::Beta, "Beta Wormhole"},
+  {Wormhole::Gamma, "Gamma Wormhole"},
+  {Wormhole::Delta, "Delta Wormhole"}
 };
 
-template <> const std::unordered_map<std::string, WormholeType> spellings<WormholeType>{
-  {"alpha", WormholeType::Alpha},
-  {"alphawormhole", WormholeType::Alpha},
-  {"beta", WormholeType::Beta},
-  {"betawormhole", WormholeType::Beta},
-  {"gamma", WormholeType::Gamma},
-  {"gammawormhole", WormholeType::Gamma},
-  {"delta", WormholeType::Delta},
-  {"deltawormhole", WormholeType::Delta}
+template <> const std::unordered_map<std::string, Wormhole> spellings<Wormhole>{
+  {"alpha", Wormhole::Alpha},
+  {"alphawormhole", Wormhole::Alpha},
+  {"beta", Wormhole::Beta},
+  {"betawormhole", Wormhole::Beta},
+  {"gamma", Wormhole::Gamma},
+  {"gammawormhole", Wormhole::Gamma},
+  {"delta", Wormhole::Delta},
+  {"deltawormhole", Wormhole::Delta}
 };
 
 enum class SystemPlacementType : uint8_t {

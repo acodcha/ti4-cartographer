@@ -14,16 +14,16 @@ public:
     const std::string& name,
     const uint8_t resources,
     const uint8_t influence,
-    const std::optional<PlanetTrait>& trait = {},
-    const std::optional<TechnologyType>& technology_specialty = {},
-    const std::optional<LegendaryPlanet>& legendary_planet = {}
+    const std::optional<TechnologyType>& technology_specialty,
+    const std::optional<PlanetTrait>& trait,
+    const std::optional<LegendaryPlanet>& legendary
   ) noexcept :
     name_(name),
     resources_(resources),
     influence_(influence),
-    trait_(trait),
     technology_specialty_(technology_specialty),
-    legendary_planet_(legendary_planet)
+    trait_(trait),
+    legendary_(legendary)
   {}
 
   const std::string& name() const noexcept {
@@ -38,24 +38,24 @@ public:
     return influence_;
   }
 
-  const std::optional<PlanetTrait>& trait() const noexcept {
-    return trait_;
-  }
-
   const std::optional<TechnologyType>& technology_specialty() const noexcept {
     return technology_specialty_;
   }
 
-  const std::optional<LegendaryPlanet>& legendary_planet() const noexcept {
-    return legendary_planet_;
+  const std::optional<PlanetTrait>& trait() const noexcept {
+    return trait_;
+  }
+
+  const std::optional<LegendaryPlanet>& legendary() const noexcept {
+    return legendary_;
   }
 
   bool is_legendary() const noexcept {
-    return legendary_planet_.has_value();
+    return legendary_.has_value();
   }
 
   double score() const noexcept {
-    return utility_score() + voting_score() + trait_score() + technology_specialty_score() + legendary_planet_objective_score() + legendary_planet_component_action_score();
+    return utility_score() + voting_score() + technology_specialty_score() + trait_score() + legendary_objective_score() + legendary_component_action_score();
   }
 
   std::string print() const noexcept {
@@ -86,11 +86,11 @@ protected:
 
   uint8_t influence_{0};
 
-  std::optional<PlanetTrait> trait_;
-
   std::optional<TechnologyType> technology_specialty_;
 
-  std::optional<LegendaryPlanet> legendary_planet_;
+  std::optional<PlanetTrait> trait_;
+
+  std::optional<LegendaryPlanet> legendary_;
 
   /// \brief This is the main component of a planet's score: it is what the planet is used for when it is exhausted.
   double utility_score() const noexcept {
@@ -100,24 +100,6 @@ protected:
   /// \brief High influence planets are useful for voting during the Agenda phase.
   double voting_score() const noexcept {
     return 0.5 * influence_;
-  }
-
-  /// \brief Cultural planets are slightly preferable to hazardous planets, which are in turn preferable to industrial planets.
-  double trait_score() const noexcept {
-    if (trait_.has_value()) {
-      switch (trait_.value()) {
-        case PlanetTrait::Cultural:
-          return 0.5;
-          break;
-        case PlanetTrait::Hazardous:
-          return 0.4;
-          break;
-        case PlanetTrait::Industrial:
-          return 0.2;
-          break;
-      }
-    }
-    return 0.0;
   }
 
   /// \brief Planets with a propulsion technology specialty are preferable over other technology specialties, which are in turn preferable to no technology specialty.
@@ -141,8 +123,26 @@ protected:
     return 0.0;
   }
 
+  /// \brief Cultural planets are slightly preferable to hazardous planets, which are in turn preferable to industrial planets.
+  double trait_score() const noexcept {
+    if (trait_.has_value()) {
+      switch (trait_.value()) {
+        case PlanetTrait::Cultural:
+          return 0.5;
+          break;
+        case PlanetTrait::Hazardous:
+          return 0.4;
+          break;
+        case PlanetTrait::Industrial:
+          return 0.2;
+          break;
+      }
+    }
+    return 0.0;
+  }
+
   /// \brief Legendary planets are relevant to scoring objectives.
-  double legendary_planet_objective_score() const noexcept {
+  double legendary_objective_score() const noexcept {
     if (is_legendary()) {
       return 2.0;
     }
@@ -150,9 +150,9 @@ protected:
   }
 
   /// \brief Legendary planets grant bonus component actions. Some are preferable to others.
-  double legendary_planet_component_action_score() const noexcept {
-    if (legendary_planet_.has_value()) {
-      switch (legendary_planet_.value()) {
+  double legendary_component_action_score() const noexcept {
+    if (legendary_.has_value()) {
+      switch (legendary_.value()) {
         case LegendaryPlanet::HopesEnd:
           return 3.0;
           break;

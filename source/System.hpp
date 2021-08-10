@@ -12,20 +12,19 @@ public:
 
   System(
     const uint8_t id,
+    const GameVersion game_version,
     const SystemCategory category,
-    const std::set<SystemPlacementType>& valid_placements,
-    const std::set<Planet, Planet::sort_by_name>& planets = {},
-    const std::set<WormholeType> wormholes = {},
-    const std::set<AnomalyType> anomalies = {}
+    const std::set<Planet, Planet::sort_by_name>& planets,
+    const std::set<Anomaly> anomalies,
+    const std::set<Wormhole> wormholes
   ) noexcept :
     id_(id),
+    game_version_(game_version),
     category_(category),
-    valid_placements_(valid_placements),
     planets_(planets),
-    wormholes_(wormholes),
-    anomalies_(anomalies)
+    anomalies_(anomalies),
+    wormholes_(wormholes)
   {
-    check_at_least_one_valid_placement();
     check_number_of_planets();
   }
 
@@ -46,41 +45,41 @@ public:
       text += planet.name();
       ++counter;
     }
-    for (const WormholeType& wormhole : wormholes_) {
-      if (counter > 0) {
-        text += " + ";
-      }
-      text += label(wormhole);
-      ++counter;
-    }
-    for (const AnomalyType& anomaly : anomalies_) {
+    for (const Anomaly& anomaly : anomalies_) {
       if (counter > 0) {
         text += " + ";
       }
       text += label(anomaly);
       ++counter;
     }
+    for (const Wormhole& wormhole : wormholes_) {
+      if (counter > 0) {
+        text += " + ";
+      }
+      text += label(wormhole);
+      ++counter;
+    }
     return text;
+  }
+
+  GameVersion game_version() const noexcept {
+    return game_version_;
   }
 
   SystemCategory category() const noexcept {
     return category_;
   }
 
-  const std::set<SystemPlacementType>& valid_placements() const noexcept {
-    return valid_placements_;
-  }
-
   const std::set<Planet, Planet::sort_by_name>& planets() const noexcept {
     return planets_;
   }
 
-  const std::set<WormholeType>& wormholes() const noexcept {
-    return wormholes_;
+  const std::set<Anomaly>& anomalies() const noexcept {
+    return anomalies_;
   }
 
-  const std::set<AnomalyType>& anomalies() const noexcept {
-    return anomalies_;
+  const std::set<Wormhole>& wormholes() const noexcept {
+    return wormholes_;
   }
 
   uint8_t highest_planet_resources() const noexcept {
@@ -97,24 +96,42 @@ public:
     return static_cast<uint8_t>(planets_.size());
   }
 
-  bool contains(const WormholeType wormhole_type) const noexcept {
-    return wormholes_.find(wormhole_type) != wormholes_.cend();
-  }
-
-  bool contains(const AnomalyType anomaly_type) const noexcept {
+  bool contains(const Anomaly anomaly_type) const noexcept {
     return anomalies_.find(anomaly_type) != anomalies_.cend();
   }
 
-  bool contains_one_or_more_wormholes() const noexcept {
-    return !wormholes_.empty();
+  bool contains(const Wormhole wormhole_type) const noexcept {
+    return wormholes_.find(wormhole_type) != wormholes_.cend();
   }
 
   bool contains_one_or_more_anomalies() const noexcept {
     return !anomalies_.empty();
   }
 
+  bool contains_one_or_more_wormholes() const noexcept {
+    return !wormholes_.empty();
+  }
+
   double score() const noexcept {
-    return individual_planet_scores() + number_of_planets_score() + wormholes_score() + anomalies_score() + space_dock_score();
+    return individual_planet_scores() + number_of_planets_score() + anomalies_score() + wormholes_score() + space_dock_score();
+  }
+
+  std::set<SystemPlacementType> valid_placements() const noexcept {
+    // All systems can be equidistant or lateral.
+    std::set<SystemPlacementType> result{
+      SystemPlacementType::Equidistant,
+      SystemPlacementType::LateralClockwise,
+      SystemPlacementType::LateralCounterClockwise
+    };
+    // A system can only be forward-far if it does not contain a gravity rift or a supernova.
+    if (!contains(Anomaly::GravityRift) && !contains(Anomaly::Supernova)) {
+      result.insert(SystemPlacementType::ForwardFar);
+    }
+    // A system can only be forward-near if it contains at least one planet with at least 2 resources.
+    if (highest_planet_resources() >= 2) {
+      result.insert(SystemPlacementType::ForwardNear);
+    }
+    return result;
   }
 
   std::string print() const noexcept {
@@ -128,21 +145,21 @@ public:
       text += planet.print();
       ++counter;
     }
-    for (const WormholeType& wormhole : wormholes_) {
+    for (const Wormhole& wormhole : wormholes_) {
       if (counter > 0) {
         text += ", ";
       }
       text += label(wormhole);
       ++counter;
     }
-    for (const AnomalyType& anomaly : anomalies_) {
+    for (const Anomaly& anomaly : anomalies_) {
       if (counter > 0) {
         text += ", ";
       }
       text += label(anomaly);
       ++counter;
     }
-    for (const SystemPlacementType& placement : valid_placements_) {
+    for (const SystemPlacementType& placement : valid_placements()) {
       if (counter > 0) {
         text += ", ";
       }
@@ -151,6 +168,14 @@ public:
     }
     text += ".";
     return text;
+  }
+
+  bool operator==(const System& other) const noexcept {
+    return id_ == other.id_;
+  }
+
+  bool operator!=(const System& other) const noexcept {
+    return id_ != other.id_;
   }
 
   struct sort_by_id {
@@ -170,21 +195,15 @@ protected:
   /// \brief Each system must have a unique ID number.
   uint8_t id_{0};
 
-  SystemCategory category_{SystemCategory::Planetary};
+  GameVersion game_version_{GameVersion::BaseGame};
 
-  std::set<SystemPlacementType> valid_placements_;
+  SystemCategory category_{SystemCategory::Planetary};
 
   std::set<Planet, Planet::sort_by_name> planets_;
 
-  std::set<WormholeType> wormholes_;
+  std::set<Anomaly> anomalies_;
 
-  std::set<AnomalyType> anomalies_;
-
-  void check_at_least_one_valid_placement() const {
-    if (valid_placements_.empty()) {
-      error("A system needs at least one valid placement option.");
-    }
-  }
+  std::set<Wormhole> wormholes_;
 
   void check_number_of_planets() const {
     if (planets_.size() > 3) {
@@ -213,29 +232,29 @@ protected:
     return 0.0;
   }
 
+  /// \brief The supernova and nebula are generally beneficial, whereas the asteroid field and the gravity rift are generally unwanted.
+  double anomalies_score() const noexcept {
+    double score{0.0};
+    if (contains(Anomaly::AsteroidField)) {
+      score += -1.0;
+    }
+    if (contains(Anomaly::GravityRift)) {
+      score += -2.0;
+    }
+    if (contains(Anomaly::Nebula)) {
+      score += 1.0;
+    }
+    if (contains(Anomaly::Supernova)) {
+      score += 2.0;
+    }
+  }
+
   /// \brief Wormholes are generally unwanted.
   double wormholes_score() const noexcept {
     if (contains_one_or_more_wormholes()) {
       return -1.0;
     }
     return 0.0;
-  }
-
-  /// \brief The supernova and nebula are generally beneficial, whereas the asteroid field and the gravity rift are generally unwanted.
-  double anomalies_score() const noexcept {
-    double score{0.0};
-    if (contains(AnomalyType::AsteroidField)) {
-      score += -1.0;
-    }
-    if (contains(AnomalyType::GravityRift)) {
-      score += -2.0;
-    }
-    if (contains(AnomalyType::Nebula)) {
-      score += 1.0;
-    }
-    if (contains(AnomalyType::Supernova)) {
-      score += 2.0;
-    }
   }
 
   /// \brief The maximum planet resource value is useful for building a space dock.

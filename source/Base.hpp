@@ -30,4 +30,8 @@ inline void error(const std::string &text) {
   throw std::runtime_error(text);
 }
 
+std::random_device RandomDevice;
+
+std::default_random_engine RandomEngine(RandomDevice());
+
 } // namespace TI4MapGenerator
