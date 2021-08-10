@@ -12,15 +12,13 @@ public:
 
   System(
     const uint8_t id,
-    const std::string& name,
     const SystemCategory category,
     const std::set<SystemPlacementType>& valid_placements,
-    const std::set<Planet>& planets = {},
+    const std::set<Planet, Planet::sort_by_name>& planets = {},
     const std::set<WormholeType> wormholes = {},
     const std::set<AnomalyType> anomalies = {}
   ) noexcept :
     id_(id),
-    name_(name),
     category_(category),
     valid_placements_(valid_placements),
     planets_(planets),
@@ -35,8 +33,34 @@ public:
     return id_;
   }
 
-  const std::string& name() const noexcept {
-    return name_;
+  std::string name() const noexcept {
+    if (planets_.empty() && wormholes_.empty() && anomalies_.empty()) {
+      return "Empty";
+    }
+    std::string text;
+    uint8_t counter{0};
+    for (const Planet& planet : planets_) {
+      if (counter > 0) {
+        text += " + ";
+      }
+      text += planet.name();
+      ++counter;
+    }
+    for (const WormholeType& wormhole : wormholes_) {
+      if (counter > 0) {
+        text += " + ";
+      }
+      text += label(wormhole);
+      ++counter;
+    }
+    for (const AnomalyType& anomaly : anomalies_) {
+      if (counter > 0) {
+        text += " + ";
+      }
+      text += label(anomaly);
+      ++counter;
+    }
+    return text;
   }
 
   SystemCategory category() const noexcept {
@@ -47,7 +71,7 @@ public:
     return valid_placements_;
   }
 
-  const std::set<Planet>& planets() const noexcept {
+  const std::set<Planet, Planet::sort_by_name>& planets() const noexcept {
     return planets_;
   }
 
@@ -94,7 +118,7 @@ public:
   }
 
   std::string print() const noexcept {
-    std::string text{"#" + std::to_string(id_) + " " + name_ + " (" + label(category_) + ")"};
+    std::string text{"#" + std::to_string(id_) + " (" + label(category_) + ")"};
     uint8_t counter{0};
     text += ": ";
     for (const Planet& planet : planets_) {
@@ -129,23 +153,28 @@ public:
     return text;
   }
 
-  struct sort {
+  struct sort_by_id {
     bool operator()(const System& system_1, const System& system_2) const noexcept {
       return system_1.id_ < system_2.id_;
     }
   };
 
+  struct sort_by_score {
+    bool operator()(const System& system_1, const System& system_2) const noexcept {
+      return system_1.score() < system_2.score();
+    }
+  };
+
 protected:
 
+  /// \brief Each system must have a unique ID number.
   uint8_t id_{0};
-
-  std::string name_;
 
   SystemCategory category_{SystemCategory::Planetary};
 
   std::set<SystemPlacementType> valid_placements_;
 
-  std::set<Planet> planets_;
+  std::set<Planet, Planet::sort_by_name> planets_;
 
   std::set<WormholeType> wormholes_;
 

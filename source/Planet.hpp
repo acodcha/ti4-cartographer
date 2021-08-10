@@ -71,7 +71,7 @@ public:
     return text;
   }
 
-  struct sort {
+  struct sort_by_name {
     bool operator()(const Planet& planet_1, const Planet& planet_2) const noexcept {
       return planet_1.name_ < planet_2.name_;
     }
@@ -79,6 +79,7 @@ public:
 
 protected:
 
+  /// \brief Within a system, each planet must have a unique name.
   std::string name_;
 
   uint8_t resources_{0};
