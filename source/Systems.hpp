@@ -2,7 +2,7 @@
 
 #include "System.hpp"
 
-namespace TI4MapGenerator {
+namespace TI4Cartographer {
 
 const std::unordered_set<System> Systems{
   { 19, GameVersion::BaseGame, SystemCategory::Planetary,
@@ -210,26 +210,25 @@ const std::unordered_set<System> Systems{
   }
 };
 
-/// \brief Catalog of system IDs to use to form a map.
-class Catalog {
+class SelectedSystems {
 
 public:
 
-  Catalog() noexcept {}
+  SelectedSystems() noexcept {}
 
-  Catalog(const GameVersion game_version, const uint8_t number_of_planetary_systems, const uint8_t number_of_anomaly_wormhole_empty_systems) noexcept {
+  SelectedSystems(const GameVersion game_version, const uint8_t number_of_planetary_systems, const uint8_t number_of_anomaly_wormhole_empty_systems) noexcept {
     initialize_planetary_systems(game_version, number_of_planetary_systems);
     initialize_wormhole_anomaly_empty_systems(game_version, number_of_anomaly_wormhole_empty_systems);
-    std::shuffle(system_ids_.begin(), system_ids_.end(), RandomEngine);
+    std::shuffle(ids_.begin(), ids_.end(), RandomEngine);
   }
 
-  const std::vector<uint8_t>& system_ids() const noexcept {
-    return system_ids_;
+  const std::vector<uint8_t>& ids() const noexcept {
+    return ids_;
   }
 
   std::string print() const noexcept {
     std::string text{"System IDs:"};
-    for (const uint8_t id : system_ids_) {
+    for (const uint8_t id : ids_) {
       text += " " + std::to_string(id);
     }
     return text;
@@ -237,7 +236,7 @@ public:
 
 protected:
 
-  std::vector<uint8_t> system_ids_;
+  std::vector<uint8_t> ids_;
 
   void initialize_planetary_systems(const GameVersion game_version, const uint8_t number_of_planetary_systems) noexcept {
     std::vector<uint8_t> all;
@@ -262,7 +261,7 @@ protected:
     }
     std::shuffle(all.begin(), all.end(), RandomEngine);
     for (std::size_t i = 0; i < number_of_planetary_systems; ++i) {
-      system_ids_.push_back(all[i]);
+      ids_.push_back(all[i]);
     }
   }
 
@@ -289,10 +288,10 @@ protected:
     }
     std::shuffle(all.begin(), all.end(), RandomEngine);
     for (std::size_t i = 0; i < number_of_anomaly_wormhole_empty_systems; ++i) {
-      system_ids_.push_back(all[i]);
+      ids_.push_back(all[i]);
     }
   }
 
-};
+}; // class SelectedSystems
 
-} // namespace TI4MapGenerator
+} // namespace TI4Cartographer

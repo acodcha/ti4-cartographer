@@ -2,7 +2,7 @@
 
 #include "String.hpp"
 
-namespace TI4MapGenerator {
+namespace TI4Cartographer {
 
 template <typename Enumeration> const std::map<Enumeration, std::string> labels;
 
@@ -260,4 +260,4 @@ template <> const std::unordered_map<std::string, SystemPlacementType> spellings
   {"lateralcounterclockwise", SystemPlacementType::LateralCounterClockwise}
 };
 
-} // namespace TI4MapGenerator
+} // namespace TI4Cartographer

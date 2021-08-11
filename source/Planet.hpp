@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace TI4MapGenerator {
+namespace TI4Cartographer {
 
 class Planet {
 
@@ -172,12 +172,12 @@ protected:
 
 }; // class Planet
 
-} // namespace TI4MapGenerator
+} // namespace TI4Cartographer
 
 namespace std {
 
-  template <> struct hash<TI4MapGenerator::Planet> {
-    size_t operator()(const TI4MapGenerator::Planet& planet) const {
+  template <> struct hash<TI4Cartographer::Planet> {
+    size_t operator()(const TI4Cartographer::Planet& planet) const {
       return hash<std::string>()(planet.name());
     }
   };

@@ -2,7 +2,7 @@
 
 #include "Enumerations.hpp"
 
-namespace TI4MapGenerator {
+namespace TI4Cartographer {
 
 /// \brief Namespace containing information about the program and its compilation.
 namespace Program {
@@ -34,4 +34,4 @@ std::random_device RandomDevice;
 
 std::default_random_engine RandomEngine(RandomDevice());
 
-} // namespace TI4MapGenerator
+} // namespace TI4Cartographer

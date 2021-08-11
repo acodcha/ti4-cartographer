@@ -2,7 +2,7 @@
 
 #include "Include.hpp"
 
-namespace TI4MapGenerator {
+namespace TI4Cartographer {
 
 /// \brief Make each character in a string lowercase.
 std::string lowercase(const std::string& text) noexcept {
@@ -62,4 +62,4 @@ std::string snake_case(const std::string& text) noexcept {
   return {lowercase(replace_character(text, ' ', '_'))};
 }
 
-} // namespace TI4MapGenerator
+} // namespace TI4Cartographer
