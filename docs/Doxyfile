@@ -1,7 +1,7 @@
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "Twilight Imperium 4th Edition Map Generator"
+PROJECT_NAME           = "TI4 Cartographer"
 PROJECT_NUMBER         =
-PROJECT_BRIEF          = "Generates randomized balanced maps for the Twilight Imperium 4th Edition board game."
+PROJECT_BRIEF          = "Generates randomized balanced boards for the Twilight Imperium 4th Edition board game."
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       =
 CREATE_SUBDIRS         = NO
