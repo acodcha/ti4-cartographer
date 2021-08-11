@@ -11,7 +11,7 @@ const std::string Title{"TI4 Map Generator"};
 
 const std::string CompilationDateAndTime{std::string{__DATE__} + ", " + std::string{__TIME__}};
 
-const std::string Description{"Generates randomized balanced maps for Twilight Imperium 4th Edition games."};
+const std::string Description{"Generates randomized balanced boards for the Twilight Imperium 4th Edition board game."};
 
 } // namespace Program
 
