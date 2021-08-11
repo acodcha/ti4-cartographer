@@ -7,7 +7,7 @@ namespace TI4MapGenerator {
 /// \brief Namespace containing information about the program and its compilation.
 namespace Program {
 
-const std::string Title{"TI4 Map Generator"};
+const std::string Title{"TI4 Cartographer"};
 
 const std::string CompilationDateAndTime{std::string{__DATE__} + ", " + std::string{__TIME__}};
 
