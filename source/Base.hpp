@@ -2,18 +2,11 @@
 
 #include "Enumerations.hpp"
 
-namespace TI4Cartographer {
-
-/// \brief Namespace containing information about the program and its compilation.
-namespace Program {
-
-const std::string Title{"TI4 Cartographer"};
+namespace ti4cartographer {
 
 const std::string CompilationDateAndTime{std::string{__DATE__} + ", " + std::string{__TIME__}};
 
-const std::string Description{"Generates randomized balanced boards for the Twilight Imperium 4th Edition board game."};
-
-} // namespace Program
+const std::string Separator{"=================================================="};
 
 /// \brief Print a general-purpose message to the console.
 inline void message(const std::string& text) noexcept {
@@ -34,4 +27,4 @@ std::random_device RandomDevice;
 
 std::default_random_engine RandomEngine(RandomDevice());
 
-} // namespace TI4Cartographer
+} // namespace ti4cartographer

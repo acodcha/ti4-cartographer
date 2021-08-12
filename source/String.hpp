@@ -2,7 +2,7 @@
 
 #include "Include.hpp"
 
-namespace TI4Cartographer {
+namespace ti4cartographer {
 
 /// \brief Make each character in a string lowercase.
 std::string lowercase(const std::string& text) noexcept {
@@ -62,4 +62,20 @@ std::string snake_case(const std::string& text) noexcept {
   return {lowercase(replace_character(text, ' ', '_'))};
 }
 
-} // namespace TI4Cartographer
+/// \brief Print a score.
+std::string score_to_string(const double value) noexcept {
+  std::ostringstream stream;
+  stream << std::fixed << std::setprecision(2);
+  if (value >= 0) {
+    stream << "+";
+  } else {
+    stream << "-";
+  }
+  if (value < 10) {
+    stream << "0";
+  }
+  stream << std::abs(value);
+  return stream.str();
+}
+
+} // namespace ti4cartographer

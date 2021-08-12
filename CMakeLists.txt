@@ -14,20 +14,26 @@ project("TI4Cartographer" VERSION 1.0.0 LANGUAGES CXX)
 option(BUILD_DOCS "Build the documentation using Doxygen." OFF)
 option(BUILD_TESTING "Build the tests." ON)
 
-# Build the executable.
-set(EXECUTABLE_NAME "ti4cartographer")
-file(GLOB_RECURSE SOURCE_CPP source/*.cpp)
-add_executable(${EXECUTABLE_NAME} ${SOURCE_CPP})
-target_link_libraries(${EXECUTABLE_NAME} stdc++fs)
+# Build the Cartographer executable.
+set(CARTOGRAPHER_EXECUTABLE_NAME "ti4cartographer")
+add_executable(${CARTOGRAPHER_EXECUTABLE_NAME} source/Cartographer.cpp)
+target_link_libraries(${CARTOGRAPHER_EXECUTABLE_NAME} stdc++fs)
 
-# Install the executable.
-install(TARGETS ${EXECUTABLE_NAME} DESTINATION /usr/local/bin)
+# Build the Atlas executable.
+set(ATLAS_EXECUTABLE_NAME "ti4atlas")
+add_executable(${ATLAS_EXECUTABLE_NAME} source/Atlas.cpp)
+target_link_libraries(${ATLAS_EXECUTABLE_NAME} stdc++fs)
+
+# Install the executables.
+install(TARGETS ${CARTOGRAPHER_EXECUTABLE_NAME} DESTINATION /usr/local/bin)
+install(TARGETS ${ATLAS_EXECUTABLE_NAME} DESTINATION /usr/local/bin)
 
 # Build the tests.
 include(CTest)
 if(BUILD_TESTING)
   enable_testing()
-  add_test(NAME main_test COMMAND ../test/run.sh)
+  add_test(NAME cartographer_test COMMAND ../test/cartographer.sh)
+  add_test(NAME atlas_test COMMAND ../test/atlas.sh)
 endif()
 
 # Build the documentation.

@@ -2,7 +2,7 @@
 
 #include "System.hpp"
 
-namespace TI4Cartographer {
+namespace ti4cartographer {
 
 const std::unordered_set<System> Systems{
   { 19, GameVersion::BaseGame, SystemCategory::Planetary,
@@ -294,4 +294,4 @@ protected:
 
 }; // class SelectedSystems
 
-} // namespace TI4Cartographer
+} // namespace ti4cartographer

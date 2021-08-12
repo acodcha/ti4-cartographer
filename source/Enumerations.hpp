@@ -2,7 +2,7 @@
 
 #include "String.hpp"
 
-namespace TI4Cartographer {
+namespace ti4cartographer {
 
 template <typename Enumeration> const std::map<Enumeration, std::string> labels;
 
@@ -96,6 +96,12 @@ template <> const std::map<PlanetTrait, std::string> labels<PlanetTrait>{
   {PlanetTrait::Cultural, "Cultural"},
   {PlanetTrait::Hazardous, "Hazardous"},
   {PlanetTrait::Industrial, "Industrial"},
+};
+
+template <> const std::map<PlanetTrait, std::string> abbreviations<PlanetTrait>{
+  {PlanetTrait::Cultural, "Cul"},
+  {PlanetTrait::Hazardous, "Haz"},
+  {PlanetTrait::Industrial, "Ind"}
 };
 
 template <> const std::unordered_map<std::string, PlanetTrait> spellings<PlanetTrait>{
@@ -260,4 +266,4 @@ template <> const std::unordered_map<std::string, SystemPlacementType> spellings
   {"lateralcounterclockwise", SystemPlacementType::LateralCounterClockwise}
 };
 
-} // namespace TI4Cartographer
+} // namespace ti4cartographer

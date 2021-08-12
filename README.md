@@ -13,28 +13,32 @@ The following packages are required:
 - **C++17 Compiler:** Any C++17 compiler will do, such as GCC or Clang. On Ubuntu, install GCC with `sudo apt install g++` or Clang with `sudo apt install clang`.
 - **CMake:** On Ubuntu, install with `sudo apt install cmake`.
 
-Build the program with:
+Build the programs with:
 
 ```
 mkdir build
 cd build
 cmake ..
-make
+make -j
 ```
 
-Once you have built the program, you can optionally run tests from the `build` directory with:
+This builds the main program, `build/bin/ti4cartographer`, as well as the `build/bin/ti4atlas` utility.
+- `ti4cartographer` is the main program used to generate a randomized balanced board.
+- `ti4atlas` is a small utility program that prints the various systems ranked from best to worst.
+
+You can optionally run tests from the `build` directory with:
 
 ```
 make test
 ```
 
-Once you have built the program, you can optionally install it from the `build` directory with:
+You can optionally install the programs from the `build` directory with:
 
 ```
 sudo make install
 ```
 
-This installs the program to `/usr/local/bin/ti4cartographer`. To uninstall the program, simply delete it.
+This installs the programs to `/usr/local/bin/ti4cartographer` and `/usr/local/bin/ti4atlas`. To uninstall the program, simply delete it.
 
 [^ Back to Top](#ti4-cartographer)
 
@@ -56,7 +60,7 @@ This generates HTML documentation using Doxygen. The documentation is located in
 [^ Back to Top](#ti4-cartographer)
 
 ## Usage
-Run with no arguments or with the `--help` argument to obtain usage information.
+Run `ti4cartographer` with no arguments or with the `--help` argument to obtain usage information.
 
 Otherwise, for regular use, run with:
 

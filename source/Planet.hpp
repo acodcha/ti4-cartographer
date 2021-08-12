@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace TI4Cartographer {
+namespace ti4cartographer {
 
 class Planet {
 
@@ -65,7 +65,7 @@ public:
       text += "/" + abbreviation(technology_specialty_);
     }
     if (trait_.has_value()) {
-      text += " " + label(trait_);
+      text += " " + abbreviation(trait_);
     }
     text += ")";
     return text;
@@ -94,7 +94,7 @@ protected:
 
   /// \brief This is the main component of a planet's score: it is what the planet is used for when it is exhausted.
   double utility_score() const noexcept {
-    return std::max(resources_, influence_);
+    return static_cast<double>(std::max(resources_, influence_));
   }
 
   /// \brief High influence planets are useful for voting during the Agenda phase.
@@ -131,10 +131,10 @@ protected:
           return 0.5;
           break;
         case PlanetTrait::Hazardous:
-          return 0.4;
+          return 0.3;
           break;
         case PlanetTrait::Industrial:
-          return 0.2;
+          return 0.1;
           break;
       }
     }
@@ -172,12 +172,12 @@ protected:
 
 }; // class Planet
 
-} // namespace TI4Cartographer
+} // namespace ti4cartographer
 
 namespace std {
 
-  template <> struct hash<TI4Cartographer::Planet> {
-    size_t operator()(const TI4Cartographer::Planet& planet) const {
+  template <> struct hash<ti4cartographer::Planet> {
+    size_t operator()(const ti4cartographer::Planet& planet) const {
       return hash<std::string>()(planet.name());
     }
   };

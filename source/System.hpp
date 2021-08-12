@@ -2,13 +2,15 @@
 
 #include "Planet.hpp"
 
-namespace TI4Cartographer {
+namespace ti4cartographer {
 
 class System {
 
 public:
 
   System() noexcept {}
+
+  System(const uint8_t id) noexcept : id_(id) {}
 
   System(
     const uint8_t id,
@@ -135,38 +137,32 @@ public:
   }
 
   std::string print() const noexcept {
-    std::string text{"#" + std::to_string(id_) + " (" + label(category_) + ")"};
+    std::string text{"#" + std::to_string(id_) + ":  "};
     uint8_t counter{0};
-    text += ": ";
     for (const Planet& planet : planets_) {
       if (counter > 0) {
-        text += ", ";
+        text += "  +  ";
       }
       text += planet.print();
       ++counter;
     }
-    for (const Wormhole& wormhole : wormholes_) {
-      if (counter > 0) {
-        text += ", ";
-      }
-      text += label(wormhole);
-      ++counter;
-    }
     for (const Anomaly& anomaly : anomalies_) {
       if (counter > 0) {
-        text += ", ";
+        text += "  +  ";
       }
       text += label(anomaly);
       ++counter;
     }
-    for (const SystemPlacementType& placement : valid_placements()) {
+    for (const Wormhole& wormhole : wormholes_) {
       if (counter > 0) {
-        text += ", ";
+        text += "  +  ";
       }
-      text += label(placement);
+      text += label(wormhole);
       ++counter;
     }
-    text += ".";
+    if (counter == 0) {
+      text += "Empty";
+    }
     return text;
   }
 
@@ -222,17 +218,18 @@ protected:
 
   /// \brief It is preferable to have multiple planets in one system due to scoring objectives, command token efficiency, and ease of defending the space area.
   double number_of_planets_score() const noexcept {
-    if (number_of_planets() == 1) {
-      return 2.0 * number_of_planets();
-    } else if (number_of_planets() == 2) {
-      return 2.5 * number_of_planets();
-    } else if (number_of_planets() == 3) {
-      return 3.0 * number_of_planets();
+    const uint8_t number_of_planets_{number_of_planets()};
+    if (number_of_planets_ == 1) {
+      return 1.0 * number_of_planets_;
+    } else if (number_of_planets_ == 2) {
+      return 1.5 * number_of_planets_;
+    } else if (number_of_planets_ == 3) {
+      return 2.0 * number_of_planets_;
     }
     return 0.0;
   }
 
-  /// \brief The supernova and nebula are generally beneficial, whereas the asteroid field and the gravity rift are generally unwanted.
+  /// \brief The nebula and supernova are generally beneficial, whereas the asteroid field and the gravity rift are generally unwanted.
   double anomalies_score() const noexcept {
     double score{0.0};
     if (contains(Anomaly::AsteroidField)) {
@@ -245,31 +242,69 @@ protected:
       score += 1.0;
     }
     if (contains(Anomaly::Supernova)) {
-      score += 2.0;
+      score += 0.5;
     }
+    return score;
   }
 
-  /// \brief Wormholes are generally unwanted.
+  /// \brief Wormholes are generally beneficial because they provide additional movement options and lead to the Wormhole Nexus.
   double wormholes_score() const noexcept {
     if (contains_one_or_more_wormholes()) {
-      return -1.0;
+      return 0.5;
     }
     return 0.0;
   }
 
   /// \brief The maximum planet resource value is useful for building a space dock.
   double space_dock_score() const noexcept {
-    return 0.5 * highest_planet_resources();
+    return 0.25 * highest_planet_resources();
   }
 
 }; // class System
 
-} // namespace TI4Cartographer
+/// \brief Simple pair of a system ID and score.
+class SystemIdAndScore {
+
+public:
+
+  constexpr SystemIdAndScore() noexcept {}
+
+  constexpr SystemIdAndScore(const uint8_t id, const double score) noexcept : id_(id), score_(score) {}
+
+  constexpr const uint8_t id() const noexcept {
+    return id_;
+  }
+
+  constexpr const double score() const noexcept {
+    return score_;
+  }
+
+  struct sort_descending {
+    bool operator()(const SystemIdAndScore& system_id_and_score_1, const SystemIdAndScore& system_id_and_score_2) const noexcept {
+      if (system_id_and_score_1.score() < system_id_and_score_2.score()) {
+        return false;
+      } else if (system_id_and_score_1.score() > system_id_and_score_2.score()) {
+        return true;
+      } else {
+        return system_id_and_score_1.id() < system_id_and_score_2.id();
+      }
+    }
+  };
+
+protected:
+
+  uint8_t id_{0};
+
+  double score_{0.0};
+
+};
+
+} // namespace ti4cartographer
 
 namespace std {
 
-  template <> struct hash<TI4Cartographer::System> {
-    size_t operator()(const TI4Cartographer::System& system) const {
+  template <> struct hash<ti4cartographer::System> {
+    size_t operator()(const ti4cartographer::System& system) const {
       return hash<uint8_t>()(system.id());
     }
   };
