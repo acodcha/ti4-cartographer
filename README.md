@@ -1,4 +1,6 @@
 # TI4 Cartographer
+![build and test](https://github.com/acodcha/ti4cartographer/workflows/build%20and%20test/badge.svg?branch=main)
+
 Generates randomized balanced boards for the Twilight Imperium 4th Edition board game.
 
 - [Setup](#setup)
