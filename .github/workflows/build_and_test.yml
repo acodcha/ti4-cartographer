@@ -1,0 +1,21 @@
+name: build and test
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  build:
+    name: build and test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install packages
+      run: sudo apt install -y cmake g++
+    - name: configure
+      run: mkdir -p build && cd build && cmake ..
+    - name: build
+      run: cd build && make -j 2
+    - name: test
+      run: cd build && make test
+
