@@ -67,6 +67,9 @@ public:
     if (trait_.has_value()) {
       text += " " + abbreviation(trait_);
     }
+    if (is_legendary()) {
+      text += " Legendary";
+    }
     text += ")";
     return text;
   }
