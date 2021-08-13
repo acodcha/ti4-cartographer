@@ -4,10 +4,10 @@
 
 namespace ti4cartographer {
 
-template <typename Enumeration> const std::map<Enumeration, std::string> labels;
+template <typename Enumeration> const std::unordered_map<Enumeration, std::string> labels;
 
 template <typename Enumeration> std::string label(const Enumeration& type) noexcept {
-  const typename std::map<Enumeration, std::string>::const_iterator found{labels<Enumeration>.find(type)};
+  const typename std::unordered_map<Enumeration, std::string>::const_iterator found{labels<Enumeration>.find(type)};
   if (found != labels<Enumeration>.cend()) {
     return found->second;
   } else {
@@ -23,10 +23,10 @@ template <typename Enumeration> std::string label(const std::optional<Enumeratio
   }
 }
 
-template <typename Enumeration> const std::map<Enumeration, std::string> abbreviations;
+template <typename Enumeration> const std::unordered_map<Enumeration, std::string> abbreviations;
 
 template <typename Enumeration> std::string abbreviation(const Enumeration& type) noexcept {
-  const typename std::map<Enumeration, std::string>::const_iterator found{abbreviations<Enumeration>.find(type)};
+  const typename std::unordered_map<Enumeration, std::string>::const_iterator found{abbreviations<Enumeration>.find(type)};
   if (found != abbreviations<Enumeration>.cend()) {
     return found->second;
   } else {

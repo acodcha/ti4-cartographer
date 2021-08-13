@@ -12,7 +12,7 @@ enum class Aggression : uint8_t {
   VeryHigh
 };
 
-template <> const std::map<Aggression, std::string> labels<Aggression>{
+template <> const std::unordered_map<Aggression, std::string> labels<Aggression>{
   {Aggression::VeryLow, "Very Low"},
   {Aggression::Low, "Low"},
   {Aggression::Medium, "Medium"},

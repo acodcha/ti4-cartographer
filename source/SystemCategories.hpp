@@ -13,7 +13,7 @@ enum class SystemCategory : uint8_t {
   CreussGate
 };
 
-template <> const std::map<SystemCategory, std::string> labels<SystemCategory>{
+template <> const std::unordered_map<SystemCategory, std::string> labels<SystemCategory>{
   {SystemCategory::Planetary, "Planetary System"},
   {SystemCategory::AnomalyWormholeEmpty, "Anomaly/Wormhole/Empty System"},
   {SystemCategory::Home, "Home System"},

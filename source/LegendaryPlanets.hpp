@@ -11,7 +11,7 @@ enum class LegendaryPlanet : uint8_t {
   Primor
 };
 
-template <> const std::map<LegendaryPlanet, std::string> labels<LegendaryPlanet>{
+template <> const std::unordered_map<LegendaryPlanet, std::string> labels<LegendaryPlanet>{
   {LegendaryPlanet::HopesEnd, "Hope's End"},
   {LegendaryPlanet::Mallice, "Mallice"},
   {LegendaryPlanet::Mirage, "Mirage"},

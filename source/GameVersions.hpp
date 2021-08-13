@@ -9,7 +9,7 @@ enum class GameVersion : uint8_t {
   ProphecyOfKingsExpansion
 };
 
-template <> const std::map<GameVersion, std::string> labels<GameVersion>{
+template <> const std::unordered_map<GameVersion, std::string> labels<GameVersion>{
   {GameVersion::BaseGame, "Base Game"},
   {GameVersion::ProphecyOfKingsExpansion, "Prophecy of Kings Expansion"}
 };

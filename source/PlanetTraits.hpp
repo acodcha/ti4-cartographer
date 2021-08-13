@@ -10,13 +10,13 @@ enum class PlanetTrait : uint8_t {
   Hazardous
 };
 
-template <> const std::map<PlanetTrait, std::string> labels<PlanetTrait>{
+template <> const std::unordered_map<PlanetTrait, std::string> labels<PlanetTrait>{
   {PlanetTrait::Cultural, "Cultural"},
   {PlanetTrait::Hazardous, "Hazardous"},
   {PlanetTrait::Industrial, "Industrial"},
 };
 
-template <> const std::map<PlanetTrait, std::string> abbreviations<PlanetTrait>{
+template <> const std::unordered_map<PlanetTrait, std::string> abbreviations<PlanetTrait>{
   {PlanetTrait::Cultural, "Cul"},
   {PlanetTrait::Hazardous, "Haz"},
   {PlanetTrait::Industrial, "Ind"}

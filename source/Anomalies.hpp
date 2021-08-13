@@ -11,7 +11,7 @@ enum class Anomaly : uint8_t {
   Supernova
 };
 
-template <> const std::map<Anomaly, std::string> labels<Anomaly>{
+template <> const std::unordered_map<Anomaly, std::string> labels<Anomaly>{
   {Anomaly::AsteroidField, "Asteroid Field"},
   {Anomaly::GravityRift, "Gravity Rift"},
   {Anomaly::Nebula, "Nebula"},

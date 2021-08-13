@@ -11,7 +11,7 @@ enum class Wormhole : uint8_t {
   Delta
 };
 
-template <> const std::map<Wormhole, std::string> labels<Wormhole>{
+template <> const std::unordered_map<Wormhole, std::string> labels<Wormhole>{
   {Wormhole::Alpha, "Alpha Wormhole"},
   {Wormhole::Beta, "Beta Wormhole"},
   {Wormhole::Gamma, "Gamma Wormhole"},

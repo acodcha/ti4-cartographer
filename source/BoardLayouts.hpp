@@ -10,7 +10,7 @@ enum class BoardLayout : uint8_t {
   Small
 };
 
-template <> const std::map<BoardLayout, std::string> labels<BoardLayout>{
+template <> const std::unordered_map<BoardLayout, std::string> labels<BoardLayout>{
   {BoardLayout::Regular, "Regular"},
   {BoardLayout::Large, "Large"},
   {BoardLayout::Small, "Small"}

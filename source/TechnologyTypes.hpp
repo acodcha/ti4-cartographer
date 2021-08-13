@@ -11,14 +11,14 @@ enum class TechnologyType : uint8_t {
   Warfare
 };
 
-template <> const std::map<TechnologyType, std::string> labels<TechnologyType>{
+template <> const std::unordered_map<TechnologyType, std::string> labels<TechnologyType>{
   {TechnologyType::Propulsion, "Propulsion"},
   {TechnologyType::Biotic, "Biotic"},
   {TechnologyType::Cybernetic, "Cybernetic"},
   {TechnologyType::Warfare, "Warfare"}
 };
 
-template <> const std::map<TechnologyType, std::string> abbreviations<TechnologyType>{
+template <> const std::unordered_map<TechnologyType, std::string> abbreviations<TechnologyType>{
   {TechnologyType::Propulsion, "B"},
   {TechnologyType::Biotic, "G"},
   {TechnologyType::Cybernetic, "Y"},

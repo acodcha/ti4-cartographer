@@ -12,7 +12,7 @@ enum class SystemPlacementType : uint8_t {
   LateralCounterClockwise
 };
 
-template <> const std::map<SystemPlacementType, std::string> labels<SystemPlacementType>{
+template <> const std::unordered_map<SystemPlacementType, std::string> labels<SystemPlacementType>{
   {SystemPlacementType::Equidistant, "Equidistant"},
   {SystemPlacementType::ForwardFar, "Forward Far"},
   {SystemPlacementType::ForwardNear, "Forward Near"},
