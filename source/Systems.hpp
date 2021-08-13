@@ -5,10 +5,63 @@
 namespace ti4cartographer {
 
 const std::unordered_set<System> Systems{
-
-
-
-
+  { 1, GameVersion::BaseGame, SystemCategory::Home,
+    {{"Jord", 4, 2, {}, {}, {}}}, {}, {}
+  },
+  { 2, GameVersion::BaseGame, SystemCategory::Home,
+    {{"Moll Primus", 4, 1, {}, {}, {}}}, {}, {}
+  },
+  { 3, GameVersion::BaseGame, SystemCategory::Home,
+    {{"Darien", 4, 4, {}, {}, {}}}, {}, {}
+  },
+  { 4, GameVersion::BaseGame, SystemCategory::Home,
+    {{"Muaat", 4, 1, {}, {}, {}}}, {}, {}
+  },
+  { 5, GameVersion::BaseGame, SystemCategory::Home,
+    {{"Nestphar", 3, 2, {}, {}, {}}}, {}, {}
+  },
+  { 6, GameVersion::BaseGame, SystemCategory::Home,
+    {{"[0.0.0]", 5, 0, {}, {}, {}}}, {}, {}
+  },
+  { 7, GameVersion::BaseGame, SystemCategory::Home,
+    {{"Winnu", 3, 4, {}, {}, {}}}, {}, {}
+  },
+  { 8, GameVersion::BaseGame, SystemCategory::Home,
+    {{"Mordai II", 4, 0, {}, {}, {}}}, {}, {}
+  },
+  { 9, GameVersion::BaseGame, SystemCategory::Home,
+    { {"Druaa", 3, 1, {}, {}, {}},
+      {"Maaluuk", 0, 2, {}, {}, {}}}, {}, {}
+  },
+  { 10, GameVersion::BaseGame, SystemCategory::Home,
+    { {"Arc Prime", 4, 0, {}, {}, {}},
+      {"Wren Terra", 2, 1, {}, {}, {}}}, {}, {}
+  },
+  { 11, GameVersion::BaseGame, SystemCategory::Home,
+    { {"Lisis II", 1, 0, {}, {}, {}},
+      {"Ragh", 2, 1, {}, {}, {}}}, {}, {}
+  },
+  { 12, GameVersion::BaseGame, SystemCategory::Home,
+    { {"Jol", 1, 2, {}, {}, {}},
+      {"Nar", 2, 3, {}, {}, {}}}, {}, {}
+  },
+  { 13, GameVersion::BaseGame, SystemCategory::Home,
+    { {"Quinarra", 3, 1, {}, {}, {}},
+      {"Tren'lak", 1, 0, {}, {}, {}}}, {}, {}
+  },
+  { 14, GameVersion::BaseGame, SystemCategory::Home,
+    { {"Archon Ren", 2, 3, {}, {}, {}},
+      {"Archon Tau", 1, 1, {}, {}, {}}}, {}, {}
+  },
+  { 15, GameVersion::BaseGame, SystemCategory::Home,
+    { {"Retillion", 2, 3, {}, {}, {}},
+      {"Shalloq", 1, 2, {}, {}, {}}}, {}, {}
+  },
+  { 16, GameVersion::BaseGame, SystemCategory::Home,
+    { {"Arretze", 2, 0, {}, {}, {}},
+      {"Hercant", 1, 1, {}, {}, {}},
+      {"Kamdorn", 0, 1, {}, {}, {}}}, {}, {}
+  },
   { 17, GameVersion::BaseGame, SystemCategory::CreussGate,
     {}, {}, {Wormhole::Delta}
   },
@@ -143,15 +196,27 @@ const std::unordered_set<System> Systems{
   { 52, GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
     {{"Ixth", 3, 5, {}, {}, {}}}, {}, {}
   },
-
-
-
-
-
-
-
-
-
+  { 53, GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
+    {{"Arcturus", 4, 4, {}, {}, {}}}, {}, {}
+  },
+  { 54, GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
+    {{"Acheron", 4, 0, {}, {}, {}}}, {}, {}
+  },
+  { 55, GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
+    {{"Elysium", 4, 1, {}, {}, {}}}, {}, {}
+  },
+  { 56, GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
+    {{"The Dark", 3, 4, {}, {}, {}}}, {}, {}
+  },
+  { 57, GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
+    { {"Naazir", 2, 1, {}, {}, {}},
+      {"Rokha", 1, 2, {}, {}, {}}}, {}, {}
+  },
+  { 58, GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
+    { {"Avar", 1, 1, {}, {}, {}},
+      {"Valk", 2, 0, {}, {}, {}},
+      {"Ylir", 0, 2, {}, {}, {}}}, {}, {}
+  },
   { 59, GameVersion::ProphecyOfKingsExpansion, SystemCategory::Planetary,
     {{"Archon Vail", 1, 3, {TechnologyType::Propulsion}, {PlanetTrait::Hazardous}, {}}}, {}, {}
   },
@@ -232,6 +297,10 @@ const std::unordered_set<System> Systems{
   },
   { 80, GameVersion::ProphecyOfKingsExpansion, SystemCategory::AnomalyWormholeEmpty,
     {}, {Anomaly::Supernova}, {}
+  },
+  { 82, GameVersion::ProphecyOfKingsExpansion, SystemCategory::WormholeNexus,
+    {{"Mallice", 0, 3, {}, {PlanetTrait::Cultural}, {LegendaryPlanet::Mallice}}},
+    {}, {Wormhole::Alpha, Wormhole::Beta, Wormhole::Gamma}
   }
 };
 
