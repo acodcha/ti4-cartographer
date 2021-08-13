@@ -36,13 +36,16 @@ template <> const std::unordered_map<BoardLayout, std::string> labels<BoardLayou
 
 template <> const std::unordered_map<std::string, BoardLayout> spellings<BoardLayout>{
   {"2players", BoardLayout::Players2},
+  {"2playersregular", BoardLayout::Players2},
   {"3players", BoardLayout::Players3},
+  {"3playersregular", BoardLayout::Players3},
   {"4playersregular", BoardLayout::Players4Regular},
   {"4playerslarge", BoardLayout::Players4Large},
   {"5playersregular", BoardLayout::Players5Regular},
   {"5playerssmall", BoardLayout::Players5Small},
   {"5playerslarge", BoardLayout::Players5Large},
   {"6players", BoardLayout::Players6},
+  {"6playersregular", BoardLayout::Players6},
   {"7playersregular", BoardLayout::Players7Regular},
   {"7playerslarge", BoardLayout::Players7Large},
   {"8playersregular", BoardLayout::Players8Regular},
@@ -88,9 +91,6 @@ std::unordered_multimap<uint8_t, BoardLayout> number_of_players_to_board_layouts
 };
 
 std::set<BoardLayout> board_layouts(const uint8_t number_of_players) {
-  if (number_of_players < 2 || number_of_players > 8) {
-    error("The number of players must be 2-8.");
-  }
   const std::pair<std::unordered_multimap<uint8_t, BoardLayout>::const_iterator, std::unordered_multimap<uint8_t, BoardLayout>::const_iterator> range{number_of_players_to_board_layouts.equal_range(number_of_players)};
   std::set<BoardLayout> results;
   for (std::unordered_multimap<uint8_t, BoardLayout>::const_iterator element = range.first; element != range.second; ++element) {
