@@ -1,6 +1,10 @@
 #pragma once
 
+#include "Anomalies.hpp"
+#include "GameVersions.hpp"
 #include "Planet.hpp"
+#include "SystemCategories.hpp"
+#include "Wormholes.hpp"
 
 namespace ti4cartographer {
 
@@ -116,24 +120,6 @@ public:
 
   double score() const noexcept {
     return individual_planet_scores() + number_of_planets_score() + anomalies_score() + wormholes_score() + space_dock_score();
-  }
-
-  std::set<SystemPlacementType> valid_placements() const noexcept {
-    // All systems can be equidistant or lateral.
-    std::set<SystemPlacementType> result{
-      SystemPlacementType::Equidistant,
-      SystemPlacementType::LateralClockwise,
-      SystemPlacementType::LateralCounterClockwise
-    };
-    // A system can only be forward-far if it does not contain a gravity rift or a supernova.
-    if (!contains(Anomaly::GravityRift) && !contains(Anomaly::Supernova)) {
-      result.insert(SystemPlacementType::ForwardFar);
-    }
-    // A system can only be forward-near if it contains at least one planet with at least 2 resources.
-    if (highest_planet_resources() >= 2) {
-      result.insert(SystemPlacementType::ForwardNear);
-    }
-    return result;
   }
 
   std::string print() const noexcept {

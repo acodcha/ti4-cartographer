@@ -5,6 +5,16 @@
 namespace ti4cartographer {
 
 const std::unordered_set<System> Systems{
+
+
+
+
+  { 17, GameVersion::BaseGame, SystemCategory::CreussGate,
+    {}, {}, {Wormhole::Delta}
+  },
+  { 18, GameVersion::BaseGame, SystemCategory::MecatolRex,
+    {{"Mecatol Rex", 1, 6, {}, {}, {}}}, {}, {}
+  },
   { 19, GameVersion::BaseGame, SystemCategory::Planetary,
     {{"Wellon", 1, 2, {TechnologyType::Cybernetic}, {PlanetTrait::Industrial}, {}}}, {}, {}
   },
@@ -127,6 +137,21 @@ const std::unordered_set<System> Systems{
   { 50, GameVersion::BaseGame, SystemCategory::AnomalyWormholeEmpty,
     {}, {}, {}
   },
+  { 51, GameVersion::BaseGame, SystemCategory::Home,
+    {{"Creuss", 4, 2, {}, {}, {}}}, {}, {Wormhole::Delta}
+  },
+  { 52, GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
+    {{"Ixth", 3, 5, {}, {}, {}}}, {}, {}
+  },
+
+
+
+
+
+
+
+
+
   { 59, GameVersion::ProphecyOfKingsExpansion, SystemCategory::Planetary,
     {{"Archon Vail", 1, 3, {TechnologyType::Propulsion}, {PlanetTrait::Hazardous}, {}}}, {}, {}
   },

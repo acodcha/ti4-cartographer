@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Base.hpp"
+#include "LegendaryPlanets.hpp"
+#include "PlanetTraits.hpp"
+#include "TechnologyTypes.hpp"
 
 namespace ti4cartographer {
 
