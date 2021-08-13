@@ -81,7 +81,6 @@ ti4cartographer --players <number> [--version <type>] [--layout <type>] [--aggre
 - [2 Players](#board-layout-2-players)
 - [3 Players](#board-layout-3-players)
 - [4 Players Regular](#board-layout-4-players-regular)
-- [4 Players Small](#board-layout-4-players-small)
 - [4 Players Large](#board-layout-4-players-large)
 - [5 Players Regular](#board-layout-5-players-regular)
 - [5 Players Small](#board-layout-5-players-small)
@@ -124,17 +123,6 @@ ti4cartographer --players 4 --layout regular
 ```
 
 ![4 Players Regular](images/4_players_regular.png)
-
-[^ Back to Board Layouts](#board-layouts)
-
-### Board Layout: 4 Players Small
-3 planetary systems and 2 anomaly/wormhole/empty systems per player.
-
-```
-ti4cartographer --players 4 --layout small
-```
-
-![4 Players Small](images/4_players_small.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
