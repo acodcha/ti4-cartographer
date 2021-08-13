@@ -229,20 +229,20 @@ protected:
     return 0.0;
   }
 
-  /// \brief The nebula and supernova are generally beneficial, whereas the asteroid field and the gravity rift are generally unwanted.
+  /// \brief Some anomalies are generally beneficial, whereas others are generally unwanted.
   double anomalies_score() const noexcept {
     double score{0.0};
     if (contains(Anomaly::AsteroidField)) {
       score += -1.0;
     }
     if (contains(Anomaly::GravityRift)) {
-      score += -2.0;
-    }
-    if (contains(Anomaly::Nebula)) {
       score += 1.0;
     }
-    if (contains(Anomaly::Supernova)) {
+    if (contains(Anomaly::Nebula)) {
       score += 0.5;
+    }
+    if (contains(Anomaly::Supernova)) {
+      score += -1.5;
     }
     return score;
   }
@@ -297,7 +297,7 @@ protected:
 
   double score_{0.0};
 
-};
+}; // class SystemIdAndScore
 
 } // namespace ti4cartographer
 

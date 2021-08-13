@@ -5,7 +5,9 @@ namespace ti4cartographer {
 void print_atlas() noexcept {
   std::vector<SystemIdAndScore> system_ids_and_scores;
   for (const System& system : Systems) {
-    system_ids_and_scores.push_back({system.id(), system.score()});
+    if (system.category() == SystemCategory::Planetary || system.category() == SystemCategory::AnomalyWormholeEmpty) {
+      system_ids_and_scores.push_back({system.id(), system.score()});
+    }
   }
   std::sort(system_ids_and_scores.begin(), system_ids_and_scores.end(), SystemIdAndScore::sort_descending());
   message(Separator);
