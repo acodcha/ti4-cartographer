@@ -26,7 +26,9 @@ public:
     technology_specialty_(technology_specialty),
     trait_(trait),
     legendary_(legendary)
-  {}
+  {
+    initialize_score();
+  }
 
   const std::string& name() const noexcept {
     return name_;
@@ -52,12 +54,12 @@ public:
     return legendary_;
   }
 
-  bool is_legendary() const noexcept {
-    return legendary_.has_value();
+  double score() const noexcept {
+    return score_;
   }
 
-  double score() const noexcept {
-    return utility_score() + voting_score() + technology_specialty_score() + trait_score() + legendary_objective_score() + legendary_component_action_score();
+  bool is_legendary() const noexcept {
+    return legendary_.has_value();
   }
 
   std::string print() const noexcept {
@@ -96,6 +98,12 @@ protected:
   std::optional<PlanetTrait> trait_;
 
   std::optional<LegendaryPlanet> legendary_;
+
+  double score_{0.0};
+
+  void initialize_score() noexcept {
+    score_ = utility_score() + voting_score() + technology_specialty_score() + trait_score() + legendary_objective_score() + legendary_component_action_score();
+  }
 
   /// \brief This is the main component of a planet's score: it is what the planet is used for when it is exhausted.
   double utility_score() const noexcept {

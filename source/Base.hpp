@@ -27,4 +27,6 @@ std::random_device RandomDevice;
 
 std::default_random_engine RandomEngine(RandomDevice());
 
+constexpr const uint64_t DefaultNumberOfIterations{100};
+
 } // namespace ti4cartographer

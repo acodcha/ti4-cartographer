@@ -27,6 +27,10 @@ const std::string BoardAggressionKey{"--aggression"};
 
 const std::string BoardAggressionPattern{BoardAggressionKey + " <amount>"};
 
+const std::string NumberOfIterationsKey{"--iterations"};
+
+const std::string NumberOfIterationsPattern{NumberOfIterationsKey + " <number>"};
+
 } // namespace Arguments
 
 /// \brief Parser and organizer of the program's command-line arguments.
@@ -54,6 +58,10 @@ public:
     return board_aggression_;
   }
 
+  uint64_t number_of_iterations() const noexcept {
+    return number_of_iterations_;
+  }
+
 protected:
 
   std::string executable_name_;
@@ -71,6 +79,8 @@ protected:
   BoardLayout board_layout_{BoardLayout::Players6};
 
   BoardAggression board_aggression_{BoardAggression::Medium};
+
+  uint64_t number_of_iterations_{DefaultNumberOfIterations};
 
   void assign_arguments(int argc, char *argv[]) noexcept {
     if (argc > 1) {
@@ -101,6 +111,8 @@ protected:
         initialize_board_layout(*(argument + 1));
       } else if (*argument == Arguments::BoardAggressionKey && argument + 1 < arguments_.cend()) {
         initialize_board_aggression(*(argument + 1));
+      } else if (*argument == Arguments::NumberOfIterationsKey && argument + 1 < arguments_.cend()) {
+        initialize_number_of_iterations(*(argument + 1));
       }
     }
   }
@@ -169,6 +181,13 @@ protected:
     }
   }
 
+  void initialize_number_of_iterations(const std::string number_of_iterations) {
+    number_of_iterations_ = static_cast<uint64_t>(std::stoull(number_of_iterations));
+    if (number_of_iterations_ == 0) {
+      message_usage_information_and_error("The number of iterations must be greater than zero.");
+    }
+  }
+
   void message_header_information() const noexcept {
     message(Separator);
     message("TI4 Cartographer");
@@ -179,13 +198,14 @@ protected:
   void message_usage_information() const noexcept {
     const std::string space{"  "};
     message("Usage:");
-    message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::BoardLayoutPattern + "] [" + Arguments::BoardAggressionPattern + "]");
+    message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::BoardLayoutPattern + "] [" + Arguments::BoardAggressionPattern + "] [" + Arguments::NumberOfIterationsPattern + "]");
     const uint_least64_t length{std::max({
       Arguments::UsageInformation.length(),
       Arguments::NumberOfPlayersPattern.length(),
       Arguments::GameVersionPattern.length(),
       Arguments::BoardLayoutPattern.length(),
-      Arguments::BoardAggressionPattern.length()
+      Arguments::BoardAggressionPattern.length(),
+      Arguments::NumberOfIterationsPattern.length()
     })};
     message("Arguments:");
     message(space + pad_to_length(Arguments::UsageInformation, length) + space + "Displays this information and exits.");
@@ -200,6 +220,7 @@ protected:
     message(space + space + "7 players: regular or large");
     message(space + space + "8 players: regular or large");
     message(space + pad_to_length(Arguments::BoardAggressionPattern, length) + space + "Optional. Choices are very-high, high, medium, low, or very-low. Specifies the degree of expected aggression resulting from the placement of systems on the board. By default, medium is used. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
+    message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultNumberOfIterations) + ". Specifies the number of board layout iterations.");
     message("");
   }
 
@@ -215,6 +236,7 @@ protected:
     message("The number of players and board layout is: " + label(board_layout_));
     message("The game version is: " + label(game_version_));
     message("The amount of aggression is: " + label(board_aggression_));
+    message("The number of iterations is: " + label(number_of_iterations_));
   }
 
 }; // class Instructions

@@ -1,24 +1,21 @@
 #pragma once
 
-#include "Instructions.hpp"
+#include "BoardLayouts.hpp"
 #include "Systems.hpp"
 
 namespace ti4cartographer {
 
-class SelectedSystems {
+/// \brief Group of randomly-selected system IDs for the game board.
+class SelectedSystemIds {
 
 public:
 
-  SelectedSystems() noexcept {}
+  SelectedSystemIds() noexcept {}
 
-  SelectedSystems(const Instructions& instructions) noexcept {
-    initialize_planetary_systems(instructions);
-    initialize_wormhole_anomaly_empty_systems(instructions);
+  SelectedSystemIds(const GameVersion game_version, const BoardLayout board_layout) noexcept {
+    initialize_planetary_systems(game_version, board_layout);
+    initialize_wormhole_anomaly_empty_systems(game_version, board_layout);
     std::shuffle(ids_.begin(), ids_.end(), RandomEngine);
-  }
-
-  const std::vector<std::string>& ids() const noexcept {
-    return ids_;
   }
 
   std::string print() const noexcept {
@@ -29,13 +26,37 @@ public:
     return text;
   }
 
+  struct const_iterator : public std::vector<std::string>::const_iterator {
+    const_iterator(const std::vector<std::string>::const_iterator i) noexcept : std::vector<std::string>::const_iterator(i) {}
+  };
+
+  std::size_t size() const noexcept {
+    return ids_.size();
+  }
+
+  const_iterator cbegin() const noexcept {
+   return const_iterator(ids_.cbegin());
+  }
+
+  const_iterator begin() const noexcept {
+   return cbegin();
+  }
+
+  const_iterator cend() const noexcept {
+   return const_iterator(ids_.cend());
+  }
+
+  const_iterator end() const noexcept {
+   return cend();
+  }
+
 protected:
 
   std::vector<std::string> ids_;
 
-  void initialize_planetary_systems(const Instructions& instructions) noexcept {
+  void initialize_planetary_systems(const GameVersion game_version, const BoardLayout board_layout) noexcept {
     std::vector<std::string> all;
-    switch (instructions.game_version()) {
+    switch (game_version) {
       case GameVersion::BaseGame:
         for (const System& system : Systems) {
           if (system.game_version() == GameVersion::BaseGame && system.category() == SystemCategory::Planetary) {
@@ -51,7 +72,7 @@ protected:
         }
         break;
     }
-    const uint8_t number_of_planetary_systems{static_cast<uint8_t>(number_of_planetary_systems_per_player(instructions.board_layout()) * number_of_players(instructions.board_layout()))};
+    const uint8_t number_of_planetary_systems{static_cast<uint8_t>(number_of_planetary_systems_per_player(board_layout) * number_of_players(board_layout))};
     if (all.size() < number_of_planetary_systems) {
       error("The requested number of planetary systems for the game board exceeds the actual number of planetary systems that exist in the game.");
     }
@@ -61,9 +82,9 @@ protected:
     }
   }
 
-  void initialize_wormhole_anomaly_empty_systems(const Instructions& instructions) noexcept {
+  void initialize_wormhole_anomaly_empty_systems(const GameVersion game_version, const BoardLayout board_layout) noexcept {
     std::vector<std::string> all;
-    switch (instructions.game_version()) {
+    switch (game_version) {
       case GameVersion::BaseGame:
         for (const System& system : Systems) {
           if (system.game_version() == GameVersion::BaseGame && system.category() == SystemCategory::AnomalyWormholeEmpty) {
@@ -79,7 +100,7 @@ protected:
         }
         break;
     }
-    const uint8_t number_of_anomaly_wormhole_empty_systems{static_cast<uint8_t>(number_of_anomaly_wormhole_empty_systems_per_player(instructions.board_layout()) * number_of_players(instructions.board_layout()))};
+    const uint8_t number_of_anomaly_wormhole_empty_systems{static_cast<uint8_t>(number_of_anomaly_wormhole_empty_systems_per_player(board_layout) * number_of_players(board_layout))};
     if (all.size() < number_of_anomaly_wormhole_empty_systems) {
       error("The requested number of anomaly/wormhole/empty systems for the game board exceeds the actual number of anomaly/wormhole/empty systems that exist in the game.");
     }
@@ -89,6 +110,6 @@ protected:
     }
   }
 
-}; // class SelectedSystems
+}; // class SelectedSystemIds
 
 } // namespace ti4cartographer
