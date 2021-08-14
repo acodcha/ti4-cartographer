@@ -236,7 +236,7 @@ protected:
     message("The number of players and board layout is: " + label(board_layout_));
     message("The game version is: " + label(game_version_));
     message("The amount of aggression is: " + label(board_aggression_));
-    message("The number of iterations is: " + label(number_of_iterations_));
+    message("The number of iterations is: " + std::to_string(number_of_iterations_));
   }
 
 }; // class Instructions

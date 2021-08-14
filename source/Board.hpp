@@ -8,24 +8,15 @@
 namespace ti4cartographer {
 
 /// \brief Abstract template base class for the game board.
-template <BoardLayout board_layout> class Board {
+class Board {
 
 public:
 
-  Board(
-    const BoardAggression board_aggression,
-    const uint64_t number_of_iterations,
-    const SelectedSystemIds& selected_system_ids
-  ) noexcept {
-    initialize_tiles();
-    std::sort(tiles_.begin(), tiles_.end());
-    initialize_player_pathways_to_mecatol_rex();
-    initialize_player_forward_positions();
-    initialize_player_lateral_starboard_positions();
-    initialize_player_lateral_port_positions();
-    initialize_system_ids(board_aggression, selected_system_ids);
-    iterate(number_of_iterations);
-    finalize();
+  Board(const BoardLayout board_layout) noexcept {
+    const uint8_t number_of_players_{number_of_players(board_layout)};
+    for (uint8_t player = 1; player <= number_of_players_; ++player) {
+      player_scores_.insert({player, 0.0});
+    }
   }
 
   const std::vector<Tile>& tiles() const noexcept {
@@ -35,7 +26,7 @@ public:
 protected:
 
   /// \brief Each player's score. The vector index is the player index.
-  std::vector<double> player_scores_(number_of_players(board_layout), 0.0);
+  std::map<uint8_t, double> player_scores_;
 
   /// \brief This contains all the tiles on the board. Correctly ordered after initialization.
   std::vector<Tile> tiles_;
@@ -55,6 +46,18 @@ protected:
   std::vector<std::string> equidistant_system_ids_;
 
   std::vector<std::string> slice_system_ids_;
+
+  void run(const BoardAggression board_aggression, const uint64_t number_of_iterations, const SelectedSystemIds& selected_system_ids) noexcept {
+    initialize_tiles();
+    std::sort(tiles_.begin(), tiles_.end());
+    initialize_player_pathways_to_mecatol_rex();
+    initialize_player_forward_positions();
+    initialize_player_lateral_starboard_positions();
+    initialize_player_lateral_port_positions();
+    initialize_system_ids(board_aggression, selected_system_ids);
+    iterate(number_of_iterations);
+    finalize();
+  }
 
   virtual void initialize_tiles() noexcept = 0;
 
@@ -78,7 +81,6 @@ protected:
       system_ids_and_scores.push_back({id, Systems.find({id})->score()});
     }
     std::sort(system_ids_and_scores.begin(), system_ids_and_scores.end(), SystemIdAndScore::sort_descending());
-    uint8_t shift{static_cast<uint8_t>(selected_system_ids.size() / number_of_equidistant_systems)};
     uint8_t start_index{0};
     switch (board_aggression) {
       case BoardAggression::VeryLow:
@@ -107,7 +109,7 @@ protected:
   }
 
   void iterate(const uint64_t number_of_iterations) noexcept {
-    std::vector<double> best_player_scores;
+    std::map<uint8_t, double> best_player_scores;
     std::vector<Tile> best_tiles;
     double best_score_imbalance{std::numeric_limits<double>::max()};
     for (uint64_t counter = 0; counter < number_of_iterations; ++counter) {
@@ -119,6 +121,11 @@ protected:
         best_score_imbalance = score_imbalance_;
         best_player_scores = player_scores_;
         best_tiles = tiles_;
+        message("Iteration " + std::to_string(counter + 1) + ": Player score imbalance: " + score_to_string(score_imbalance()));
+        if (score_imbalance_ <= ScoreImbalanceTolerance) {
+          message("Generated an optimal game board after " + std::to_string(counter + 1) + " iterations.");
+          break;
+        }
       }
     }
     player_scores_ = best_player_scores;
@@ -126,9 +133,9 @@ protected:
   }
 
   void finalize() const noexcept {
-    message("The player scores are: " + print_player_scores());
-    message("The score imbalance is: " + score_to_string(score_imbalance()));
-    message("The system IDs are: " + print_system_ids());
+    message("Player scores: " + print_player_scores());
+    message("Player score imbalance: " + score_to_string(score_imbalance()));
+    message("System IDs: " + print_system_ids());
   }
 
   void shuffle_system_ids() noexcept {
@@ -155,11 +162,12 @@ protected:
     add_system_scores();
     add_pathway_to_mecatol_rex_scores();
     add_forward_space_dock_scores();
-    add_lateral_system_scores();
+    add_lateral_starboard_system_scores();
+    add_lateral_port_system_scores();
   }
 
   void reset_scores() noexcept {
-    for (std::size_t i = 0; i < player_scores_.size(); ++i) {
+    for (std::size_t i = 1; i <= player_scores_.size(); ++i) {
       player_scores_[i] = 0.0;
     }
   }
@@ -167,8 +175,8 @@ protected:
   /// \brief If a system is in a player's slice, that player gains its score. If a system is equidistant, each relevant player gets an equal fraction of its score.
   void add_system_scores() noexcept {
     for (const Tile& tile : tiles_) {
-      const double score{Systems.find({tile.system_id()})->score() / tile.nearest_player_indices().size()};
-      for (const uint8_t player_index : tile.nearest_player_indices()) {
+      const double score{Systems.find({tile.system_id()})->score() / tile.nearest_players().size()};
+      for (const uint8_t player_index : tile.nearest_players()) {
         player_scores_[player_index] += score;
       }
     }
@@ -211,16 +219,26 @@ protected:
   }
 
   double score_imbalance() const noexcept {
-    return *std::max_element(player_scores_.cbegin(), player_scores_.cend()) - *std::min_element(player_scores_.cbegin(), player_scores_.cend());
+    double maximum_score{std::numeric_limits<double>::lowest()};
+    double minimum_score{std::numeric_limits<double>::max()};
+    for (const std::pair<uint8_t, double> player_score : player_scores_) {
+      if (player_score.second > maximum_score) {
+        maximum_score = player_score.second;
+      }
+      if (player_score.second < minimum_score) {
+        minimum_score = player_score.second;
+      }
+    }
+    return maximum_score - minimum_score;
   }
 
   std::string print_player_scores() const noexcept {
     std::string text;
-    for (const double player_score : player_scores_) {
+    for (const std::pair<uint8_t, double> player_score : player_scores_) {
       if (!text.empty()) {
         text += " ";
       }
-      text += score_to_string(player_score);
+      text += score_to_string(player_score.second);
     }
     return text;
   }
