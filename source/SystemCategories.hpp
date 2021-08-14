@@ -10,7 +10,8 @@ enum class SystemCategory : uint8_t {
   Home,
   MecatolRex,
   WormholeNexus,
-  CreussGate
+  CreussGate,
+  Hyperlane
 };
 
 template <> const std::unordered_map<SystemCategory, std::string> labels<SystemCategory>{
@@ -19,7 +20,8 @@ template <> const std::unordered_map<SystemCategory, std::string> labels<SystemC
   {SystemCategory::Home, "Home System"},
   {SystemCategory::MecatolRex, "Mecatol Rex System"},
   {SystemCategory::WormholeNexus, "Wormhole Nexus System"},
-  {SystemCategory::CreussGate, "Creuss Gate System"}
+  {SystemCategory::CreussGate, "Creuss Gate System"},
+  {SystemCategory::Hyperlane, "Hyperlane Tile"}
 };
 
 template <> const std::unordered_map<std::string, SystemCategory> spellings<SystemCategory>{
@@ -34,7 +36,9 @@ template <> const std::unordered_map<std::string, SystemCategory> spellings<Syst
   {"wormholenexus", SystemCategory::WormholeNexus},
   {"wormholenexussystem", SystemCategory::WormholeNexus},
   {"creussgate", SystemCategory::CreussGate},
-  {"creussgatesystem", SystemCategory::CreussGate}
+  {"creussgatesystem", SystemCategory::CreussGate},
+  {"hyperlane", SystemCategory::Hyperlane},
+  {"hyperlanetile", SystemCategory::Hyperlane},
 };
 
 } // namespace ti4cartographer

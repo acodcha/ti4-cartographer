@@ -42,10 +42,6 @@ public:
     message_start_information();
   }
 
-  uint8_t number_of_players() const noexcept {
-    return number_of_players_;
-  }
-
   GameVersion game_version() const noexcept {
     return game_version_;
   }
@@ -64,10 +60,12 @@ protected:
 
   std::vector<std::string> arguments_;
 
+  /// \brief This is only needed while parsing the arguments.
   uint8_t number_of_players_{6};
 
   GameVersion game_version_{GameVersion::ProphecyOfKingsExpansion};
 
+  /// \brief This is only needed while parsing the arguments.
   std::string layout_;
 
   BoardLayout board_layout_{BoardLayout::Players6};

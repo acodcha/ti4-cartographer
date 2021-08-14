@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Instructions.hpp"
 #include "Systems.hpp"
 
 namespace ti4cartographer {
-
 
 class SelectedSystems {
 
@@ -11,31 +11,31 @@ public:
 
   SelectedSystems() noexcept {}
 
-  SelectedSystems(const GameVersion game_version, const uint8_t number_of_planetary_systems, const uint8_t number_of_anomaly_wormhole_empty_systems) noexcept {
-    initialize_planetary_systems(game_version, number_of_planetary_systems);
-    initialize_wormhole_anomaly_empty_systems(game_version, number_of_anomaly_wormhole_empty_systems);
+  SelectedSystems(const Instructions& instructions) noexcept {
+    initialize_planetary_systems(instructions);
+    initialize_wormhole_anomaly_empty_systems(instructions);
     std::shuffle(ids_.begin(), ids_.end(), RandomEngine);
   }
 
-  const std::vector<uint8_t>& ids() const noexcept {
+  const std::vector<std::string>& ids() const noexcept {
     return ids_;
   }
 
   std::string print() const noexcept {
     std::string text{"System IDs:"};
-    for (const uint8_t id : ids_) {
-      text += " " + std::to_string(id);
+    for (const std::string id : ids_) {
+      text += " " + id;
     }
     return text;
   }
 
 protected:
 
-  std::vector<uint8_t> ids_;
+  std::vector<std::string> ids_;
 
-  void initialize_planetary_systems(const GameVersion game_version, const uint8_t number_of_planetary_systems) noexcept {
-    std::vector<uint8_t> all;
-    switch (game_version) {
+  void initialize_planetary_systems(const Instructions& instructions) noexcept {
+    std::vector<std::string> all;
+    switch (instructions.game_version()) {
       case GameVersion::BaseGame:
         for (const System& system : Systems) {
           if (system.game_version() == GameVersion::BaseGame && system.category() == SystemCategory::Planetary) {
@@ -51,6 +51,7 @@ protected:
         }
         break;
     }
+    const uint8_t number_of_planetary_systems{static_cast<uint8_t>(number_of_planetary_systems_per_player(instructions.board_layout()) * number_of_players(instructions.board_layout()))};
     if (all.size() < number_of_planetary_systems) {
       error("The requested number of planetary systems for the game board exceeds the actual number of planetary systems that exist in the game.");
     }
@@ -60,9 +61,9 @@ protected:
     }
   }
 
-  void initialize_wormhole_anomaly_empty_systems(const GameVersion game_version, const uint8_t number_of_anomaly_wormhole_empty_systems) noexcept {
-    std::vector<uint8_t> all;
-    switch (game_version) {
+  void initialize_wormhole_anomaly_empty_systems(const Instructions& instructions) noexcept {
+    std::vector<std::string> all;
+    switch (instructions.game_version()) {
       case GameVersion::BaseGame:
         for (const System& system : Systems) {
           if (system.game_version() == GameVersion::BaseGame && system.category() == SystemCategory::AnomalyWormholeEmpty) {
@@ -78,6 +79,7 @@ protected:
         }
         break;
     }
+    const uint8_t number_of_anomaly_wormhole_empty_systems{static_cast<uint8_t>(number_of_anomaly_wormhole_empty_systems_per_player(instructions.board_layout()) * number_of_players(instructions.board_layout()))};
     if (all.size() < number_of_anomaly_wormhole_empty_systems) {
       error("The requested number of anomaly/wormhole/empty systems for the game board exceeds the actual number of anomaly/wormhole/empty systems that exist in the game.");
     }
