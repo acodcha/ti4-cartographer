@@ -100,7 +100,7 @@ ti4cartographer --players <number> [--version <type>] [--layout <type>] [--aggre
 ti4cartographer --players 2
 ```
 
-![2 Players](images/2_players.png)
+![2 Players](images/layouts/2_players.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -111,7 +111,7 @@ ti4cartographer --players 2
 ti4cartographer --players 3
 ```
 
-![3 Players](images/3_players.png)
+![3 Players](images/layouts/3_players.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -122,7 +122,7 @@ ti4cartographer --players 3
 ti4cartographer --players 4 --layout regular
 ```
 
-![4 Players Regular](images/4_players_regular.png)
+![4 Players Regular](images/layouts/4_players_regular.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -133,7 +133,7 @@ ti4cartographer --players 4 --layout regular
 ti4cartographer --players 4 --layout large
 ```
 
-![4 Players Large](images/4_players_large.png)
+![4 Players Large](images/layouts/4_players_large.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -144,7 +144,7 @@ ti4cartographer --players 4 --layout large
 ti4cartographer --players 5 --layout regular
 ```
 
-![5 Players Regular](images/5_players_regular.png)
+![5 Players Regular](images/layouts/5_players_regular.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -155,7 +155,7 @@ ti4cartographer --players 5 --layout regular
 ti4cartographer --players 5 --layout small
 ```
 
-![5 Players Small](images/5_players_small.png)
+![5 Players Small](images/layouts/5_players_small.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -166,7 +166,7 @@ ti4cartographer --players 5 --layout small
 ti4cartographer --players 5 --layout large
 ```
 
-![5 Players Large](images/5_players_large.png)
+![5 Players Large](images/layouts/5_players_large.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -177,7 +177,7 @@ ti4cartographer --players 5 --layout large
 ti4cartographer --players 6
 ```
 
-![6 Players](images/6_players.png)
+![6 Players](images/layouts/6_players.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -188,7 +188,7 @@ ti4cartographer --players 6
 ti4cartographer --players 7 --layout regular
 ```
 
-![7 Players Regular](images/7_players_regular.png)
+![7 Players Regular](images/layouts/7_players_regular.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -199,7 +199,7 @@ ti4cartographer --players 7 --layout regular
 ti4cartographer --players 7 --layout large
 ```
 
-![7 Players Large](images/7_players_large.png)
+![7 Players Large](images/layouts/7_players_large.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -210,7 +210,7 @@ ti4cartographer --players 7 --layout large
 ti4cartographer --players 8 --layout regular
 ```
 
-![8 Players Regular](images/8_players_regular.png)
+![8 Players Regular](images/layouts/8_players_regular.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -221,7 +221,7 @@ ti4cartographer --players 8 --layout regular
 ti4cartographer --players 8 --layout large
 ```
 
-![8 Players Large](images/8_players_large.png)
+![8 Players Large](images/layouts/8_players_large.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
