@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class TechnologyType : uint8_t {
   Propulsion,
@@ -36,4 +36,4 @@ template <> const std::unordered_map<std::string, TechnologyType> spellings<Tech
   {"red", TechnologyType::Warfare}
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

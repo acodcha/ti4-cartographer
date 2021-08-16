@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class BoardAggression : uint8_t {
   VeryLow,
@@ -28,4 +28,4 @@ template <> const std::unordered_map<std::string, BoardAggression> spellings<Boa
   {"veryhigh", BoardAggression::VeryHigh}
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

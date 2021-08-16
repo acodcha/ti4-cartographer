@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class Anomaly : uint8_t {
   AsteroidField,
@@ -25,4 +25,4 @@ template <> const std::unordered_map<std::string, Anomaly> spellings<Anomaly>{
   {"supernova", Anomaly::Supernova}
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

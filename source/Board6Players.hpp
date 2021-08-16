@@ -2,7 +2,7 @@
 
 #include "Board.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 class Board6Players : public Board {
 
@@ -90,4 +90,4 @@ protected:
 
 }; // class Board6Players
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

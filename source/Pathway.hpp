@@ -2,7 +2,7 @@
 
 #include "Position.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 /// \brief Sequence of tile positions that form a path from a player's home system to Mecatol Rex.
 class Pathway {
@@ -43,4 +43,4 @@ protected:
 
 }; // class Path
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

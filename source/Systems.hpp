@@ -2,7 +2,7 @@
 
 #include "System.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 const std::unordered_set<System> Systems{
   { "1", GameVersion::BaseGame, SystemCategory::Home,
@@ -358,4 +358,4 @@ const std::unordered_set<System> Systems{
   }
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

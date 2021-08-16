@@ -4,7 +4,7 @@
 #include "BoardLayouts.hpp"
 #include "GameVersions.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 /// \brief Namespace listing the program's command-line argument keywords.
 namespace Arguments {
@@ -241,4 +241,4 @@ protected:
 
 }; // class Instructions
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

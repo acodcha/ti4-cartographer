@@ -5,7 +5,7 @@
 #include "SelectedSystemIds.hpp"
 #include "Tile.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 /// \brief Abstract template base class for the game board.
 class Board {
@@ -256,4 +256,4 @@ protected:
 
 }; // class Board
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class SystemPlacementType : uint8_t {
   Equidistant,
@@ -28,4 +28,4 @@ template <> const std::unordered_map<std::string, SystemPlacementType> spellings
   {"lateralcounterclockwise", SystemPlacementType::LateralCounterClockwise}
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

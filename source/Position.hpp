@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 /// \brief Position of a tile on the game board.
 class Position {
@@ -97,12 +97,12 @@ protected:
 
 }; // class Position
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer
 
 namespace std {
 
-  template <> struct hash<ti4cartographer::Position> {
-    size_t operator()(const ti4cartographer::Position& position) const {
+  template <> struct hash<TI4Cartographer::Position> {
+    size_t operator()(const TI4Cartographer::Position& position) const {
       return hash<uint8_t>()(position.layer()) ^ hash<uint8_t>()(position.azimuth());
     }
   };

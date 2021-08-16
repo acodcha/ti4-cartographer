@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class SystemCategory : uint8_t {
   Planetary,
@@ -41,4 +41,4 @@ template <> const std::unordered_map<std::string, SystemCategory> spellings<Syst
   {"hyperlanetile", SystemCategory::Hyperlane},
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

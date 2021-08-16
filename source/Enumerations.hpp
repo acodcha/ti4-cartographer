@@ -2,7 +2,7 @@
 
 #include "String.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 template <typename Enumeration> const std::unordered_map<Enumeration, std::string> labels;
 
@@ -55,4 +55,4 @@ template <typename Enumeration> std::optional<Enumeration> type(const std::strin
   }
 }
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

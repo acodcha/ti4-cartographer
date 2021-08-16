@@ -1,6 +1,6 @@
 #include "Systems.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 void print_atlas() noexcept {
   std::vector<SystemIdAndScore> system_ids_and_scores;
@@ -23,9 +23,9 @@ void print_atlas() noexcept {
   message(Separator);
 }
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer
 
 int main(int argc, char *argv[]) {
-  ti4cartographer::print_atlas();
+  TI4Cartographer::print_atlas();
   return EXIT_SUCCESS;
 }

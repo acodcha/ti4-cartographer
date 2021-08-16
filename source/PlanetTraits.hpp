@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class PlanetTrait : uint8_t {
   Cultural,
@@ -28,4 +28,4 @@ template <> const std::unordered_map<std::string, PlanetTrait> spellings<PlanetT
   {"industrial", PlanetTrait::Industrial}
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

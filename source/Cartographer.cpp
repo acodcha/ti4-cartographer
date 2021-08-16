@@ -2,7 +2,7 @@
 #include "Instructions.hpp"
 #include "SelectedSystemIds.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 void generate_board(const Instructions& instructions, const SelectedSystemIds& selected_system_ids) {
   switch (instructions.board_layout()) {
@@ -47,11 +47,11 @@ void generate_board(const Instructions& instructions, const SelectedSystemIds& s
   }
 }
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer
 
 int main(int argc, char *argv[]) {
-  const ti4cartographer::Instructions instructions{argc, argv};
-  const ti4cartographer::SelectedSystemIds selected_system_ids{instructions.game_version(), instructions.board_layout()};
-  ti4cartographer::generate_board(instructions, selected_system_ids);
+  const TI4Cartographer::Instructions instructions{argc, argv};
+  const TI4Cartographer::SelectedSystemIds selected_system_ids{instructions.game_version(), instructions.board_layout()};
+  TI4Cartographer::generate_board(instructions, selected_system_ids);
   return EXIT_SUCCESS;
 }

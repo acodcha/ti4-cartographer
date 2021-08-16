@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 /// \brief Simple pair of a system ID and score.
 class SystemIdAndScore {
@@ -41,4 +41,4 @@ protected:
 
 }; // class SystemIdAndScore
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

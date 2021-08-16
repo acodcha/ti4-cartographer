@@ -2,7 +2,7 @@
 
 #include "Enumerations.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 const std::string CompilationDateAndTime{std::string{__DATE__} + ", " + std::string{__TIME__}};
 
@@ -31,4 +31,4 @@ constexpr const uint64_t DefaultNumberOfIterations{50000};
 
 constexpr const double ScoreImbalanceTolerance{4.0};
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

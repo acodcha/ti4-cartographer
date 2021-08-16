@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class Wormhole : uint8_t {
   Alpha,
@@ -29,4 +29,4 @@ template <> const std::unordered_map<std::string, Wormhole> spellings<Wormhole>{
   {"deltawormhole", Wormhole::Delta}
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

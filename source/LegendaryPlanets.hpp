@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class LegendaryPlanet : uint8_t {
   HopesEnd,
@@ -25,4 +25,4 @@ template <> const std::unordered_map<std::string, LegendaryPlanet> spellings<Leg
   {"primor", LegendaryPlanet::Primor}
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

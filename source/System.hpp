@@ -7,7 +7,7 @@
 #include "SystemIdAndScore.hpp"
 #include "Wormholes.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 class System {
 
@@ -264,12 +264,12 @@ protected:
 
 }; // class System
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer
 
 namespace std {
 
-  template <> struct hash<ti4cartographer::System> {
-    size_t operator()(const ti4cartographer::System& system) const {
+  template <> struct hash<TI4Cartographer::System> {
+    size_t operator()(const TI4Cartographer::System& system) const {
       return hash<string>()(system.id());
     }
   };

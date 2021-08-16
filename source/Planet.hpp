@@ -4,7 +4,7 @@
 #include "PlanetTraits.hpp"
 #include "TechnologyTypes.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 class Planet {
 
@@ -185,12 +185,12 @@ protected:
 
 }; // class Planet
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer
 
 namespace std {
 
-  template <> struct hash<ti4cartographer::Planet> {
-    size_t operator()(const ti4cartographer::Planet& planet) const {
+  template <> struct hash<TI4Cartographer::Planet> {
+    size_t operator()(const TI4Cartographer::Planet& planet) const {
       return hash<std::string>()(planet.name());
     }
   };

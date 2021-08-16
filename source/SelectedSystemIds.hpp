@@ -3,7 +3,7 @@
 #include "BoardLayouts.hpp"
 #include "Systems.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 /// \brief Group of randomly-selected system IDs for the game board.
 class SelectedSystemIds {
@@ -86,4 +86,4 @@ protected:
 
 }; // class SelectedSystemIds
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

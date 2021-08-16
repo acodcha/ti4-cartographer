@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class GameVersion : uint8_t {
   BaseGame,
@@ -23,4 +23,4 @@ template <> const std::unordered_map<std::string, GameVersion> spellings<GameVer
   {"pok", GameVersion::ProphecyOfKingsExpansion}
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

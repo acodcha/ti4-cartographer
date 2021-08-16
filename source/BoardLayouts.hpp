@@ -2,7 +2,7 @@
 
 #include "SystemCategories.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class BoardLayout : uint8_t {
   Players2,
@@ -144,4 +144,4 @@ template <SystemCategory system_category> uint8_t number_of_systems_per_player(c
   return 0;
 }
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer

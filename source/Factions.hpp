@@ -2,7 +2,7 @@
 
 #include "Base.hpp"
 
-namespace ti4cartographer {
+namespace TI4Cartographer {
 
 enum class Faction : uint8_t {
   FederationOfSol,
@@ -139,4 +139,4 @@ const std::unordered_map<uint8_t, Faction> home_system_ids_to_factions{
   {58, Faction::ArgentFlight}
 };
 
-} // namespace ti4cartographer
+} // namespace TI4Cartographer
