@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base.hpp"
+#include "SystemCategories.hpp"
 
 namespace ti4cartographer {
 
@@ -99,48 +99,47 @@ std::set<BoardLayout> board_layouts(const uint8_t number_of_players) {
   return results;
 }
 
-std::unordered_map<BoardLayout, uint8_t> board_layouts_to_number_of_planetary_systems_per_player{
-  {BoardLayout::Players2, 3},
-  {BoardLayout::Players3, 3},
-  {BoardLayout::Players4Regular, 3},
-  {BoardLayout::Players4Large, 3},
-  {BoardLayout::Players5Regular, 3},
-  {BoardLayout::Players5Small, 3},
-  {BoardLayout::Players5Large, 3},
-  {BoardLayout::Players6, 3},
-  {BoardLayout::Players7Regular, 3},
-  {BoardLayout::Players7Large, 4},
-  {BoardLayout::Players8Regular, 3},
-  {BoardLayout::Players8Large, 4}
+std::unordered_map<SystemCategory, std::unordered_map<BoardLayout, uint8_t>> const system_categories_to_board_layouts_to_number_of_systems_per_player{
+  {SystemCategory::Planetary, {
+    {BoardLayout::Players2, 3},
+    {BoardLayout::Players3, 3},
+    {BoardLayout::Players4Regular, 3},
+    {BoardLayout::Players4Large, 3},
+    {BoardLayout::Players5Regular, 3},
+    {BoardLayout::Players5Small, 3},
+    {BoardLayout::Players5Large, 3},
+    {BoardLayout::Players6, 3},
+    {BoardLayout::Players7Regular, 3},
+    {BoardLayout::Players7Large, 4},
+    {BoardLayout::Players8Regular, 3},
+    {BoardLayout::Players8Large, 4}
+  }},
+  {SystemCategory::AnomalyWormholeEmpty, {
+    {BoardLayout::Players2, 2},
+    {BoardLayout::Players3, 2},
+    {BoardLayout::Players4Regular, 2},
+    {BoardLayout::Players4Large, 3},
+    {BoardLayout::Players5Regular, 2},
+    {BoardLayout::Players5Small, 2},
+    {BoardLayout::Players5Large, 3},
+    {BoardLayout::Players6, 2},
+    {BoardLayout::Players7Regular, 2},
+    {BoardLayout::Players7Large, 2},
+    {BoardLayout::Players8Regular, 2},
+    {BoardLayout::Players8Large, 2}
+  }}
 };
 
-uint8_t number_of_planetary_systems_per_player(const BoardLayout board_layout) noexcept {
-  const std::unordered_map<BoardLayout, uint8_t>::const_iterator found{board_layouts_to_number_of_planetary_systems_per_player.find(board_layout)};
-  if (found != board_layouts_to_number_of_planetary_systems_per_player.cend()) {
-    return found->second;
-  }
-  return 0;
-}
-
-std::unordered_map<BoardLayout, uint8_t> board_layouts_to_number_of_anomaly_wormhole_empty_systems_per_player{
-  {BoardLayout::Players2, 2},
-  {BoardLayout::Players3, 2},
-  {BoardLayout::Players4Regular, 2},
-  {BoardLayout::Players4Large, 3},
-  {BoardLayout::Players5Regular, 2},
-  {BoardLayout::Players5Small, 2},
-  {BoardLayout::Players5Large, 3},
-  {BoardLayout::Players6, 2},
-  {BoardLayout::Players7Regular, 2},
-  {BoardLayout::Players7Large, 2},
-  {BoardLayout::Players8Regular, 2},
-  {BoardLayout::Players8Large, 2}
-};
-
-uint8_t number_of_anomaly_wormhole_empty_systems_per_player(const BoardLayout board_layout) noexcept {
-  const std::unordered_map<BoardLayout, uint8_t>::const_iterator found{board_layouts_to_number_of_anomaly_wormhole_empty_systems_per_player.find(board_layout)};
-  if (found != board_layouts_to_number_of_anomaly_wormhole_empty_systems_per_player.cend()) {
-    return found->second;
+template <SystemCategory system_category> uint8_t number_of_systems_per_player(const BoardLayout board_layout) noexcept {
+  const std::unordered_map<SystemCategory, std::unordered_map<BoardLayout, uint8_t>>::const_iterator found_system_category{
+    system_categories_to_board_layouts_to_number_of_systems_per_player.find(system_category)
+  };
+  if (found_system_category != system_categories_to_board_layouts_to_number_of_systems_per_player.cend()) {
+    const std::unordered_map<BoardLayout, uint8_t>::const_iterator found_board_layout{found_system_category->second.find(board_layout)};
+    if (found_board_layout != found_system_category->second.cend()) {
+      return found_board_layout->second;
+    }
+    return 0;
   }
   return 0;
 }
