@@ -78,4 +78,12 @@ std::string score_to_string(const double value) noexcept {
   return stream.str();
 }
 
+/// \brief Print a score imbalance.
+std::string score_imbalance_to_string(const double value) noexcept {
+  std::ostringstream stream;
+  stream << std::fixed << std::setprecision(2);
+  stream << value;
+  return stream.str();
+}
+
 } // namespace TI4Cartographer

@@ -1,4 +1,4 @@
-#include "Board6Players.hpp"
+#include "BoardGenerator.hpp"
 #include "Instructions.hpp"
 #include "SelectedSystemIds.hpp"
 
@@ -29,7 +29,7 @@ void generate_board(const Instructions& instructions, const SelectedSystemIds& s
       break;
     case BoardLayout::Players6:
       {
-        const Board6Players board{instructions.board_layout(), instructions.board_aggression(), instructions.number_of_iterations(), selected_system_ids};
+        const BoardGenerator<BoardLayout::Players6> board{instructions.board_aggression(), instructions.number_of_iterations(), selected_system_ids};
       }
       break;
     case BoardLayout::Players7Regular:

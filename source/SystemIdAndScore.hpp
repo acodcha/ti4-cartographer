@@ -21,7 +21,7 @@ public:
     return score_;
   }
 
-  struct sort_descending {
+  struct sort_by_descending_score {
     bool operator()(const SystemIdAndScore& system_id_and_score_1, const SystemIdAndScore& system_id_and_score_2) const noexcept {
       if (system_id_and_score_1.score() < system_id_and_score_2.score()) {
         return false;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Anomalies.hpp"
+#include "Factions.hpp"
 #include "GameVersions.hpp"
 #include "Planet.hpp"
 #include "SystemCategories.hpp"
@@ -23,14 +24,16 @@ public:
     const SystemCategory category,
     const std::set<Planet, Planet::sort_by_name>& planets,
     const std::set<Anomaly> anomalies,
-    const std::set<Wormhole> wormholes
+    const std::set<Wormhole> wormholes,
+    const std::optional<Faction>& faction = {}
   ) noexcept :
     id_(id),
     game_version_(game_version),
     category_(category),
     planets_(planets),
     anomalies_(anomalies),
-    wormholes_(wormholes)
+    wormholes_(wormholes),
+    faction_(faction)
   {
     check_number_of_planets();
     initialize_score();
@@ -88,6 +91,10 @@ public:
 
   const std::set<Wormhole>& wormholes() const noexcept {
     return wormholes_;
+  }
+
+  const std::optional<Faction>& faction() const noexcept {
+    return faction_;
   }
 
   double score() const noexcept {
@@ -189,6 +196,9 @@ protected:
 
   std::set<Wormhole> wormholes_;
 
+  /// \brief If this system is a home system or the Creuss Gate system, this is its faction.
+  std::optional<Faction> faction_;
+
   double score_{0.0};
 
   void check_number_of_planets() const {
@@ -259,7 +269,7 @@ protected:
 
   /// \brief The maximum planet resource value is useful for building a space dock.
   double space_dock_score() const noexcept {
-    return 0.25 * highest_planet_resources();
+    return 0.5 * highest_planet_resources();
   }
 
 }; // class System

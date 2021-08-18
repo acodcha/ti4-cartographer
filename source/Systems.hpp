@@ -6,64 +6,64 @@ namespace TI4Cartographer {
 
 const std::unordered_set<System> Systems{
   { "1", GameVersion::BaseGame, SystemCategory::Home,
-    {{"Jord", 4, 2, {}, {}, {}}}, {}, {}
+    {{"Jord", 4, 2, {}, {}, {}}}, {}, {}, {Faction::FederationOfSol}
   },
   { "2", GameVersion::BaseGame, SystemCategory::Home,
-    {{"Moll Primus", 4, 1, {}, {}, {}}}, {}, {}
+    {{"Moll Primus", 4, 1, {}, {}, {}}}, {}, {}, {Faction::MentakCoalition}
   },
   { "3", GameVersion::BaseGame, SystemCategory::Home,
-    {{"Darien", 4, 4, {}, {}, {}}}, {}, {}
+    {{"Darien", 4, 4, {}, {}, {}}}, {}, {}, {Faction::YinBrotherhood}
   },
   { "4", GameVersion::BaseGame, SystemCategory::Home,
-    {{"Muaat", 4, 1, {}, {}, {}}}, {}, {}
+    {{"Muaat", 4, 1, {}, {}, {}}}, {}, {}, {Faction::EmbersOfMuaat}
   },
   { "5", GameVersion::BaseGame, SystemCategory::Home,
-    {{"Nestphar", 3, 2, {}, {}, {}}}, {}, {}
+    {{"Nestphar", 3, 2, {}, {}, {}}}, {}, {}, {Faction::Arborec}
   },
   { "6", GameVersion::BaseGame, SystemCategory::Home,
-    {{"[0.0.0]", 5, 0, {}, {}, {}}}, {}, {}
+    {{"[0.0.0]", 5, 0, {}, {}, {}}}, {}, {}, {Faction::L1z1xMindnet}
   },
   { "7", GameVersion::BaseGame, SystemCategory::Home,
-    {{"Winnu", 3, 4, {}, {}, {}}}, {}, {}
+    {{"Winnu", 3, 4, {}, {}, {}}}, {}, {}, {Faction::Winnu}
   },
   { "8", GameVersion::BaseGame, SystemCategory::Home,
-    {{"Mordai II", 4, 0, {}, {}, {}}}, {}, {}
+    {{"Mordai II", 4, 0, {}, {}, {}}}, {}, {}, {Faction::NekroVirus}
   },
   { "9", GameVersion::BaseGame, SystemCategory::Home,
     { {"Druaa", 3, 1, {}, {}, {}},
-      {"Maaluuk", 0, 2, {}, {}, {}}}, {}, {}
+      {"Maaluuk", 0, 2, {}, {}, {}}}, {}, {}, {Faction::NaaluCollective}
   },
   { "10", GameVersion::BaseGame, SystemCategory::Home,
     { {"Arc Prime", 4, 0, {}, {}, {}},
-      {"Wren Terra", 2, 1, {}, {}, {}}}, {}, {}
+      {"Wren Terra", 2, 1, {}, {}, {}}}, {}, {}, {Faction::BaronyOfLetnev}
   },
   { "11", GameVersion::BaseGame, SystemCategory::Home,
     { {"Lisis II", 1, 0, {}, {}, {}},
-      {"Ragh", 2, 1, {}, {}, {}}}, {}, {}
+      {"Ragh", 2, 1, {}, {}, {}}}, {}, {}, {Faction::ClanOfSaar}
   },
   { "12", GameVersion::BaseGame, SystemCategory::Home,
     { {"Jol", 1, 2, {}, {}, {}},
-      {"Nar", 2, 3, {}, {}, {}}}, {}, {}
+      {"Nar", 2, 3, {}, {}, {}}}, {}, {}, {Faction::UniversitiesOfJolNar}
   },
   { "13", GameVersion::BaseGame, SystemCategory::Home,
     { {"Quinarra", 3, 1, {}, {}, {}},
-      {"Tren'lak", 1, 0, {}, {}, {}}}, {}, {}
+      {"Tren'lak", 1, 0, {}, {}, {}}}, {}, {}, {Faction::SardakkNorr}
   },
   { "14", GameVersion::BaseGame, SystemCategory::Home,
     { {"Archon Ren", 2, 3, {}, {}, {}},
-      {"Archon Tau", 1, 1, {}, {}, {}}}, {}, {}
+      {"Archon Tau", 1, 1, {}, {}, {}}}, {}, {}, {Faction::XxchaKingdom}
   },
   { "15", GameVersion::BaseGame, SystemCategory::Home,
     { {"Retillion", 2, 3, {}, {}, {}},
-      {"Shalloq", 1, 2, {}, {}, {}}}, {}, {}
+      {"Shalloq", 1, 2, {}, {}, {}}}, {}, {}, {Faction::YssarilTribes}
   },
   { "16", GameVersion::BaseGame, SystemCategory::Home,
     { {"Arretze", 2, 0, {}, {}, {}},
       {"Hercant", 1, 1, {}, {}, {}},
-      {"Kamdorn", 0, 1, {}, {}, {}}}, {}, {}
+      {"Kamdorn", 0, 1, {}, {}, {}}}, {}, {}, {Faction::EmiratesOfHacan}
   },
   { "17", GameVersion::BaseGame, SystemCategory::CreussGate,
-    {}, {}, {Wormhole::Delta}
+    {}, {}, {Wormhole::Delta}, {Faction::GhostsOfCreuss}
   },
   { "18", GameVersion::BaseGame, SystemCategory::MecatolRex,
     {{"Mecatol Rex", 1, 6, {}, {}, {}}}, {}, {}
@@ -191,31 +191,31 @@ const std::unordered_set<System> Systems{
     {}, {}, {}
   },
   { "51", GameVersion::BaseGame, SystemCategory::Home,
-    {{"Creuss", 4, 2, {}, {}, {}}}, {}, {Wormhole::Delta}
+    {{"Creuss", 4, 2, {}, {}, {}}}, {}, {Wormhole::Delta}, {Faction::GhostsOfCreuss}
   },
   { "52", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
-    {{"Ixth", 3, 5, {}, {}, {}}}, {}, {}
+    {{"Ixth", 3, 5, {}, {}, {}}}, {}, {}, {Faction::MahactGeneSorcerers}
   },
   { "53", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
-    {{"Arcturus", 4, 4, {}, {}, {}}}, {}, {}
+    {{"Arcturus", 4, 4, {}, {}, {}}}, {}, {}, {Faction::Nomad}
   },
   { "54", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
-    {{"Acheron", 4, 0, {}, {}, {}}}, {}, {}
+    {{"Acheron", 4, 0, {}, {}, {}}}, {}, {}, {Faction::VuilraithCabal}
   },
   { "55", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
-    {{"Elysium", 4, 1, {}, {}, {}}}, {}, {}
+    {{"Elysium", 4, 1, {}, {}, {}}}, {}, {}, {Faction::TitansOfUl}
   },
   { "56", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
-    {{"The Dark", 3, 4, {}, {}, {}}}, {}, {}
+    {{"The Dark", 3, 4, {}, {}, {}}}, {}, {}, {Faction::Empyrean}
   },
   { "57", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
     { {"Naazir", 2, 1, {}, {}, {}},
-      {"Rokha", 1, 2, {}, {}, {}}}, {}, {}
+      {"Rokha", 1, 2, {}, {}, {}}}, {}, {}, {Faction::NaazRokhaAlliance}
   },
   { "58", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Home,
     { {"Avar", 1, 1, {}, {}, {}},
       {"Valk", 2, 0, {}, {}, {}},
-      {"Ylir", 0, 2, {}, {}, {}}}, {}, {}
+      {"Ylir", 0, 2, {}, {}, {}}}, {}, {}, {Faction::ArgentFlight}
   },
   { "59", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Planetary,
     {{"Archon Vail", 1, 3, {TechnologyType::Propulsion}, {PlanetTrait::Hazardous}, {}}}, {}, {}
@@ -302,60 +302,114 @@ const std::unordered_set<System> Systems{
     {{"Mallice", 0, 3, {}, {PlanetTrait::Cultural}, {LegendaryPlanet::Mallice}}},
     {}, {Wormhole::Alpha, Wormhole::Beta, Wormhole::Gamma}
   },
-  { "83A", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "83B", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "84A", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "84B", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "85A", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "85B", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "86A", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "86B", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "87A", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "87B", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "88A", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "88B", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "89A", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "89B", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "90A", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "90B", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "91A", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  },
-  { "91B", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane,
-    {}, {}, {}
-  }
+  { "83A0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83A1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83A2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83A3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83A4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83A5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83B0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83B1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83B2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83B3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83B4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "83B5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84A0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84A1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84A2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84A3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84A4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84A5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84B0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84B1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84B2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84B3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84B4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "84B5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85A0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85A1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85A2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85A3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85A4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85A5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85B0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85B1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85B2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85B3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85B4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "85B5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86A0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86A1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86A2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86A3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86A4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86A5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86B0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86B1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86B2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86B3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86B4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "86B5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87A0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87A1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87A2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87A3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87A4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87A5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87B0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87B1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87B2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87B3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87B4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "87B5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88A0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88A1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88A2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88A3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88A4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88A5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88B0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88B1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88B2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88B3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88B4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "88B5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89A0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89A1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89A2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89A3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89A4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89A5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89B0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89B1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89B2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89B3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89B4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "89B5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90A0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90A1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90A2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90A3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90A4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90A5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90B0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90B1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90B2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90B3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90B4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "90B5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91A0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91A1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91A2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91A3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91A4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91A5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91B0", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91B1", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91B2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91B3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91B4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
+  { "91B5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}}
 };
 
 } // namespace TI4Cartographer

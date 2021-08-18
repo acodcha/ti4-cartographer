@@ -4,6 +4,13 @@
 
 namespace TI4Cartographer {
 
+uint8_t maximum_azimuth(const uint8_t layer) noexcept {
+  if (layer == 0) {
+    return 0;
+  }
+  return 6 * layer - 1;
+}
+
 /// \brief Position of a tile on the game board.
 class Position {
 
@@ -19,6 +26,10 @@ public:
 
   uint8_t azimuth() const noexcept {
     return azimuth_;
+  }
+
+  bool is_valid() const noexcept {
+    return azimuth_ <= maximum_azimuth(layer_);
   }
 
   bool operator==(const Position& other) const noexcept {

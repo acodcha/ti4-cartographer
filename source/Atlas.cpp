@@ -9,7 +9,7 @@ void print_atlas() noexcept {
       system_ids_and_scores.push_back({system.id(), system.score()});
     }
   }
-  std::sort(system_ids_and_scores.begin(), system_ids_and_scores.end(), SystemIdAndScore::sort_descending());
+  std::sort(system_ids_and_scores.begin(), system_ids_and_scores.end(), SystemIdAndScore::sort_by_descending_score());
   message(Separator);
   message("Twilight Imperium 4th Edition Atlas");
   message("Compiled on: " + CompilationDateAndTime);

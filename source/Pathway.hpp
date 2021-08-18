@@ -37,10 +37,48 @@ public:
    return cend();
   }
 
+  bool operator==(const Pathway& other) const noexcept {
+    data_ == other.data_;
+  }
+
+  bool operator!=(const Pathway& other) const noexcept {
+    data_ != other.data_;
+  }
+
+  bool operator<(const Pathway& other) const noexcept {
+    data_ < other.data_;
+  }
+
+  bool operator<=(const Pathway& other) const noexcept {
+    data_ <= other.data_;
+  }
+
+  bool operator>(const Pathway& other) const noexcept {
+    data_ > other.data_;
+  }
+
+  bool operator>=(const Pathway& other) const noexcept {
+    data_ >= other.data_;
+  }
+
 protected:
 
   std::vector<Position> data_;
 
-}; // class Path
+}; // class Pathway
 
 } // namespace TI4Cartographer
+
+namespace std {
+
+  template <> struct hash<TI4Cartographer::Pathway> {
+    size_t operator()(const TI4Cartographer::Pathway& pathway) const {
+      size_t value{7};
+      for (const TI4Cartographer::Position& position : pathway) {
+        value ^= hash<TI4Cartographer::Position>()(position);
+      }
+      return value;
+    }
+  };
+
+} // namespace std

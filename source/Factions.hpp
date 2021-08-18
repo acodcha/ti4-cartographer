@@ -112,6 +112,14 @@ const std::unordered_map<Faction, uint8_t> factions_to_home_system_ids{
   {Faction::ArgentFlight, 58}
 };
 
+uint8_t home_system_id(const Faction faction) noexcept {
+  const std::unordered_map<Faction, uint8_t>::const_iterator found{factions_to_home_system_ids.find(faction)};
+  if (found != factions_to_home_system_ids.cend()) {
+    return found->second;
+  }
+  return 0;
+}
+
 const std::unordered_map<uint8_t, Faction> home_system_ids_to_factions{
   {1, Faction::FederationOfSol},
   {2, Faction::MentakCoalition},
@@ -138,5 +146,14 @@ const std::unordered_map<uint8_t, Faction> home_system_ids_to_factions{
   {57, Faction::NaazRokhaAlliance},
   {58, Faction::ArgentFlight}
 };
+
+std::optional<Faction> home_system_id(const uint8_t home_system_id) noexcept {
+  const std::unordered_map<uint8_t, Faction>::const_iterator found{home_system_ids_to_factions.find(home_system_id)};
+  if (found != home_system_ids_to_factions.cend()) {
+    return found->second;
+  }
+  const std::optional<Faction> no_data;
+  return no_data;
+}
 
 } // namespace TI4Cartographer
