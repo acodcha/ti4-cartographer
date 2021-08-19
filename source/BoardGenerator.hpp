@@ -186,27 +186,29 @@ protected:
       double best_pathway_score{0.0};
       for (const Pathway& pathway : player.second) {
         double pathway_score{0.0};
+        std::size_t position_counter{0};
         for (const Position& position : pathway) {
+          ++position_counter;
           const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
           if (system->contains(Anomaly::Supernova)) {
-            pathway_score += -8.0;
+            pathway_score += -10.0;
           }
           if (system->contains(Anomaly::AsteroidField)) {
             pathway_score += -2.0;
           }
           if (system->contains(Anomaly::Nebula)) {
-            if (position.layer() == 1) {
+            if (position_counter == pathway.size()) {
               pathway_score += 0.0;
             } else {
-              pathway_score += -4.0;
+              pathway_score += -5.0;
             }
           }
           if (system->contains(Anomaly::GravityRift)) {
-            if (position.layer() == 1) {
-              pathway_score += -4.0;
+            if (position_counter == pathway.size()) {
+              pathway_score += -5.0;
             } else {
-              pathway_score += -8.0;
+              pathway_score += -10.0;
             }
           }
         }
@@ -218,32 +220,35 @@ protected:
     }
   }
 
-  /// \brief If a player does not have a good planet on which to build a forward space dock on his/her path to Mecatol Rex, the score is penalized.
+  /// \brief If a player does not have a good planet on which to build a forward space dock, the score is adjusted.
   void add_forward_space_dock_scores() noexcept {
-    for (const std::pair<uint8_t, std::set<Pathway>>& player : PlayerPathwaysToMecatolRex<board_layout>) {
-      double best_pathway_score{0.0};
-      for (const Pathway& pathway : player.second) {
-        double pathway_score{0.0};
-        for (const Position& position : pathway) {
-          const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
-          const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
-          if (tile->second.is_in_a_slice() && system->number_of_planets() > 0) {
-            double position_score{1.0 + 0.5 * system->highest_planet_resources()};
-            // For the 7 and 8 player large boards, the distance to Mecatol Rex is longer.
-            // In these cases, the forward-forward system is preferable to the forward system. Double its score.
-            if ((board_layout == BoardLayout::Players7Large || board_layout == BoardLayout::Players8Large) && position.layer() == 2) {
-              position_score *= 2.0;
-            }
-            if (position_score > pathway_score) {
-              pathway_score = position_score;
-            }
+    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerForwardSpaceDockPreferredPositions<board_layout>) {
+      double best_preferred_position_score{0.0};
+      for (const Position& position : player.second) {
+        const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
+        const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
+        if (system->number_of_planets() > 0) {
+          const double position_score{4.0 + 2.0 + system->highest_planet_resources()};
+          if (position_score > best_preferred_position_score) {
+            best_preferred_position_score = position_score;
           }
         }
-        if (pathway_score > best_pathway_score) {
-          best_pathway_score = pathway_score;
+      }
+      player_scores_[player.first] += best_preferred_position_score;
+    }
+    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerForwardSpaceDockAlternatePositions<board_layout>) {
+      double best_alternate_position_score{0.0};
+      for (const Position& position : player.second) {
+        const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
+        const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
+        if (system->number_of_planets() > 0) {
+          const double position_score{2.0 + system->highest_planet_resources()};
+          if (position_score > best_alternate_position_score) {
+            best_alternate_position_score = position_score;
+          }
         }
       }
-      player_scores_[player.first] += best_pathway_score;
+      player_scores_[player.first] += best_alternate_position_score;
     }
   }
 
@@ -285,6 +290,7 @@ protected:
     message("System IDs: " + print_system_ids());
   }
 
+  // TODO: Neighbors currently do not work with hyperlanes.
   bool contains_adjacent_anomalies_or_wormholes_within_inner_layers() const noexcept {
     std::unordered_set<Position> checked;
     for (std::map<Position, Tile>::const_iterator tile = tiles_.cbegin(); tile != tiles_.cend(); ++tile) {

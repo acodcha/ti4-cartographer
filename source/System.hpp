@@ -262,14 +262,18 @@ protected:
   /// \brief Wormholes are generally beneficial because they provide additional movement options and lead to the Wormhole Nexus.
   double wormholes_score() const noexcept {
     if (contains_one_or_more_wormholes()) {
-      return 1.0;
+      return 0.5;
     }
     return 0.0;
   }
 
   /// \brief The maximum planet resource value is useful for building a space dock.
   double space_dock_score() const noexcept {
-    return 0.5 * highest_planet_resources();
+    if (number_of_planets() > 0) {
+      return 0.5 * (2.0 + highest_planet_resources());
+    } else {
+      return 0.0;
+    }
   }
 
 }; // class System

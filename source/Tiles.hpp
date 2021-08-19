@@ -32,8 +32,9 @@ uint8_t number_of_equidistant_systems(const std::set<Tile>& tiles) noexcept {
 /// \brief Each player has one or more pathways to Mecatol Rex.
 template <BoardLayout board_layout> const std::map<uint8_t, std::set<Pathway>> PlayerPathwaysToMecatolRex;
 
-/// \brief Each player has one or more tile positions that are 1 ahead of his/her home system.
-template <BoardLayout board_layout> const std::map<uint8_t, std::set<Position>> PlayerForwardPositions;
+template <BoardLayout board_layout> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockPreferredPositions;
+
+template <BoardLayout board_layout> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockAlternatePositions;
 
 /// \brief Each player has one or more tile positions that are 1 lateral to starboard of his/her home system.
 template <BoardLayout board_layout> const std::map<uint8_t, std::set<Position>> PlayerLateralStarboardPositions;

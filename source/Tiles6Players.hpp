@@ -52,13 +52,22 @@ template <> const std::map<uint8_t, std::set<Pathway>> PlayerPathwaysToMecatolRe
   {6, {{Pathway{{Position{2, 2}, Position{1, 1}}}}}}
 };
 
-template <> const std::map<uint8_t, std::set<Position>> PlayerForwardPositions<BoardLayout::Players6>{
+template <> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockPreferredPositions<BoardLayout::Players6>{
   {1, {Position{2, 4}}},
   {2, {Position{2, 6}}},
   {3, {Position{2, 8}}},
   {4, {Position{2, 10}}},
   {5, {Position{2, 0}}},
   {6, {Position{2, 2}}}
+};
+
+template <> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockAlternatePositions<BoardLayout::Players6>{
+  {1, {Position{1, 2}}},
+  {2, {Position{1, 3}}},
+  {3, {Position{1, 4}}},
+  {4, {Position{1, 5}}},
+  {5, {Position{1, 0}}},
+  {6, {Position{1, 1}}}
 };
 
 template <> const std::map<uint8_t, std::set<Position>> PlayerLateralStarboardPositions<BoardLayout::Players6>{
