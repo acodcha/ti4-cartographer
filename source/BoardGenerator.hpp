@@ -11,12 +11,12 @@ template <BoardLayout board_layout> class BoardGenerator {
 
 public:
 
-  BoardGenerator(const BoardAggression board_aggression, const uint64_t number_of_iterations, const SelectedSystemIds& selected_system_ids) {
-    std::sort(tiles_.begin(), tiles_.end());
+  BoardGenerator(const BoardAggression board_aggression, const uint64_t maximum_number_of_iterations, const SelectedSystemIds& selected_system_ids) {
     initialize_player_scores();
     initialize_system_ids(board_aggression, selected_system_ids);
+    initialize_tiles();
     message_in_slice_and_equidistant_system_ids();
-    iterate(number_of_iterations);
+    iterate(maximum_number_of_iterations);
     messages_final();
   }
 
@@ -29,7 +29,9 @@ protected:
 
   std::vector<std::string> in_slice_system_ids_;
 
-  std::vector<Tile> tiles_{Tiles<board_layout>};
+  std::map<Position, Tile> tiles_;
+
+  uint8_t maximum_layer_{0};
 
   void initialize_player_scores() noexcept {
     const uint8_t number_of_players_{number_of_players(board_layout)};
@@ -39,7 +41,7 @@ protected:
   }
 
   void initialize_system_ids(const BoardAggression board_aggression, const SelectedSystemIds& selected_system_ids) noexcept {
-    const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(tiles_)};
+    const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(Tiles<board_layout>)};
     std::vector<SystemIdAndScore> system_ids_and_scores;
     for (const std::string& id : selected_system_ids) {
       system_ids_and_scores.push_back({id, Systems.find({id})->score()});
@@ -72,6 +74,15 @@ protected:
     }
   }
 
+  void initialize_tiles() noexcept {
+    for (const Tile& tile : Tiles<board_layout>) {
+      tiles_.insert({tile.position(), tile});
+      if (tile.position().layer() > maximum_layer_) {
+        maximum_layer_ = tile.position().layer();
+      }
+    }
+  }
+
   void message_in_slice_and_equidistant_system_ids() const noexcept {
     message("In-Slice System IDs: " + print_in_slice_system_ids());
     message("Equidistant System IDs: " + print_equidistant_system_ids());
@@ -91,29 +102,34 @@ protected:
     }
   }
 
-  void iterate(const uint64_t number_of_iterations) {
+  void iterate(const uint64_t maximum_number_of_iterations) {
     std::map<uint8_t, double> best_player_scores;
-    std::vector<Tile> best_tiles;
+    std::map<Position, Tile> best_tiles;
     double best_score_imbalance{std::numeric_limits<double>::max()};
-    for (uint64_t counter = 0; counter < number_of_iterations; ++counter) {
+    uint64_t number_of_iterations{0};
+    uint64_t number_of_valid_boards{0};
+    for (uint64_t counter = 0; counter < maximum_number_of_iterations; ++counter) {
+      ++number_of_iterations;
       shuffle_system_ids();
       assign_system_ids_to_tiles();
-      // TODO: Check if tiles are in a valid configuration (no adjacent anomalies and no adjacent wormholes of the same kind).
-      calculate_player_scores();
-      const double score_imbalance_{score_imbalance()};
-      if (score_imbalance_ < best_score_imbalance) {
-        best_score_imbalance = score_imbalance_;
-        best_player_scores = player_scores_;
-        best_tiles = tiles_;
-        message("Iteration " + std::to_string(counter + 1) + ": Player score imbalance: " + score_imbalance_to_string(score_imbalance_));
-        if (score_imbalance_ <= ScoreImbalanceTolerance) {
-          message("Generated an optimal game board after " + std::to_string(counter + 1) + " iterations.");
-          break;
+      if (!contains_adjacent_anomalies_or_wormholes_within_inner_layers()) {
+        ++number_of_valid_boards;
+        calculate_player_scores();
+        const double score_imbalance_{score_imbalance()};
+        if (score_imbalance_ < best_score_imbalance) {
+          best_score_imbalance = score_imbalance_;
+          best_player_scores = player_scores_;
+          best_tiles = tiles_;
+          message("Iteration " + std::to_string(number_of_iterations) + ": Player score imbalance: " + score_imbalance_to_string(score_imbalance_));
+          if (score_imbalance_ <= ScoreImbalanceTolerance) {
+            break;
+          }
         }
       }
     }
     player_scores_ = best_player_scores;
     tiles_ = best_tiles;
+    message("Found an optimal game board after " + std::to_string(number_of_iterations) + " iterations which generated " + std::to_string(number_of_valid_boards) + " valid game boards.");
   }
 
   void shuffle_system_ids() noexcept {
@@ -124,13 +140,13 @@ protected:
   void assign_system_ids_to_tiles() {
     uint8_t equidistant_system_ids_index{0};
     uint8_t in_slice_system_ids_index{0};
-    for (std::vector<Tile>::iterator tile = tiles_.begin(); tile != tiles_.end(); ++tile) {
-      if (tile->is_planetary_anomaly_wormhole_empty()) {
-        if (tile->is_equidistant()) {
-          tile->set_system_id(equidistant_system_ids_[equidistant_system_ids_index]);
+    for (std::map<Position, Tile>::iterator tile = tiles_.begin(); tile != tiles_.end(); ++tile) {
+      if (tile->second.is_planetary_anomaly_wormhole_empty()) {
+        if (tile->second.is_equidistant()) {
+          tile->second.set_system_id(equidistant_system_ids_[equidistant_system_ids_index]);
           ++equidistant_system_ids_index;
         } else {
-          tile->set_system_id(in_slice_system_ids_[in_slice_system_ids_index]);
+          tile->second.set_system_id(in_slice_system_ids_[in_slice_system_ids_index]);
           ++in_slice_system_ids_index;
         }
       }
@@ -154,10 +170,10 @@ protected:
 
   /// \brief If a system is in a player's slice, that player gains its score. If a system is equidistant, each relevant player gets an equal fraction of its score.
   void add_system_scores() noexcept {
-    for (const Tile& tile : tiles_) {
-      if (tile.is_planetary_anomaly_wormhole_empty()) {
-        const double score{Systems.find({tile.system_id()})->score() / tile.nearest_players().size()};
-        for (const uint8_t player_index : tile.nearest_players()) {
+    for (std::map<Position, Tile>::iterator tile = tiles_.begin(); tile != tiles_.end(); ++tile) {
+      if (tile->second.is_planetary_anomaly_wormhole_empty()) {
+        const double score{Systems.find({tile->second.system_id()})->score() / tile->second.nearest_players().size()};
+        for (const uint8_t player_index : tile->second.nearest_players()) {
           player_scores_[player_index] += score;
         }
       }
@@ -206,6 +222,46 @@ protected:
     message("System IDs: " + print_system_ids());
   }
 
+  bool contains_adjacent_anomalies_or_wormholes_within_inner_layers() const noexcept {
+    std::unordered_set<Position> checked;
+    for (std::map<Position, Tile>::const_iterator tile = tiles_.cbegin(); tile != tiles_.cend(); ++tile) {
+      if (tile->second.is_planetary_anomaly_wormhole_empty() && checked.find(tile->first) == checked.cend()) {
+        // This tile is of the relevant category and has not yet been checked.
+        checked.insert(tile->first);
+        const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
+        const bool contains_anomaly{system->contains_one_or_more_anomalies()};
+        const bool contains_alpha_wormhole{system->contains(Wormhole::Alpha)};
+        const bool contains_beta_wormhole{system->contains(Wormhole::Beta)};
+        if (tile->first.layer() < maximum_layer_ && (contains_anomaly || contains_alpha_wormhole || contains_beta_wormhole)) {
+          // This tile is not on the outermost layer and contains one or more anomalies or wormholes.
+          const std::set<Position> neighbors{tile->first.neighbors()};
+          for (const Position& position : neighbors) {
+            const std::map<Position, Tile>::const_iterator found_neighbor{tiles_.find(position)};
+            if (found_neighbor != tiles_.cend()) {
+              // This neighboring tile exists on the board.
+              if (found_neighbor->second.is_planetary_anomaly_wormhole_empty() && checked.find(found_neighbor->first) == checked.cend()) {
+                // This neighboring tile is of the relevant category and has not yet been checked.
+                const std::string neighbor_system_id{tiles_.find(position)->second.system_id()};
+                const std::unordered_set<System>::const_iterator neighbor_system{Systems.find({neighbor_system_id})};
+                const bool neighbor_contains_anomaly{neighbor_system->contains_one_or_more_anomalies()};
+                const bool neighbor_contains_alpha_wormhole{neighbor_system->contains(Wormhole::Alpha)};
+                const bool neighbor_contains_beta_wormhole{neighbor_system->contains(Wormhole::Beta)};
+                if (
+                  (contains_anomaly && neighbor_contains_anomaly)
+                  || (contains_alpha_wormhole && neighbor_contains_alpha_wormhole)
+                  || (contains_beta_wormhole && neighbor_contains_beta_wormhole)
+                ) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   double score_imbalance() const noexcept {
     double maximum_score{std::numeric_limits<double>::lowest()};
     double minimum_score{std::numeric_limits<double>::max()};
@@ -233,11 +289,11 @@ protected:
 
   std::string print_system_ids() const noexcept {
     std::string text;
-    for (const Tile& tile : tiles_) {
+    for (std::map<Position, Tile>::const_iterator tile = tiles_.cbegin(); tile != tiles_.cend(); ++tile) {
       if (!text.empty()) {
         text += " ";
       }
-      text += tile.system_id();
+      text += tile->second.system_id();
     }
     return text;
   }
@@ -263,8 +319,6 @@ protected:
     }
     return text;
   }
-
-
 
 }; // class BoardGenerator
 

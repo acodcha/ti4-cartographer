@@ -7,9 +7,9 @@
 namespace TI4Cartographer {
 
 /// \brief All the tiles on the board.
-template <BoardLayout board_layout> const std::vector<Tile> Tiles;
+template <BoardLayout board_layout> const std::set<Tile> Tiles;
 
-uint8_t number_of_in_slice_systems(const std::vector<Tile>& tiles) noexcept {
+uint8_t number_of_in_slice_systems(const std::set<Tile>& tiles) noexcept {
   uint8_t number{0};
   for (const Tile& tile : tiles) {
     if (tile.is_in_a_slice() && tile.is_planetary_anomaly_wormhole_empty()) {
@@ -19,7 +19,7 @@ uint8_t number_of_in_slice_systems(const std::vector<Tile>& tiles) noexcept {
   return number;
 }
 
-uint8_t number_of_equidistant_systems(const std::vector<Tile>& tiles) noexcept {
+uint8_t number_of_equidistant_systems(const std::set<Tile>& tiles) noexcept {
   uint8_t number{0};
   for (const Tile& tile : tiles) {
     if (tile.is_equidistant() && tile.is_planetary_anomaly_wormhole_empty()) {

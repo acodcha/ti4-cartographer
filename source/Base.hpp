@@ -27,7 +27,7 @@ std::random_device RandomDevice;
 
 std::default_random_engine RandomEngine(RandomDevice());
 
-constexpr const uint64_t DefaultNumberOfIterations{50000};
+constexpr const uint64_t DefaultMaximumNumberOfIterations{100000};
 
 constexpr const double ScoreImbalanceTolerance{4.0};
 

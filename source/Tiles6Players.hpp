@@ -4,7 +4,7 @@
 
 namespace TI4Cartographer {
 
-template <> std::vector<Tile> const Tiles<BoardLayout::Players6>{
+template <> std::set<Tile> const Tiles<BoardLayout::Players6>{
   {Position{1, 0}, {5}, {SystemCategory::Planetary, SystemCategory::AnomalyWormholeEmpty}},
   {Position{1, 1}, {6}, {SystemCategory::Planetary, SystemCategory::AnomalyWormholeEmpty}},
   {Position{1, 2}, {1}, {SystemCategory::Planetary, SystemCategory::AnomalyWormholeEmpty}},

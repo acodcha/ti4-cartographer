@@ -58,8 +58,8 @@ public:
     return board_aggression_;
   }
 
-  uint64_t number_of_iterations() const noexcept {
-    return number_of_iterations_;
+  uint64_t maximum_number_of_iterations() const noexcept {
+    return maximum_number_of_iterations_;
   }
 
 protected:
@@ -80,7 +80,7 @@ protected:
 
   BoardAggression board_aggression_{BoardAggression::Medium};
 
-  uint64_t number_of_iterations_{DefaultNumberOfIterations};
+  uint64_t maximum_number_of_iterations_{DefaultMaximumNumberOfIterations};
 
   void assign_arguments(int argc, char *argv[]) noexcept {
     if (argc > 1) {
@@ -112,7 +112,7 @@ protected:
       } else if (*argument == Arguments::BoardAggressionKey && argument + 1 < arguments_.cend()) {
         initialize_board_aggression(*(argument + 1));
       } else if (*argument == Arguments::NumberOfIterationsKey && argument + 1 < arguments_.cend()) {
-        initialize_number_of_iterations(*(argument + 1));
+        initialize_maximum_number_of_iterations(*(argument + 1));
       }
     }
   }
@@ -181,9 +181,9 @@ protected:
     }
   }
 
-  void initialize_number_of_iterations(const std::string number_of_iterations) {
-    number_of_iterations_ = static_cast<uint64_t>(std::stoull(number_of_iterations));
-    if (number_of_iterations_ == 0) {
+  void initialize_maximum_number_of_iterations(const std::string maximum_number_of_iterations) {
+    maximum_number_of_iterations_ = static_cast<uint64_t>(std::stoull(maximum_number_of_iterations));
+    if (maximum_number_of_iterations_ == 0) {
       message_usage_information_and_error("The number of iterations must be greater than zero.");
     }
   }
@@ -220,7 +220,7 @@ protected:
     message(space + space + "7 players: regular or large");
     message(space + space + "8 players: regular or large");
     message(space + pad_to_length(Arguments::BoardAggressionPattern, length) + space + "Optional. Choices are very-high, high, medium, low, or very-low. Specifies the degree of expected aggression resulting from the placement of systems on the board. By default, medium is used. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
-    message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultNumberOfIterations) + ". Specifies the number of board layout iterations.");
+    message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the number of board layout iterations.");
     message("");
   }
 
@@ -236,7 +236,7 @@ protected:
     message("The number of players and board layout is: " + label(board_layout_));
     message("The game version is: " + label(game_version_));
     message("The amount of aggression is: " + label(board_aggression_));
-    message("The number of iterations is: " + std::to_string(number_of_iterations_));
+    message("The number of iterations is: " + std::to_string(maximum_number_of_iterations_));
   }
 
 }; // class Instructions

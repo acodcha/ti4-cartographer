@@ -32,6 +32,78 @@ public:
     return azimuth_ <= maximum_azimuth(layer_);
   }
 
+  /// \brief Returns true if this position is at one of the six "corners" of this layer.
+  bool is_a_corner() const noexcept {
+    if (layer_ == 0) {
+      return true;
+    } else {
+      return azimuth_ % layer_ == 0;
+    }
+  }
+
+  /// \brief Set of positions that are neighbors with this position.
+  std::set<Position> neighbors() const noexcept {
+    std::set<Position> positions;
+    const uint8_t maximum_azimuth_{maximum_azimuth(layer_)};
+    const uint8_t number_of_corners{static_cast<uint8_t>(layer_ > 0 ? azimuth_ / layer_ : 0)};
+    const uint8_t azimuth_after_corner{static_cast<uint8_t>(layer_ > 0 ? azimuth_ % layer_ : 0)};
+    // Same layer.
+    if (layer_ > 0) {
+      // Same layer, previous azimuth.
+      if (azimuth_ == 0) {
+        positions.insert({layer_, maximum_azimuth_});
+      } else {
+        positions.insert({layer_, static_cast<uint8_t>(azimuth_ - 1)});
+      }
+      // Same layer, next azimuth.
+      if (azimuth_ == maximum_azimuth_) {
+        positions.insert({layer_, 0});
+      } else {
+        positions.insert({layer_, static_cast<uint8_t>(azimuth_ + 1)});
+      }
+    }
+    // Inner layer.
+    if (layer_ > 0) {
+      const uint8_t layer_minus_one{static_cast<uint8_t>(layer_ - 1)};
+      if (is_a_corner()) {
+        // There is only 1 inner layer neighbor.
+        positions.insert({layer_minus_one, static_cast<uint8_t>(azimuth_ / layer_ * layer_minus_one)});
+      } else {
+        // There are 2 inner layer neighbors.
+        const uint8_t inner_layer_azimuth_1{static_cast<uint8_t>(number_of_corners * layer_minus_one + azimuth_after_corner - 1)};
+        positions.insert({layer_minus_one, inner_layer_azimuth_1});
+        const uint8_t inner_layer_azimuth_2{static_cast<uint8_t>(number_of_corners * layer_minus_one + azimuth_after_corner)};
+        if (inner_layer_azimuth_2 > maximum_azimuth(layer_minus_one)) {
+          positions.insert({layer_minus_one, 0});
+        } else {
+          positions.insert({layer_minus_one, inner_layer_azimuth_2});
+        }
+      }
+    }
+    // Outer layer.
+    const uint8_t layer_plus_one{static_cast<uint8_t>(layer_ + 1)};
+    const uint8_t outer_layer_azimuth_to_corner{static_cast<uint8_t>(number_of_corners * layer_plus_one)};
+    if (is_a_corner()) {
+      // There are 3 outer layer neighbors.
+      positions.insert({layer_plus_one, outer_layer_azimuth_to_corner});
+      if (outer_layer_azimuth_to_corner > 0) {
+        positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner - 1)});
+      } else {
+        positions.insert({layer_plus_one, maximum_azimuth(layer_plus_one)});
+      }
+      if (outer_layer_azimuth_to_corner < maximum_azimuth(layer_plus_one)) {
+        positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner + 1)});
+      } else {
+        positions.insert({layer_plus_one, 0});
+      }
+    } else {
+      // There are 2 outer layer neighbors.
+      positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner + azimuth_after_corner)});
+      positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner + azimuth_after_corner + 1)});
+    }
+    return positions;
+  }
+
   bool operator==(const Position& other) const noexcept {
     return layer_ == other.layer_ && azimuth_ == other.azimuth_;
   }
