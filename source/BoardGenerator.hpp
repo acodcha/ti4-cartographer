@@ -173,8 +173,8 @@ protected:
     for (std::map<Position, Tile>::iterator tile = tiles_.begin(); tile != tiles_.end(); ++tile) {
       if (tile->second.is_planetary_anomaly_wormhole_empty()) {
         const double score{Systems.find({tile->second.system_id()})->score() / tile->second.nearest_players().size()};
-        for (const uint8_t player_index : tile->second.nearest_players()) {
-          player_scores_[player_index] += score;
+        for (const uint8_t player : tile->second.nearest_players()) {
+          player_scores_[player] += score;
         }
       }
     }
@@ -182,38 +182,101 @@ protected:
 
   /// \brief If a player does not have a clear pathway to Mecatol Rex, the score is penalized.
   void add_pathway_to_mecatol_rex_scores() noexcept {
-
-
-
-
-
+    for (const std::pair<uint8_t, std::set<Pathway>>& player : PlayerPathwaysToMecatolRex<board_layout>) {
+      double best_pathway_score{0.0};
+      for (const Pathway& pathway : player.second) {
+        double pathway_score{0.0};
+        for (const Position& position : pathway) {
+          const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
+          const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
+          if (system->contains(Anomaly::Supernova)) {
+            pathway_score += -8.0;
+          }
+          if (system->contains(Anomaly::AsteroidField)) {
+            pathway_score += -2.0;
+          }
+          if (system->contains(Anomaly::Nebula)) {
+            if (position.layer() == 1) {
+              pathway_score += 0.0;
+            } else {
+              pathway_score += -4.0;
+            }
+          }
+          if (system->contains(Anomaly::GravityRift)) {
+            if (position.layer() == 1) {
+              pathway_score += -4.0;
+            } else {
+              pathway_score += -8.0;
+            }
+          }
+        }
+        if (pathway_score > best_pathway_score) {
+          best_pathway_score = pathway_score;
+        }
+      }
+      player_scores_[player.first] += best_pathway_score;
+    }
   }
 
   /// \brief If a player does not have a good planet on which to build a forward space dock on his/her path to Mecatol Rex, the score is penalized.
   void add_forward_space_dock_scores() noexcept {
-
-
-
-
-
+    for (const std::pair<uint8_t, std::set<Pathway>>& player : PlayerPathwaysToMecatolRex<board_layout>) {
+      double best_pathway_score{0.0};
+      for (const Pathway& pathway : player.second) {
+        double pathway_score{0.0};
+        for (const Position& position : pathway) {
+          const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
+          const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
+          if (tile->second.is_in_a_slice() && system->number_of_planets() > 0) {
+            double position_score{1.0 + 0.5 * system->highest_planet_resources()};
+            // For the 7 and 8 player large boards, the distance to Mecatol Rex is longer.
+            // In these cases, the forward-forward system is preferable to the forward system. Double its score.
+            if ((board_layout == BoardLayout::Players7Large || board_layout == BoardLayout::Players8Large) && position.layer() == 2) {
+              position_score *= 2.0;
+            }
+            if (position_score > pathway_score) {
+              pathway_score = position_score;
+            }
+          }
+        }
+        if (pathway_score > best_pathway_score) {
+          best_pathway_score = pathway_score;
+        }
+      }
+      player_scores_[player.first] += best_pathway_score;
+    }
   }
 
   /// \brief If a player's lateral starboard systems protect his/her home system, the score is increased (more than port).
   void add_lateral_starboard_system_scores() noexcept {
-
-
-
-
-
+    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerLateralStarboardPositions<board_layout>) {
+      for (const Position& position : player.second) {
+        const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
+        const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
+        if (system->contains(Anomaly::Nebula)) {
+          player_scores_[player.first] += 1.0;
+        }
+        if (system->contains(Anomaly::Supernova)) {
+          player_scores_[player.first] += 1.5;
+        }
+      }
+    }
   }
 
   /// \brief If a player's lateral port systems protect his/her home system, the score is increased (but not as much as starboard).
   void add_lateral_port_system_scores() noexcept {
-
-
-
-
-
+    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerLateralPortPositions<board_layout>) {
+      for (const Position& position : player.second) {
+        const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
+        const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
+        if (system->contains(Anomaly::Nebula)) {
+          player_scores_[player.first] += 0.5;
+        }
+        if (system->contains(Anomaly::Supernova)) {
+          player_scores_[player.first] += 0.75;
+        }
+      }
+    }
   }
 
   void messages_final() const noexcept {
