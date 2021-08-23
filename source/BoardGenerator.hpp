@@ -31,7 +31,7 @@ protected:
 
   std::map<Position, Tile> tiles_;
 
-  uint8_t maximum_layer_{0};
+  uint8_t maximum_distance_to_mecatol_rex_{0};
 
   void initialize_player_scores() noexcept {
     const uint8_t number_of_players_{number_of_players(board_layout)};
@@ -77,8 +77,8 @@ protected:
   void initialize_tiles() noexcept {
     for (const Tile& tile : Tiles<board_layout>) {
       tiles_.insert({tile.position(), tile});
-      if (tile.position().layer() > maximum_layer_) {
-        maximum_layer_ = tile.position().layer();
+      if (tile.distance_to_mecatol_rex() > maximum_distance_to_mecatol_rex_) {
+        maximum_distance_to_mecatol_rex_ = tile.distance_to_mecatol_rex();
       }
     }
   }
@@ -192,23 +192,23 @@ protected:
           const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
           if (system->contains(Anomaly::Supernova)) {
-            pathway_score += -10.0;
+            pathway_score += -15.0;
           }
           if (system->contains(Anomaly::AsteroidField)) {
             pathway_score += -2.0;
           }
           if (system->contains(Anomaly::Nebula)) {
-            if (position_counter == pathway.size()) {
+            if (tile->second.distance_to_mecatol_rex() == 1) {
               pathway_score += 0.0;
             } else {
               pathway_score += -5.0;
             }
           }
           if (system->contains(Anomaly::GravityRift)) {
-            if (position_counter == pathway.size()) {
+            if (tile->second.distance_to_mecatol_rex() == 1) {
               pathway_score += -5.0;
             } else {
-              pathway_score += -10.0;
+              pathway_score += -15.0;
             }
           }
         }
@@ -227,8 +227,11 @@ protected:
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
-        if (system->number_of_planets() > 0) {
-          const double position_score{4.0 + 2.0 + system->highest_planet_resources()};
+        if (system->number_of_planets() > 0 && !system->contains(Anomaly::GravityRift)) {
+          double position_score{2.0 * system->space_dock_score()};
+          if (system->contains(Anomaly::Nebula)) {
+            position_score *= 0.5;
+          }
           if (position_score > best_preferred_position_score) {
             best_preferred_position_score = position_score;
           }
@@ -241,8 +244,11 @@ protected:
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
-        if (system->number_of_planets() > 0) {
-          const double position_score{2.0 + system->highest_planet_resources()};
+        if (system->number_of_planets() > 0 && !system->contains(Anomaly::GravityRift)) {
+          double position_score{1.0 * system->space_dock_score()};
+          if (system->contains(Anomaly::Nebula)) {
+            position_score *= 0.5;
+          }
           if (position_score > best_alternate_position_score) {
             best_alternate_position_score = position_score;
           }
@@ -258,11 +264,17 @@ protected:
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
+        if (system->contains(Anomaly::AsteroidField)) {
+          player_scores_[player.first] += 0.75;
+        }
+        if (system->contains(Anomaly::GravityRift)) {
+          player_scores_[player.first] -= 3.0;
+        }
         if (system->contains(Anomaly::Nebula)) {
-          player_scores_[player.first] += 1.0;
+          player_scores_[player.first] += 1.5;
         }
         if (system->contains(Anomaly::Supernova)) {
-          player_scores_[player.first] += 1.5;
+          player_scores_[player.first] += 3.0;
         }
       }
     }
@@ -274,11 +286,17 @@ protected:
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
-        if (system->contains(Anomaly::Nebula)) {
+        if (system->contains(Anomaly::AsteroidField)) {
           player_scores_[player.first] += 0.5;
         }
+        if (system->contains(Anomaly::GravityRift)) {
+          player_scores_[player.first] -= 2.0;
+        }
+        if (system->contains(Anomaly::Nebula)) {
+          player_scores_[player.first] += 1.0;
+        }
         if (system->contains(Anomaly::Supernova)) {
-          player_scores_[player.first] += 0.75;
+          player_scores_[player.first] += 2.0;
         }
       }
     }
@@ -287,10 +305,10 @@ protected:
   void messages_final() const noexcept {
     message("Player scores: " + print_player_scores());
     message("Player score imbalance: " + score_imbalance_to_string(score_imbalance()));
+    message("Visualization: " + print_visualization_link());
     message("System IDs: " + print_system_ids());
   }
 
-  // TODO: Neighbors currently do not work with hyperlanes.
   bool contains_adjacent_anomalies_or_wormholes_within_inner_layers() const noexcept {
     std::unordered_set<Position> checked;
     for (std::map<Position, Tile>::const_iterator tile = tiles_.cbegin(); tile != tiles_.cend(); ++tile) {
@@ -301,9 +319,9 @@ protected:
         const bool contains_anomaly{system->contains_one_or_more_anomalies()};
         const bool contains_alpha_wormhole{system->contains(Wormhole::Alpha)};
         const bool contains_beta_wormhole{system->contains(Wormhole::Beta)};
-        if (tile->first.layer() < maximum_layer_ && (contains_anomaly || contains_alpha_wormhole || contains_beta_wormhole)) {
+        if (tile->second.distance_to_mecatol_rex() < maximum_distance_to_mecatol_rex_ && (contains_anomaly || contains_alpha_wormhole || contains_beta_wormhole)) {
           // This tile is not on the outermost layer and contains one or more anomalies or wormholes.
-          const std::set<Position> neighbors{tile->first.neighbors()};
+          const std::set<Position> neighbors{tile->second.position_and_hyperlane_neighbors()};
           for (const Position& position : neighbors) {
             const std::map<Position, Tile>::const_iterator found_neighbor{tiles_.find(position)};
             if (found_neighbor != tiles_.cend()) {
@@ -363,6 +381,14 @@ protected:
         text += " ";
       }
       text += tile->second.system_id();
+    }
+    return text;
+  }
+
+  std::string print_visualization_link() const noexcept {
+    std::string text{"https://keeganw.github.io/ti4/?tiles=18"};
+    for (std::map<Position, Tile>::const_iterator tile = tiles_.cbegin(); tile != tiles_.cend(); ++tile) {
+      text += "," + tile->second.system_id();
     }
     return text;
   }

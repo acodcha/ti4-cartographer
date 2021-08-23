@@ -16,13 +16,17 @@ public:
 
   Tile(
     const Position& position,
+    const uint8_t distance_to_mecatol_rex,
     const std::set<uint8_t>& nearest_players,
     const std::set<SystemCategory>& system_categories,
+    const std::set<Position>& hyperlane_neighbors = {},
     const std::string& system_id = {}
   ) :
     position_(position),
+    distance_to_mecatol_rex_(distance_to_mecatol_rex),
     nearest_players_(nearest_players),
     system_categories_(system_categories),
+    hyperlane_neighbors_(hyperlane_neighbors),
     system_id_(system_id)
   {
     initialize_is_planetary_anomaly_wormhole_empty();
@@ -38,6 +42,10 @@ public:
     return position_;
   }
 
+  uint8_t distance_to_mecatol_rex() const noexcept {
+    return distance_to_mecatol_rex_;
+  }
+
   const std::set<uint8_t>& nearest_players() const noexcept {
     return nearest_players_;
   }
@@ -46,8 +54,20 @@ public:
     return system_categories_;
   }
 
+  const std::set<Position>& hyperlane_neighbors() const noexcept {
+    return hyperlane_neighbors_;
+  }
+
   const std::string& system_id() const noexcept {
     return system_id_;
+  }
+
+  std::set<Position> position_and_hyperlane_neighbors() const noexcept {
+    std::set<Position> all{position_.neighbors()};
+    for (const Position& position : hyperlane_neighbors_) {
+      all.insert(position);
+    }
+    return all;
   }
 
   bool is_equidistant() const noexcept {
@@ -94,6 +114,8 @@ protected:
 
   Position position_;
 
+  uint8_t distance_to_mecatol_rex_{0};
+
   /// \brief Set of players whose home systems are equally nearest to this tile. Note that player numbering starts at 1.
   /// \details If this set contains a single player, then this tile is in that player's slice of the game board.
   /// If this set contains multiple players, then this tile is equidistant to each of those players.
@@ -102,6 +124,8 @@ protected:
   std::set<SystemCategory> system_categories_;
 
   bool is_planetary_anomaly_wormhole_empty_{false};
+
+  std::set<Position> hyperlane_neighbors_;
 
   std::string system_id_;
 

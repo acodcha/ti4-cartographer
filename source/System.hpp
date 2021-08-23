@@ -111,6 +111,19 @@ public:
     return number;
   }
 
+  double space_dock_score() const noexcept {
+    const uint8_t highest_planet_resources_{highest_planet_resources()};
+    if (highest_planet_resources_ == 0) {
+      return 1.0;
+    } else if (highest_planet_resources_ == 1) {
+      return 1.5;
+    } else if (highest_planet_resources_ == 2) {
+      return 2.5;
+    } else if (highest_planet_resources_ >= 3) {
+      return 4.5;
+    }
+  }
+
   uint8_t number_of_planets() const noexcept {
     return static_cast<uint8_t>(planets_.size());
   }
@@ -208,7 +221,7 @@ protected:
   }
 
   void initialize_score() noexcept {
-    score_ = individual_planet_scores() + number_of_planets_score() + anomalies_score() + wormholes_score() + space_dock_score();
+    score_ = individual_planet_scores() + number_of_planets_score() + anomalies_score() + wormholes_score();
   }
 
   /// \brief The base system score is the sum of the individual planet scores.
@@ -226,37 +239,20 @@ protected:
     if (number_of_planets_ == 1) {
       return 1.0 * number_of_planets_;
     } else if (number_of_planets_ == 2) {
-      return 1.5 * number_of_planets_;
-    } else if (number_of_planets_ == 3) {
       return 2.0 * number_of_planets_;
+    } else if (number_of_planets_ == 3) {
+      return 3.0 * number_of_planets_;
     }
     return 0.0;
   }
 
   /// \brief Some anomalies are generally beneficial or harmful, whereas others depend heavily on their positioning.
   double anomalies_score() const noexcept {
-    double score{0.0};
-    if (contains(Anomaly::AsteroidField)) {
-      // If you have Antimass Deflectors researched, this is effectively an empty system.
-      // If you do not, this is worse because it prevents movement and therefore reduces your options.
-      // The Clan of Saar strongly prefers these due to their faction technology.
-      score += -0.5;
+    double total{0.0};
+    for (const Anomaly anomaly : anomalies_) {
+      total += TI4Cartographer::score(anomaly);
     }
-    if (contains(Anomaly::GravityRift)) {
-      // Gives extra movement and therefore extra options. Beneficial.
-      score += 1.0;
-    }
-    if (contains(Anomaly::Nebula)) {
-      // Better defense, but slows movement. Net neutral.
-      // The Empyrean strongly prefers these due to their faction ability.
-      score += 0.0;
-    }
-    if (contains(Anomaly::Supernova)) {
-      // Prevents movement and therefore reduces your options. Generally bad.
-      // The Embers of Muaat strongly prefer these due to their faction ability and technology.
-      score += -0.5;
-    }
-    return score;
+    return total;
   }
 
   /// \brief Wormholes are generally beneficial because they provide additional movement options and lead to the Wormhole Nexus.
@@ -265,15 +261,6 @@ protected:
       return 0.5;
     }
     return 0.0;
-  }
-
-  /// \brief The maximum planet resource value is useful for building a space dock.
-  double space_dock_score() const noexcept {
-    if (number_of_planets() > 0) {
-      return 0.5 * (2.0 + highest_planet_resources());
-    } else {
-      return 0.0;
-    }
   }
 
 }; // class System
