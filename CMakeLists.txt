@@ -32,7 +32,7 @@ install(TARGETS ${ATLAS_EXECUTABLE_NAME} DESTINATION /usr/local/bin)
 include(CTest)
 if(BUILD_TESTING)
   enable_testing()
-  add_test(NAME cartographer_test COMMAND ../test/cartographer.sh)
+  add_test(NAME cartographer_6_players_medium_test COMMAND ../test/6_players_medium.sh)
   add_test(NAME atlas_test COMMAND ../test/atlas.sh)
 endif()
 
