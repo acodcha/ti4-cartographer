@@ -29,7 +29,7 @@ void generate_board(const Instructions& instructions, const SelectedSystemIds& s
       break;
     case BoardLayout::Players6:
       {
-        const BoardGenerator<BoardLayout::Players6> board{instructions.board_aggression(), instructions.maximum_number_of_iterations(), selected_system_ids};
+        const BoardGenerator<BoardLayout::Players6> board{instructions.aggression(), instructions.maximum_number_of_iterations(), selected_system_ids};
       }
       break;
     case BoardLayout::Players7Regular:

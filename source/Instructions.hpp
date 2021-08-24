@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BoardAggressions.hpp"
+#include "Aggressions.hpp"
 #include "BoardLayouts.hpp"
 #include "GameVersions.hpp"
 
@@ -23,9 +23,9 @@ const std::string BoardLayoutKey{"--layout"};
 
 const std::string BoardLayoutPattern{BoardLayoutKey + " <type>"};
 
-const std::string BoardAggressionKey{"--aggression"};
+const std::string AggressionKey{"--aggression"};
 
-const std::string BoardAggressionPattern{BoardAggressionKey + " <amount>"};
+const std::string AggressionPattern{AggressionKey + " <amount>"};
 
 const std::string NumberOfIterationsKey{"--iterations"};
 
@@ -54,8 +54,8 @@ public:
     return board_layout_;
   }
 
-  BoardAggression board_aggression() const noexcept {
-    return board_aggression_;
+  Aggression aggression() const noexcept {
+    return aggression_;
   }
 
   uint64_t maximum_number_of_iterations() const noexcept {
@@ -78,7 +78,7 @@ protected:
 
   BoardLayout board_layout_{BoardLayout::Players6};
 
-  BoardAggression board_aggression_{BoardAggression::Medium};
+  Aggression aggression_{Aggression::Medium};
 
   uint64_t maximum_number_of_iterations_{DefaultMaximumNumberOfIterations};
 
@@ -109,8 +109,8 @@ protected:
         initialize_game_version(*(argument + 1));
       } else if (*argument == Arguments::BoardLayoutKey && argument + 1 < arguments_.cend()) {
         initialize_board_layout(*(argument + 1));
-      } else if (*argument == Arguments::BoardAggressionKey && argument + 1 < arguments_.cend()) {
-        initialize_board_aggression(*(argument + 1));
+      } else if (*argument == Arguments::AggressionKey && argument + 1 < arguments_.cend()) {
+        initialize_aggression(*(argument + 1));
       } else if (*argument == Arguments::NumberOfIterationsKey && argument + 1 < arguments_.cend()) {
         initialize_maximum_number_of_iterations(*(argument + 1));
       }
@@ -172,12 +172,12 @@ protected:
     }
   }
 
-  void initialize_board_aggression(const std::string board_aggression) {
-    const std::optional<BoardAggression> found{type<BoardAggression>(board_aggression)};
+  void initialize_aggression(const std::string aggression) {
+    const std::optional<Aggression> found{type<Aggression>(aggression)};
     if (found.has_value()) {
-      board_aggression_ = found.value();
+      aggression_ = found.value();
     } else {
-      message_usage_information_and_error("Unknown board aggression: " + board_aggression);
+      message_usage_information_and_error("Unknown board aggression: " + aggression);
     }
   }
 
@@ -198,13 +198,13 @@ protected:
   void message_usage_information() const noexcept {
     const std::string space{"  "};
     message("Usage:");
-    message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::BoardLayoutPattern + "] [" + Arguments::BoardAggressionPattern + "] [" + Arguments::NumberOfIterationsPattern + "]");
+    message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::BoardLayoutPattern + "] [" + Arguments::AggressionPattern + "] [" + Arguments::NumberOfIterationsPattern + "]");
     const uint_least64_t length{std::max({
       Arguments::UsageInformation.length(),
       Arguments::NumberOfPlayersPattern.length(),
       Arguments::GameVersionPattern.length(),
       Arguments::BoardLayoutPattern.length(),
-      Arguments::BoardAggressionPattern.length(),
+      Arguments::AggressionPattern.length(),
       Arguments::NumberOfIterationsPattern.length()
     })};
     message("Arguments:");
@@ -219,7 +219,7 @@ protected:
     message(space + space + "6 players: regular");
     message(space + space + "7 players: regular or large");
     message(space + space + "8 players: regular or large");
-    message(space + pad_to_length(Arguments::BoardAggressionPattern, length) + space + "Optional. Choices are very-high, high, medium, low, or very-low. Specifies the degree of expected aggression resulting from the placement of systems on the board. By default, medium is used. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
+    message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Choices are very-high, high, medium, low, or very-low. Specifies the degree of expected aggression resulting from the placement of systems on the board. By default, medium is used. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
     message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the number of board layout iterations.");
     message("");
   }
@@ -235,7 +235,7 @@ protected:
   void message_start_information() const noexcept {
     message("The number of players and board layout is: " + label(board_layout_));
     message("The game version is: " + label(game_version_));
-    message("The amount of aggression is: " + label(board_aggression_));
+    message("The aggression is: " + label(aggression_));
     message("The number of iterations is: " + std::to_string(maximum_number_of_iterations_));
   }
 

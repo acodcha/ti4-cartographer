@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BoardAggressions.hpp"
+#include "Aggressions.hpp"
 #include "Pathway.hpp"
 #include "SelectedSystemIds.hpp"
 #include "Tiles6Players.hpp"
@@ -11,9 +11,9 @@ template <BoardLayout board_layout> class BoardGenerator {
 
 public:
 
-  BoardGenerator(const BoardAggression board_aggression, const uint64_t maximum_number_of_iterations, const SelectedSystemIds& selected_system_ids) {
+  BoardGenerator(const Aggression aggression, const uint64_t maximum_number_of_iterations, const SelectedSystemIds& selected_system_ids) {
     initialize_player_scores();
-    initialize_system_ids(board_aggression, selected_system_ids);
+    initialize_system_ids(aggression, selected_system_ids);
     initialize_tiles();
     message_in_slice_and_equidistant_system_ids();
     iterate(maximum_number_of_iterations);
@@ -40,7 +40,7 @@ protected:
     }
   }
 
-  void initialize_system_ids(const BoardAggression board_aggression, const SelectedSystemIds& selected_system_ids) noexcept {
+  void initialize_system_ids(const Aggression aggression, const SelectedSystemIds& selected_system_ids) noexcept {
     const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(Tiles<board_layout>)};
     std::vector<SystemIdAndScore> system_ids_and_scores;
     for (const std::string& id : selected_system_ids) {
@@ -48,20 +48,20 @@ protected:
     }
     std::sort(system_ids_and_scores.begin(), system_ids_and_scores.end(), SystemIdAndScore::sort_by_descending_score());
     uint8_t start_index{0};
-    switch (board_aggression) {
-      case BoardAggression::VeryLow:
+    switch (aggression) {
+      case Aggression::VeryLow:
         start_index = selected_system_ids.size() - number_of_equidistant_systems_;
         break;
-      case BoardAggression::Low:
+      case Aggression::Low:
         start_index = static_cast<uint8_t>(std::floor(selected_system_ids.size() * 0.7 - number_of_equidistant_systems_ * 0.5));
         break;
-      case BoardAggression::Medium:
+      case Aggression::Medium:
         start_index = static_cast<uint8_t>(std::round(selected_system_ids.size() * 0.5 - number_of_equidistant_systems_ * 0.5));
         break;
-      case BoardAggression::High:
+      case Aggression::High:
         start_index = static_cast<uint8_t>(std::ceil(selected_system_ids.size() * 0.3 - number_of_equidistant_systems_ * 0.5));
         break;
-      case BoardAggression::VeryHigh:
+      case Aggression::VeryHigh:
         start_index = 0;
         break;
     }
@@ -157,7 +157,8 @@ protected:
     reset_scores();
     add_system_scores();
     add_pathway_to_mecatol_rex_scores();
-    add_forward_space_dock_scores();
+    add_forward_space_dock_preferred_position_scores();
+    add_forward_space_dock_alternate_position_scores();
     add_lateral_starboard_system_scores();
     add_lateral_port_system_scores();
   }
@@ -183,7 +184,7 @@ protected:
   /// \brief If a player does not have a clear pathway to Mecatol Rex, the score is penalized.
   void add_pathway_to_mecatol_rex_scores() noexcept {
     for (const std::pair<uint8_t, std::set<Pathway>>& player : PlayerPathwaysToMecatolRex<board_layout>) {
-      double best_pathway_score{0.0};
+      double best_pathway_score{std::numeric_limits<double>::lowest()};
       for (const Pathway& pathway : player.second) {
         double pathway_score{0.0};
         std::size_t position_counter{0};
@@ -192,7 +193,11 @@ protected:
           const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
           if (system->contains(Anomaly::Supernova)) {
-            pathway_score += -15.0;
+            if (tile->second.distance_to_mecatol_rex() == 1) {
+              pathway_score += -10.0;
+            } else {
+              pathway_score += -15.0;
+            }
           }
           if (system->contains(Anomaly::AsteroidField)) {
             pathway_score += -2.0;
@@ -220,38 +225,42 @@ protected:
     }
   }
 
-  /// \brief If a player does not have a good planet on which to build a forward space dock, the score is adjusted.
-  void add_forward_space_dock_scores() noexcept {
+  void add_forward_space_dock_preferred_position_scores() noexcept {
     for (const std::pair<uint8_t, std::set<Position>>& player : PlayerForwardSpaceDockPreferredPositions<board_layout>) {
-      double best_preferred_position_score{0.0};
+      double best_preferred_position_score{std::numeric_limits<double>::lowest()};
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
+        double preferred_position_score{0.0};
         if (system->number_of_planets() > 0 && !system->contains(Anomaly::GravityRift)) {
-          double position_score{2.0 * system->space_dock_score()};
+          preferred_position_score = 2.0 * system->space_dock_score();
           if (system->contains(Anomaly::Nebula)) {
-            position_score *= 0.5;
+            preferred_position_score *= 0.5;
           }
-          if (position_score > best_preferred_position_score) {
-            best_preferred_position_score = position_score;
-          }
+        }
+        if (preferred_position_score > best_preferred_position_score) {
+          best_preferred_position_score = preferred_position_score;
         }
       }
       player_scores_[player.first] += best_preferred_position_score;
     }
+  }
+
+  void add_forward_space_dock_alternate_position_scores() noexcept {
     for (const std::pair<uint8_t, std::set<Position>>& player : PlayerForwardSpaceDockAlternatePositions<board_layout>) {
-      double best_alternate_position_score{0.0};
+      double best_alternate_position_score{std::numeric_limits<double>::lowest()};
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
+        double alternate_position_score{0.0};
         if (system->number_of_planets() > 0 && !system->contains(Anomaly::GravityRift)) {
-          double position_score{1.0 * system->space_dock_score()};
+          alternate_position_score = system->space_dock_score();
           if (system->contains(Anomaly::Nebula)) {
-            position_score *= 0.5;
+            alternate_position_score *= 0.5;
           }
-          if (position_score > best_alternate_position_score) {
-            best_alternate_position_score = position_score;
-          }
+        }
+        if (alternate_position_score > best_alternate_position_score) {
+          best_alternate_position_score = alternate_position_score;
         }
       }
       player_scores_[player.first] += best_alternate_position_score;
@@ -265,16 +274,19 @@ protected:
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
         if (system->contains(Anomaly::AsteroidField)) {
-          player_scores_[player.first] += 0.75;
+          player_scores_[player.first] += 1.5;
         }
         if (system->contains(Anomaly::GravityRift)) {
           player_scores_[player.first] -= 3.0;
         }
         if (system->contains(Anomaly::Nebula)) {
-          player_scores_[player.first] += 1.5;
+          player_scores_[player.first] += 3.0;
         }
         if (system->contains(Anomaly::Supernova)) {
-          player_scores_[player.first] += 3.0;
+          player_scores_[player.first] += 4.5;
+        }
+        if (system->contains_one_or_more_wormholes()) {
+          player_scores_[player.first] += -2.0;
         }
       }
     }
@@ -287,16 +299,19 @@ protected:
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
         if (system->contains(Anomaly::AsteroidField)) {
-          player_scores_[player.first] += 0.5;
+          player_scores_[player.first] += 1.0;
         }
         if (system->contains(Anomaly::GravityRift)) {
           player_scores_[player.first] -= 2.0;
         }
         if (system->contains(Anomaly::Nebula)) {
-          player_scores_[player.first] += 1.0;
+          player_scores_[player.first] += 2.0;
         }
         if (system->contains(Anomaly::Supernova)) {
-          player_scores_[player.first] += 2.0;
+          player_scores_[player.first] += 3.0;
+        }
+        if (system->contains_one_or_more_wormholes()) {
+          player_scores_[player.first] += -2.0;
         }
       }
     }
@@ -306,7 +321,7 @@ protected:
     message("Player scores: " + print_player_scores());
     message("Player score imbalance: " + score_imbalance_to_string(score_imbalance()));
     message("Visualization: " + print_visualization_link());
-    message("System IDs: " + print_system_ids());
+    message("Tabletop Simulator string: " + print_system_ids());
   }
 
   bool contains_adjacent_anomalies_or_wormholes_within_inner_layers() const noexcept {

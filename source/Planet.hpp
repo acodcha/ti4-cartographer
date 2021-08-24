@@ -112,7 +112,7 @@ protected:
 
   /// \brief High influence planets are useful for voting during the Agenda phase.
   double voting_score() const noexcept {
-    return 0.5 * influence_;
+    return 0.25 * influence_;
   }
 
   /// \brief Planets with a propulsion technology specialty are preferable over other technology specialties, which are in turn preferable to no technology specialty.

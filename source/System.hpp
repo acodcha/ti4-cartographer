@@ -249,8 +249,25 @@ protected:
   /// \brief Some anomalies are generally beneficial or harmful, whereas others depend heavily on their positioning.
   double anomalies_score() const noexcept {
     double total{0.0};
-    for (const Anomaly anomaly : anomalies_) {
-      total += TI4Cartographer::score(anomaly);
+    if (contains(Anomaly::AsteroidField)) {
+      // If you have Antimass Deflectors researched, this is effectively an empty system.
+      // If you do not, this is worse because it prevents movement and therefore reduces your options.
+      // The Clan of Saar strongly prefers these due to their faction technology.
+      total += -0.5;
+    }
+    if (contains(Anomaly::GravityRift)) {
+      // Gives extra movement and therefore extra options, but might destroy your ships. Generally beneficial.
+      total += 0.5;
+    }
+    if (contains(Anomaly::Nebula)) {
+      // Better defense, but slows movement. Net neutral.
+      // The Empyrean strongly prefers these due to their faction ability.
+      total += 0.0;
+    }
+    if (contains(Anomaly::Supernova)) {
+      // Prevents movement and therefore reduces your options. Generally bad.
+      // The Embers of Muaat strongly prefer these due to their faction ability and technology.
+      total += -1.0;
     }
     return total;
   }
@@ -258,7 +275,7 @@ protected:
   /// \brief Wormholes are generally beneficial because they provide additional movement options and lead to the Wormhole Nexus.
   double wormholes_score() const noexcept {
     if (contains_one_or_more_wormholes()) {
-      return 0.5;
+      return 1.0;
     }
     return 0.0;
   }
