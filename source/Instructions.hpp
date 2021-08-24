@@ -189,9 +189,9 @@ protected:
 
   void message_header_information() const noexcept {
     message(Separator);
-    message("TI4 Cartographer");
+    message(ProgramName);
     message("Generates randomized balanced boards for the Twilight Imperium 4th Edition board game.");
-    message("Version: " + CompilationDateAndTime);
+    message("Compiled: " + CompilationDateAndTime);
   }
 
   void message_usage_information() const noexcept {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Aggressions.hpp"
+#include "Chronometre.hpp"
 #include "Pathway.hpp"
 #include "SelectedSystemIds.hpp"
 #include "Tiles6Players.hpp"
@@ -11,13 +12,13 @@ template <Layout layout> class BoardGenerator {
 
 public:
 
-  BoardGenerator(const Aggression aggression, const uint64_t maximum_number_of_iterations, const SelectedSystemIds& selected_system_ids) {
+  BoardGenerator(const Chronometre& chronometre, const Aggression aggression, const uint64_t maximum_number_of_iterations, const SelectedSystemIds& selected_system_ids) {
     initialize_player_scores();
     initialize_system_ids(aggression, selected_system_ids);
     initialize_tiles();
     message_in_slice_and_equidistant_system_ids();
     iterate(maximum_number_of_iterations);
-    messages_final();
+    messages_final(chronometre);
   }
 
 protected:
@@ -321,11 +322,14 @@ protected:
     }
   }
 
-  void messages_final() const noexcept {
+  void messages_final(const Chronometre& chronometre) const noexcept {
     message("Player scores: " + print_player_scores());
     message("Player score imbalance: " + score_imbalance_to_string(score_imbalance()));
     message("Visualization: " + print_visualization_link());
     message("Tabletop Simulator string: " + print_system_ids());
+    message("Runtime: " + chronometre.print());
+    message("End of " + ProgramName + ".");
+    message(Separator);
   }
 
   bool contains_adjacent_anomalies_or_wormholes_within_inner_layers() const noexcept {
