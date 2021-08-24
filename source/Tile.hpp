@@ -20,14 +20,16 @@ public:
     const std::set<uint8_t>& nearest_players,
     const std::set<SystemCategory>& system_categories,
     const std::set<Position>& hyperlane_neighbors = {},
-    const std::string& system_id = {}
+    const std::string& system_id = {},
+    const std::optional<uint8_t>& home_player = {}
   ) :
     position_(position),
     distance_to_mecatol_rex_(distance_to_mecatol_rex),
     nearest_players_(nearest_players),
     system_categories_(system_categories),
     hyperlane_neighbors_(hyperlane_neighbors),
-    system_id_(system_id)
+    system_id_(system_id),
+    home_player_(home_player)
   {
     initialize_is_planetary_anomaly_wormhole_empty();
     check_system_category();
@@ -60,6 +62,10 @@ public:
 
   const std::string& system_id() const noexcept {
     return system_id_;
+  }
+
+  const std::optional<uint8_t>& home_player() const noexcept {
+    return home_player_;
   }
 
   std::set<Position> position_and_hyperlane_neighbors() const noexcept {
@@ -128,6 +134,9 @@ protected:
   std::set<Position> hyperlane_neighbors_;
 
   std::string system_id_;
+
+  /// \brief If this tile is a home system or the Creuss Gate system, this is the player whose system this is.
+  std::optional<uint8_t> home_player_;
 
   void initialize_is_planetary_anomaly_wormhole_empty() noexcept {
     if (
