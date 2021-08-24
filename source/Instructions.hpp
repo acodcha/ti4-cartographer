@@ -9,6 +9,8 @@ namespace TI4Cartographer {
 /// \brief Namespace listing the program's command-line argument keywords.
 namespace Arguments {
 
+const std::string QuietMode{"--quiet"};
+
 const std::string UsageInformation{"--help"};
 
 const std::string NumberOfPlayersKey{"--players"};
@@ -40,9 +42,9 @@ public:
 
   Instructions(int argc, char *argv[]) : executable_name_(argv[0]) {
     assign_arguments(argc, argv);
+    initialize();
     message_header_information();
     message("Command: " + command());
-    initialize();
     message_start_information();
   }
 
@@ -68,9 +70,6 @@ protected:
 
   std::vector<std::string> arguments_;
 
-  /// \brief This is only needed while parsing the arguments.
-  uint8_t number_of_players_{6};
-
   GameVersion game_version_{GameVersion::ProphecyOfKingsExpansion};
 
   Layout layout_{Layout::Players6};
@@ -90,19 +89,24 @@ protected:
   }
 
   void message_usage_information_and_error(const std::string text) const {
+    message_header_information();
     message_usage_information();
     error(text);
   }
 
   void initialize() {
-    std::string layout_string;
+    uint8_t number_of_players{6};
+    std::string layout_string{"regular"};
     for (std::vector<std::string>::const_iterator argument = arguments_.cbegin(); argument < arguments_.cend(); ++argument) {
-      if (*argument == Arguments::UsageInformation) {
+      if (*argument == Arguments::QuietMode) {
+        Communicator::get().initialize(CommunicatorMode::Quiet);
+      } else if (*argument == Arguments::UsageInformation) {
         message_header_information();
         message_usage_information();
         exit(EXIT_SUCCESS);
       } else if (*argument == Arguments::NumberOfPlayersKey && argument + 1 < arguments_.cend()) {
-        initialize_number_of_players(*(argument + 1));
+        number_of_players = static_cast<uint8_t>(std::stoi(*(argument + 1)));
+        check_number_of_players(number_of_players);
       } else if (*argument == Arguments::GameVersionKey && argument + 1 < arguments_.cend()) {
         initialize_game_version(*(argument + 1));
       } else if (*argument == Arguments::LayoutKey && argument + 1 < arguments_.cend()) {
@@ -113,38 +117,14 @@ protected:
         initialize_maximum_number_of_iterations(*(argument + 1));
       }
     }
-    initialize_layout(layout_string);
+    Communicator::get().initialize(CommunicatorMode::Verbose);
+    check_game_version(number_of_players);
+    initialize_layout(number_of_players, layout_string);
   }
 
-  void initialize_number_of_players(const std::string number_of_players) {
-    number_of_players_ = static_cast<uint8_t>(std::stoi(number_of_players));
-    if (number_of_players_ < 2 || number_of_players_ > 8) {
+  void check_number_of_players(const uint8_t number_of_players) const {
+    if (number_of_players < 2 || number_of_players > 8) {
       message_usage_information_and_error("The number of players must be 2-8.");
-    }
-    switch (number_of_players_) {
-      case 2:
-        layout_ = Layout::Players2;
-        break;
-      case 3:
-        layout_ = Layout::Players3Regular;
-        break;
-      case 4:
-        layout_ = Layout::Players4Regular;
-        break;
-      case 5:
-        layout_ = Layout::Players5Regular;
-        break;
-      case 6:
-        layout_ = Layout::Players6;
-        break;
-      case 7:
-        layout_ = Layout::Players7Regular;
-        break;
-      case 8:
-        layout_ = Layout::Players8Regular;
-        break;
-      default:
-        break;
     }
   }
 
@@ -154,20 +134,6 @@ protected:
       game_version_ = found.value();
     } else {
       message_usage_information_and_error("Unknown game version: " + game_version);
-    }
-    if (number_of_players_ >= 7 && game_version_ == GameVersion::BaseGame) {
-      game_version_ = GameVersion::ProphecyOfKingsExpansion;
-      warning("7 and 8 player games require the " + label(GameVersion::ProphecyOfKingsExpansion) + ".");
-    }
-  }
-
-  void initialize_layout(const std::string& layout_string) {
-    const std::string label{std::to_string(number_of_players_) + "players" + lowercase(remove_non_alphanumeric_characters(layout_string))};
-    const std::optional<Layout> found{type<Layout>(label)};
-    if (found.has_value()) {
-      layout_ = found.value();
-    } else {
-      message_usage_information_and_error("Unknown board layout: " + layout_string);
     }
   }
 
@@ -187,6 +153,22 @@ protected:
     }
   }
 
+  void check_game_version(const uint8_t number_of_players) const {
+    if (number_of_players >= 7 && game_version_ == GameVersion::BaseGame) {
+      message_usage_information_and_error("7 and 8 player games require the " + label(GameVersion::ProphecyOfKingsExpansion) + ".");
+    }
+  }
+
+  void initialize_layout(const uint8_t number_of_players, const std::string& layout_string) {
+    const std::string label{std::to_string(number_of_players) + "players" + lowercase(remove_non_alphanumeric_characters(layout_string))};
+    const std::optional<Layout> found{type<Layout>(label)};
+    if (found.has_value()) {
+      layout_ = found.value();
+    } else {
+      message_usage_information_and_error("Unknown board layout: " + layout_string);
+    }
+  }
+
   void message_header_information() const noexcept {
     message(Separator);
     message(ProgramName);
@@ -197,14 +179,15 @@ protected:
   void message_usage_information() const noexcept {
     const std::string space{"  "};
     message("Usage:");
-    message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::LayoutPattern + "] [" + Arguments::AggressionPattern + "] [" + Arguments::NumberOfIterationsPattern + "]");
+    message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::LayoutPattern + "] [" + Arguments::AggressionPattern + "] [" + Arguments::NumberOfIterationsPattern + "] [" + Arguments::QuietMode + "]");
     const uint_least64_t length{std::max({
       Arguments::UsageInformation.length(),
       Arguments::NumberOfPlayersPattern.length(),
       Arguments::GameVersionPattern.length(),
       Arguments::LayoutPattern.length(),
       Arguments::AggressionPattern.length(),
-      Arguments::NumberOfIterationsPattern.length()
+      Arguments::NumberOfIterationsPattern.length(),
+      Arguments::QuietMode.length()
     })};
     message("Arguments:");
     message(space + pad_to_length(Arguments::UsageInformation, length) + space + "Displays this information and exits.");
@@ -220,6 +203,7 @@ protected:
     message(space + space + "8 players: regular or large");
     message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Choices are very-high, high, medium, low, or very-low. Specifies the degree of expected aggression resulting from the placement of systems on the board. By default, medium is used. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
     message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the number of board layout iterations.");
+    message(space + pad_to_length(Arguments::QuietMode, length) + space + "Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.");
     message("");
   }
 

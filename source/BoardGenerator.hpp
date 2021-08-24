@@ -326,7 +326,8 @@ protected:
     message("Player scores: " + print_player_scores());
     message("Player score imbalance: " + score_imbalance_to_string(score_imbalance()));
     message("Visualization: " + print_visualization_link());
-    message("Tabletop Simulator string: " + print_system_ids());
+    message("Tabletop Simulator string: " + print_tabletop_simulator_string());
+    quiet_message(print_tabletop_simulator_string());
     message("Runtime: " + chronometre.print());
     message("End of " + ProgramName + ".");
     message(Separator);
@@ -397,7 +398,7 @@ protected:
     return text;
   }
 
-  std::string print_system_ids() const noexcept {
+  std::string print_tabletop_simulator_string() const noexcept {
     std::string text;
     for (std::map<Position, Tile>::const_iterator tile = tiles_.cbegin(); tile != tiles_.cend(); ++tile) {
       if (!text.empty()) {
