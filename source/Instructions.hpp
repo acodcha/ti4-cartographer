@@ -126,7 +126,7 @@ protected:
         layout_ = Layout::Players2;
         break;
       case 3:
-        layout_ = Layout::Players3;
+        layout_ = Layout::Players3Regular;
         break;
       case 4:
         layout_ = Layout::Players4Regular;

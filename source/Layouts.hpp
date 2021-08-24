@@ -6,7 +6,9 @@ namespace TI4Cartographer {
 
 enum class Layout : uint8_t {
   Players2,
-  Players3,
+  Players3Regular,
+  Players3Small,
+  Players3Large,
   Players4Regular,
   Players4Large,
   Players5Regular,
@@ -21,7 +23,9 @@ enum class Layout : uint8_t {
 
 template <> const std::unordered_map<Layout, std::string> labels<Layout>{
   {Layout::Players2, "2 Players"},
-  {Layout::Players3, "3 Players"},
+  {Layout::Players3Regular, "3 Players Regular"},
+  {Layout::Players3Small, "3 Players Small"},
+  {Layout::Players3Large, "3 Players Large"},
   {Layout::Players4Regular, "4 Players Regular"},
   {Layout::Players4Large, "4 Players Large"},
   {Layout::Players5Regular, "5 Players Regular"},
@@ -37,8 +41,9 @@ template <> const std::unordered_map<Layout, std::string> labels<Layout>{
 template <> const std::unordered_map<std::string, Layout> spellings<Layout>{
   {"2players", Layout::Players2},
   {"2playersregular", Layout::Players2},
-  {"3players", Layout::Players3},
-  {"3playersregular", Layout::Players3},
+  {"3playersregular", Layout::Players3Regular},
+  {"3playerssmall", Layout::Players3Small},
+  {"3playerslarge", Layout::Players3Large},
   {"4playersregular", Layout::Players4Regular},
   {"4playerslarge", Layout::Players4Large},
   {"5playersregular", Layout::Players5Regular},
@@ -54,7 +59,9 @@ template <> const std::unordered_map<std::string, Layout> spellings<Layout>{
 
 std::unordered_map<Layout, uint8_t> layouts_to_number_of_players{
   {Layout::Players2, 2},
-  {Layout::Players3, 3},
+  {Layout::Players3Regular, 3},
+  {Layout::Players3Small, 3},
+  {Layout::Players3Large, 3},
   {Layout::Players4Regular, 4},
   {Layout::Players4Large, 4},
   {Layout::Players5Regular, 5},
@@ -77,7 +84,9 @@ uint8_t number_of_players(const Layout layout) noexcept {
 
 std::unordered_multimap<uint8_t, Layout> number_of_players_to_layouts{
   {2, Layout::Players2},
-  {3, Layout::Players3},
+  {3, Layout::Players3Regular},
+  {3, Layout::Players3Small},
+  {3, Layout::Players3Large},
   {4, Layout::Players4Regular},
   {4, Layout::Players4Large},
   {5, Layout::Players5Regular},
@@ -101,8 +110,10 @@ std::set<Layout> layouts(const uint8_t number_of_players) {
 
 std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const system_categories_to_layouts_to_number_of_systems_per_player{
   {SystemCategory::Planetary, {
-    {Layout::Players2, 3},
-    {Layout::Players3, 3},
+    {Layout::Players2, 4},
+    {Layout::Players3Regular, 3},
+    {Layout::Players3Small, 3},
+    {Layout::Players3Large, 4},
     {Layout::Players4Regular, 3},
     {Layout::Players4Large, 3},
     {Layout::Players5Regular, 3},
@@ -115,8 +126,10 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
     {Layout::Players8Large, 4}
   }},
   {SystemCategory::AnomalyWormholeEmpty, {
-    {Layout::Players2, 2},
-    {Layout::Players3, 2},
+    {Layout::Players2, 4},
+    {Layout::Players3Regular, 2},
+    {Layout::Players3Small, 2},
+    {Layout::Players3Large, 4},
     {Layout::Players4Regular, 2},
     {Layout::Players4Large, 3},
     {Layout::Players5Regular, 2},

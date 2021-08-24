@@ -9,7 +9,13 @@ void generate_board(const Instructions& instructions, const SelectedSystemIds& s
     case Layout::Players2:
       // TODO.
       break;
-    case Layout::Players3:
+    case Layout::Players3Regular:
+      // TODO.
+      break;
+    case Layout::Players3Small:
+      // TODO.
+      break;
+    case Layout::Players3Large:
       // TODO.
       break;
     case Layout::Players4Regular:
