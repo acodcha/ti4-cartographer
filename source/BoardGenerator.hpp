@@ -7,7 +7,7 @@
 
 namespace TI4Cartographer {
 
-template <BoardLayout board_layout> class BoardGenerator {
+template <Layout layout> class BoardGenerator {
 
 public:
 
@@ -34,14 +34,14 @@ protected:
   uint8_t maximum_distance_to_mecatol_rex_{0};
 
   void initialize_player_scores() noexcept {
-    const uint8_t number_of_players_{number_of_players(board_layout)};
+    const uint8_t number_of_players_{number_of_players(layout)};
     for (uint8_t player = 1; player <= number_of_players_; ++player) {
       player_scores_.insert({player, 0.0});
     }
   }
 
   void initialize_system_ids(const Aggression aggression, const SelectedSystemIds& selected_system_ids) noexcept {
-    const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(Tiles<board_layout>)};
+    const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(Tiles<layout>)};
     std::vector<SystemIdAndScore> system_ids_and_scores;
     for (const std::string& id : selected_system_ids) {
       system_ids_and_scores.push_back({id, Systems.find({id})->score()});
@@ -75,7 +75,7 @@ protected:
   }
 
   void initialize_tiles() noexcept {
-    for (const Tile& tile : Tiles<board_layout>) {
+    for (const Tile& tile : Tiles<layout>) {
       tiles_.insert({tile.position(), tile});
       if (tile.distance_to_mecatol_rex() > maximum_distance_to_mecatol_rex_) {
         maximum_distance_to_mecatol_rex_ = tile.distance_to_mecatol_rex();
@@ -183,7 +183,7 @@ protected:
 
   /// \brief If a player does not have a clear pathway to Mecatol Rex, the score is penalized.
   void add_pathway_to_mecatol_rex_scores() noexcept {
-    for (const std::pair<uint8_t, std::set<Pathway>>& player : PlayerPathwaysToMecatolRex<board_layout>) {
+    for (const std::pair<uint8_t, std::set<Pathway>>& player : PlayerPathwaysToMecatolRex<layout>) {
       double best_pathway_score{std::numeric_limits<double>::lowest()};
       for (const Pathway& pathway : player.second) {
         double pathway_score{0.0};
@@ -200,7 +200,11 @@ protected:
             }
           }
           if (system->contains(Anomaly::AsteroidField)) {
-            pathway_score += -2.0;
+            if (tile->second.distance_to_mecatol_rex() == 1) {
+              pathway_score += -2.0;
+            } else {
+              pathway_score += -4.0;
+            }
           }
           if (system->contains(Anomaly::Nebula)) {
             if (tile->second.distance_to_mecatol_rex() == 1) {
@@ -226,7 +230,7 @@ protected:
   }
 
   void add_forward_space_dock_preferred_position_scores() noexcept {
-    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerForwardSpaceDockPreferredPositions<board_layout>) {
+    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerForwardSpaceDockPreferredPositions<layout>) {
       double best_preferred_position_score{std::numeric_limits<double>::lowest()};
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
@@ -247,7 +251,7 @@ protected:
   }
 
   void add_forward_space_dock_alternate_position_scores() noexcept {
-    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerForwardSpaceDockAlternatePositions<board_layout>) {
+    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerForwardSpaceDockAlternatePositions<layout>) {
       double best_alternate_position_score{std::numeric_limits<double>::lowest()};
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
@@ -269,7 +273,7 @@ protected:
 
   /// \brief If a player's lateral starboard systems protect his/her home system, the score is increased (more than port).
   void add_lateral_starboard_system_scores() noexcept {
-    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerLateralStarboardPositions<board_layout>) {
+    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerLateralStarboardPositions<layout>) {
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
@@ -294,7 +298,7 @@ protected:
 
   /// \brief If a player's lateral port systems protect his/her home system, the score is increased (but not as much as starboard).
   void add_lateral_port_system_scores() noexcept {
-    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerLateralPortPositions<board_layout>) {
+    for (const std::pair<uint8_t, std::set<Position>>& player : PlayerLateralPortPositions<layout>) {
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
@@ -401,7 +405,7 @@ protected:
   }
 
   std::string print_visualization_link() const noexcept {
-    std::string text{"https://keeganw.github.io/ti4/?tiles=18"};
+    std::string text{"https://keeganw.github.io/ti4/?settings=&tiles=18"};
     for (std::map<Position, Tile>::const_iterator tile = tiles_.cbegin(); tile != tiles_.cend(); ++tile) {
       text += "," + tile->second.system_id();
     }

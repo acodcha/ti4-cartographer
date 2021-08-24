@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Aggressions.hpp"
-#include "BoardLayouts.hpp"
 #include "GameVersions.hpp"
+#include "Layouts.hpp"
 
 namespace TI4Cartographer {
 
@@ -19,9 +19,9 @@ const std::string GameVersionKey{"--version"};
 
 const std::string GameVersionPattern{GameVersionKey + " <type>"};
 
-const std::string BoardLayoutKey{"--layout"};
+const std::string LayoutKey{"--layout"};
 
-const std::string BoardLayoutPattern{BoardLayoutKey + " <type>"};
+const std::string LayoutPattern{LayoutKey + " <type>"};
 
 const std::string AggressionKey{"--aggression"};
 
@@ -50,8 +50,8 @@ public:
     return game_version_;
   }
 
-  BoardLayout board_layout() const noexcept {
-    return board_layout_;
+  Layout layout() const noexcept {
+    return layout_;
   }
 
   Aggression aggression() const noexcept {
@@ -73,10 +73,7 @@ protected:
 
   GameVersion game_version_{GameVersion::ProphecyOfKingsExpansion};
 
-  /// \brief This is only needed while parsing the arguments.
-  std::string layout_;
-
-  BoardLayout board_layout_{BoardLayout::Players6};
+  Layout layout_{Layout::Players6};
 
   Aggression aggression_{Aggression::Medium};
 
@@ -98,6 +95,7 @@ protected:
   }
 
   void initialize() {
+    std::string layout_string;
     for (std::vector<std::string>::const_iterator argument = arguments_.cbegin(); argument < arguments_.cend(); ++argument) {
       if (*argument == Arguments::UsageInformation) {
         message_header_information();
@@ -107,14 +105,15 @@ protected:
         initialize_number_of_players(*(argument + 1));
       } else if (*argument == Arguments::GameVersionKey && argument + 1 < arguments_.cend()) {
         initialize_game_version(*(argument + 1));
-      } else if (*argument == Arguments::BoardLayoutKey && argument + 1 < arguments_.cend()) {
-        initialize_board_layout(*(argument + 1));
+      } else if (*argument == Arguments::LayoutKey && argument + 1 < arguments_.cend()) {
+        layout_string = *(argument + 1);
       } else if (*argument == Arguments::AggressionKey && argument + 1 < arguments_.cend()) {
         initialize_aggression(*(argument + 1));
       } else if (*argument == Arguments::NumberOfIterationsKey && argument + 1 < arguments_.cend()) {
         initialize_maximum_number_of_iterations(*(argument + 1));
       }
     }
+    initialize_layout(layout_string);
   }
 
   void initialize_number_of_players(const std::string number_of_players) {
@@ -124,25 +123,25 @@ protected:
     }
     switch (number_of_players_) {
       case 2:
-        board_layout_ = BoardLayout::Players2;
+        layout_ = Layout::Players2;
         break;
       case 3:
-        board_layout_ = BoardLayout::Players3;
+        layout_ = Layout::Players3;
         break;
       case 4:
-        board_layout_ = BoardLayout::Players4Regular;
+        layout_ = Layout::Players4Regular;
         break;
       case 5:
-        board_layout_ = BoardLayout::Players5Regular;
+        layout_ = Layout::Players5Regular;
         break;
       case 6:
-        board_layout_ = BoardLayout::Players6;
+        layout_ = Layout::Players6;
         break;
       case 7:
-        board_layout_ = BoardLayout::Players7Regular;
+        layout_ = Layout::Players7Regular;
         break;
       case 8:
-        board_layout_ = BoardLayout::Players8Regular;
+        layout_ = Layout::Players8Regular;
         break;
       default:
         break;
@@ -162,13 +161,13 @@ protected:
     }
   }
 
-  void initialize_board_layout(const std::string board_layout) {
-    const std::string label{std::to_string(number_of_players_) + "players" + lowercase(remove_non_alphanumeric_characters(board_layout))};
-    const std::optional<BoardLayout> found{type<BoardLayout>(label)};
+  void initialize_layout(const std::string& layout_string) {
+    const std::string label{std::to_string(number_of_players_) + "players" + lowercase(remove_non_alphanumeric_characters(layout_string))};
+    const std::optional<Layout> found{type<Layout>(label)};
     if (found.has_value()) {
-      board_layout_ = found.value();
+      layout_ = found.value();
     } else {
-      message_usage_information_and_error("Unknown board layout: " + board_layout);
+      message_usage_information_and_error("Unknown board layout: " + layout_string);
     }
   }
 
@@ -198,12 +197,12 @@ protected:
   void message_usage_information() const noexcept {
     const std::string space{"  "};
     message("Usage:");
-    message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::BoardLayoutPattern + "] [" + Arguments::AggressionPattern + "] [" + Arguments::NumberOfIterationsPattern + "]");
+    message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::LayoutPattern + "] [" + Arguments::AggressionPattern + "] [" + Arguments::NumberOfIterationsPattern + "]");
     const uint_least64_t length{std::max({
       Arguments::UsageInformation.length(),
       Arguments::NumberOfPlayersPattern.length(),
       Arguments::GameVersionPattern.length(),
-      Arguments::BoardLayoutPattern.length(),
+      Arguments::LayoutPattern.length(),
       Arguments::AggressionPattern.length(),
       Arguments::NumberOfIterationsPattern.length()
     })};
@@ -211,7 +210,7 @@ protected:
     message(space + pad_to_length(Arguments::UsageInformation, length) + space + "Displays this information and exits.");
     message(space + pad_to_length(Arguments::NumberOfPlayersPattern, length) + space + "Required. Choices are 2-8. Specifies the number of players.");
     message(space + pad_to_length(Arguments::GameVersionPattern, length) + space + "Optional. Choices are base or expansion. The default is expansion. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Note that 7 and 8 player games require the expansion.");
-    message(space + pad_to_length(Arguments::BoardLayoutPattern, length) + space + "Optional. Choices vary by number of players. Specifies the board layout. By default, the regular layout is used.");
+    message(space + pad_to_length(Arguments::LayoutPattern, length) + space + "Optional. Choices vary by number of players. Specifies the board layout. By default, the regular layout is used.");
     message(space + space + "2 players: regular");
     message(space + space + "3 players: regular");
     message(space + space + "4 players: regular or large");
@@ -233,7 +232,7 @@ protected:
   }
 
   void message_start_information() const noexcept {
-    message("The number of players and board layout is: " + label(board_layout_));
+    message("The number of players and board layout is: " + label(layout_));
     message("The game version is: " + label(game_version_));
     message("The aggression is: " + label(aggression_));
     message("The number of iterations is: " + std::to_string(maximum_number_of_iterations_));

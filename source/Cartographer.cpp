@@ -5,43 +5,43 @@
 namespace TI4Cartographer {
 
 void generate_board(const Instructions& instructions, const SelectedSystemIds& selected_system_ids) {
-  switch (instructions.board_layout()) {
-    case BoardLayout::Players2:
+  switch (instructions.layout()) {
+    case Layout::Players2:
       // TODO.
       break;
-    case BoardLayout::Players3:
+    case Layout::Players3:
       // TODO.
       break;
-    case BoardLayout::Players4Regular:
+    case Layout::Players4Regular:
       // TODO.
       break;
-    case BoardLayout::Players4Large:
+    case Layout::Players4Large:
       // TODO.
       break;
-    case BoardLayout::Players5Regular:
+    case Layout::Players5Regular:
       // TODO.
       break;
-    case BoardLayout::Players5Small:
+    case Layout::Players5Small:
       // TODO.
       break;
-    case BoardLayout::Players5Large:
+    case Layout::Players5Large:
       // TODO.
       break;
-    case BoardLayout::Players6:
+    case Layout::Players6:
       {
-        const BoardGenerator<BoardLayout::Players6> board{instructions.aggression(), instructions.maximum_number_of_iterations(), selected_system_ids};
+        const BoardGenerator<Layout::Players6> board{instructions.aggression(), instructions.maximum_number_of_iterations(), selected_system_ids};
       }
       break;
-    case BoardLayout::Players7Regular:
+    case Layout::Players7Regular:
       // TODO.
       break;
-    case BoardLayout::Players7Large:
+    case Layout::Players7Large:
       // TODO.
       break;
-    case BoardLayout::Players8Regular:
+    case Layout::Players8Regular:
       // TODO.
       break;
-    case BoardLayout::Players8Large:
+    case Layout::Players8Large:
       // TODO.
       break;
   }
@@ -51,7 +51,7 @@ void generate_board(const Instructions& instructions, const SelectedSystemIds& s
 
 int main(int argc, char *argv[]) {
   const TI4Cartographer::Instructions instructions{argc, argv};
-  const TI4Cartographer::SelectedSystemIds selected_system_ids{instructions.game_version(), instructions.board_layout()};
+  const TI4Cartographer::SelectedSystemIds selected_system_ids{instructions.game_version(), instructions.layout()};
   TI4Cartographer::generate_board(instructions, selected_system_ids);
   return EXIT_SUCCESS;
 }

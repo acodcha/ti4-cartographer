@@ -157,7 +157,7 @@ protected:
   /// \brief Legendary planets are relevant to scoring objectives.
   double legendary_objective_score() const noexcept {
     if (is_legendary()) {
-      return 4.0;
+      return 2.0;
     }
     return 0.0;
   }

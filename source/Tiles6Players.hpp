@@ -4,7 +4,7 @@
 
 namespace TI4Cartographer {
 
-template <> std::set<Tile> const Tiles<BoardLayout::Players6>{
+template <> std::set<Tile> const Tiles<Layout::Players6>{
   {Position{1, 0}, 1, {5}, {SystemCategory::Planetary, SystemCategory::AnomalyWormholeEmpty}},
   {Position{1, 1}, 1, {6}, {SystemCategory::Planetary, SystemCategory::AnomalyWormholeEmpty}},
   {Position{1, 2}, 1, {1}, {SystemCategory::Planetary, SystemCategory::AnomalyWormholeEmpty}},
@@ -43,7 +43,7 @@ template <> std::set<Tile> const Tiles<BoardLayout::Players6>{
   {Position{3, 17}, 3, {5}, {SystemCategory::Planetary, SystemCategory::AnomalyWormholeEmpty}}
 };
 
-template <> const std::map<uint8_t, std::set<Pathway>> PlayerPathwaysToMecatolRex<BoardLayout::Players6>{
+template <> const std::map<uint8_t, std::set<Pathway>> PlayerPathwaysToMecatolRex<Layout::Players6>{
   {1, {{Pathway{{Position{2, 4}, Position{1, 2}}}}}},
   {2, {{Pathway{{Position{2, 6}, Position{1, 3}}}}}},
   {3, {{Pathway{{Position{2, 8}, Position{1, 4}}}}}},
@@ -52,7 +52,7 @@ template <> const std::map<uint8_t, std::set<Pathway>> PlayerPathwaysToMecatolRe
   {6, {{Pathway{{Position{2, 2}, Position{1, 1}}}}}}
 };
 
-template <> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockPreferredPositions<BoardLayout::Players6>{
+template <> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockPreferredPositions<Layout::Players6>{
   {1, {Position{2, 4}}},
   {2, {Position{2, 6}}},
   {3, {Position{2, 8}}},
@@ -61,7 +61,7 @@ template <> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockPr
   {6, {Position{2, 2}}}
 };
 
-template <> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockAlternatePositions<BoardLayout::Players6>{
+template <> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockAlternatePositions<Layout::Players6>{
   {1, {Position{1, 2}}},
   {2, {Position{1, 3}}},
   {3, {Position{1, 4}}},
@@ -70,7 +70,7 @@ template <> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockAl
   {6, {Position{1, 1}}}
 };
 
-template <> const std::map<uint8_t, std::set<Position>> PlayerLateralStarboardPositions<BoardLayout::Players6>{
+template <> const std::map<uint8_t, std::set<Position>> PlayerLateralStarboardPositions<Layout::Players6>{
   {1, {Position{3, 5}}},
   {2, {Position{3, 8}}},
   {3, {Position{3, 11}}},
@@ -79,7 +79,7 @@ template <> const std::map<uint8_t, std::set<Position>> PlayerLateralStarboardPo
   {6, {Position{3, 2}}}
 };
 
-template <> const std::map<uint8_t, std::set<Position>> PlayerLateralPortPositions<BoardLayout::Players6>{
+template <> const std::map<uint8_t, std::set<Position>> PlayerLateralPortPositions<Layout::Players6>{
   {1, {Position{3, 7}}},
   {2, {Position{3, 10}}},
   {3, {Position{3, 13}}},

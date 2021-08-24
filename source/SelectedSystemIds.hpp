@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BoardLayouts.hpp"
+#include "Layouts.hpp"
 #include "Systems.hpp"
 
 namespace TI4Cartographer {
@@ -12,9 +12,9 @@ public:
 
   SelectedSystemIds() noexcept {}
 
-  SelectedSystemIds(const GameVersion game_version, const BoardLayout board_layout) noexcept {
-    initialize_systems<SystemCategory::Planetary>(game_version, board_layout);
-    initialize_systems<SystemCategory::AnomalyWormholeEmpty>(game_version, board_layout);
+  SelectedSystemIds(const GameVersion game_version, const Layout layout) noexcept {
+    initialize_systems<SystemCategory::Planetary>(game_version, layout);
+    initialize_systems<SystemCategory::AnomalyWormholeEmpty>(game_version, layout);
   }
 
   std::string print() const noexcept {
@@ -56,7 +56,7 @@ protected:
 
   std::set<std::string> data_;
 
-  template <SystemCategory system_category> void initialize_systems(const GameVersion game_version, const BoardLayout board_layout) noexcept {
+  template <SystemCategory system_category> void initialize_systems(const GameVersion game_version, const Layout layout) noexcept {
     std::vector<std::string> system_ids;
     switch (game_version) {
       case GameVersion::BaseGame:
@@ -75,7 +75,7 @@ protected:
         break;
     }
     std::shuffle(system_ids.begin(), system_ids.end(), RandomEngine);
-    const uint8_t number_of_systems{static_cast<uint8_t>(number_of_systems_per_player<system_category>(board_layout) * number_of_players(board_layout))};
+    const uint8_t number_of_systems{static_cast<uint8_t>(number_of_systems_per_player<system_category>(layout) * number_of_players(layout))};
     if (system_ids.size() < number_of_systems) {
       error("The requested number of systems for the game board exceeds the actual number of systems that exist in the game.");
     }
