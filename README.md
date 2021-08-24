@@ -40,7 +40,7 @@ You can optionally install the programs from the `build` directory with:
 sudo make install
 ```
 
-This installs the programs to `/usr/local/bin/ti4cartographer` and `/usr/local/bin/ti4atlas`. To uninstall the program, simply delete it.
+This installs the programs to `/usr/local/bin/ti4cartographer` and `/usr/local/bin/ti4atlas`. To uninstall a program, simply delete it.
 
 [^ Back to Top](#ti4-cartographer)
 
