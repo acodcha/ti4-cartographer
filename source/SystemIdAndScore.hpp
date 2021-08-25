@@ -11,7 +11,7 @@ public:
 
   SystemIdAndScore() noexcept {}
 
-  SystemIdAndScore(const std::string id, const double score) noexcept : id_(id), score_(score) {}
+  SystemIdAndScore(const std::string& id, const double score) noexcept : id_(id), score_(score) {}
 
   const std::string& id() const noexcept {
     return id_;

@@ -42,7 +42,7 @@ protected:
   }
 
   void initialize_system_ids(const Aggression aggression, const SelectedSystemIds& selected_system_ids) noexcept {
-    const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(Tiles<layout>)};
+    const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(LayoutTiles<layout>)};
     std::vector<SystemIdAndScore> system_ids_and_scores;
     for (const std::string& id : selected_system_ids) {
       system_ids_and_scores.push_back({id, Systems.find({id})->score()});
@@ -76,7 +76,7 @@ protected:
   }
 
   void initialize_tiles() noexcept {
-    for (const Tile& tile : Tiles<layout>) {
+    for (const Tile& tile : LayoutTiles<layout>) {
       tiles_.insert({tile.position(), tile});
       if (tile.distance_to_mecatol_rex() > maximum_distance_to_mecatol_rex_) {
         maximum_distance_to_mecatol_rex_ = tile.distance_to_mecatol_rex();
@@ -401,20 +401,26 @@ protected:
   std::string print_tabletop_simulator_string() const noexcept {
     std::string text;
     for (std::map<Position, Tile>::const_iterator tile = tiles_.cbegin(); tile != tiles_.cend(); ++tile) {
-      if (!text.empty()) {
-        text += " ";
+      if (tile->second.system_id() != MecatolRexSystemId) {
+        if (!text.empty()) {
+          text += " ";
+        }
+        text += tile->second.system_id();
       }
-      text += tile->second.system_id();
     }
     return text;
   }
 
   std::string print_visualization_link() const noexcept {
-    std::string text{"https://keeganw.github.io/ti4/?settings=&tiles=18"};
+    const std::string prefix{"https://keeganw.github.io/ti4/?settings=&tiles="};
+    std::string tiles_text;
     for (std::map<Position, Tile>::const_iterator tile = tiles_.cbegin(); tile != tiles_.cend(); ++tile) {
-      text += "," + tile->second.system_id();
+      if (!tiles_text.empty()) {
+        tiles_text += ",";
+      }
+      tiles_text += tile->second.system_id();
     }
-    return text;
+    return prefix + tiles_text;
   }
 
   std::string print_in_slice_system_ids() const noexcept {

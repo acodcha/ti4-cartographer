@@ -10,6 +10,8 @@ const std::string CompilationDateAndTime{std::string{__DATE__} + ", " + std::str
 
 const std::string Separator{"=================================================="};
 
+const std::string MecatolRexSystemId{"18"};
+
 std::random_device RandomDevice;
 
 std::default_random_engine RandomEngine(RandomDevice());

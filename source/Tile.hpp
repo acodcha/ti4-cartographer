@@ -33,6 +33,7 @@ public:
   {
     initialize_is_planetary_anomaly_wormhole_empty();
     check_system_category();
+    check_if_mecatol_rex();
   }
 
   void set_system_id(const std::string& system_id) {
@@ -116,6 +117,10 @@ public:
     return position_ >= other.position_ ;
   }
 
+  std::string print() const noexcept {
+    return position_.print() + " " + system_id_;
+  }
+
 protected:
 
   Position position_;
@@ -154,6 +159,13 @@ protected:
       if (found_category == system_categories_.cend()) {
         error("System " + found_system->print() + " is of the wrong type for the tile at position " + position_.print() + ".");
       }
+    }
+  }
+
+  void check_if_mecatol_rex() noexcept {
+    const std::set<SystemCategory>::const_iterator found{system_categories_.find(SystemCategory::MecatolRex)};
+    if (found != system_categories_.cend()) {
+      system_id_ = MecatolRexSystemId;
     }
   }
 

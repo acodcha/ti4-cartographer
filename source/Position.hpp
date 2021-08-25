@@ -83,23 +83,30 @@ public:
     // Outer layer.
     const uint8_t layer_plus_one{static_cast<uint8_t>(layer_ + 1)};
     const uint8_t outer_layer_azimuth_to_corner{static_cast<uint8_t>(number_of_corners * layer_plus_one)};
-    if (is_a_corner()) {
-      // There are 3 outer layer neighbors.
-      positions.insert({layer_plus_one, outer_layer_azimuth_to_corner});
-      if (outer_layer_azimuth_to_corner > 0) {
-        positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner - 1)});
+    if (layer_ > 0) {
+      if (is_a_corner()) {
+        // There are 3 outer layer neighbors.
+        positions.insert({layer_plus_one, outer_layer_azimuth_to_corner});
+        if (outer_layer_azimuth_to_corner > 0) {
+          positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner - 1)});
+        } else {
+          positions.insert({layer_plus_one, maximum_azimuth(layer_plus_one)});
+        }
+        if (outer_layer_azimuth_to_corner < maximum_azimuth(layer_plus_one)) {
+          positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner + 1)});
+        } else {
+          positions.insert({layer_plus_one, 0});
+        }
       } else {
-        positions.insert({layer_plus_one, maximum_azimuth(layer_plus_one)});
-      }
-      if (outer_layer_azimuth_to_corner < maximum_azimuth(layer_plus_one)) {
-        positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner + 1)});
-      } else {
-        positions.insert({layer_plus_one, 0});
+        // There are 2 outer layer neighbors.
+        positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner + azimuth_after_corner)});
+        positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner + azimuth_after_corner + 1)});
       }
     } else {
-      // There are 2 outer layer neighbors.
-      positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner + azimuth_after_corner)});
-      positions.insert({layer_plus_one, static_cast<uint8_t>(outer_layer_azimuth_to_corner + azimuth_after_corner + 1)});
+      // In this case, the layer is 0, and the only neighbors are the 6 neighbors on layer 1.
+      for (uint8_t azimuth = 0; azimuth < 6; ++azimuth) {
+        positions.insert({1, azimuth});
+      }
     }
     return positions;
   }
