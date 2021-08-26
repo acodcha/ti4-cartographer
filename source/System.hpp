@@ -194,7 +194,7 @@ public:
     }
   };
 
-protected:
+private:
 
   /// \brief Each system must have a unique ID.
   std::string id_{};

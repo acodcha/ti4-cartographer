@@ -31,7 +31,7 @@ public:
     system_id_(system_id),
     home_player_(home_player)
   {
-    initialize_is_planetary_anomaly_wormhole_empty();
+    initialize_is_planetary_anomaly_wormhole_or_empty();
     initialize_is_hyperlane();
     check_system_category();
     check_if_mecatol_rex();
@@ -66,6 +66,14 @@ public:
     }
   }
 
+  bool is_planetary_anomaly_wormhole_or_empty() const noexcept {
+    return is_planetary_anomaly_wormhole_or_empty_;
+  }
+
+  bool is_hyperlane() const noexcept {
+    return is_hyperlane_;
+  }
+
   const std::set<Position>& hyperlane_neighbors() const noexcept {
     return hyperlane_neighbors_;
   }
@@ -98,14 +106,6 @@ public:
     return nearest_players_.find(player_index) != nearest_players_.cend();
   }
 
-  bool is_planetary_anomaly_wormhole_empty() const noexcept {
-    return is_planetary_anomaly_wormhole_empty_;
-  }
-
-  bool is_hyperlane() const noexcept {
-    return is_hyperlane_;
-  }
-
   bool operator==(const Tile& other) const noexcept {
     return position_ == other.position_ ;
   }
@@ -134,7 +134,7 @@ public:
     return position_.print() + " " + system_id_;
   }
 
-protected:
+private:
 
   Position position_;
 
@@ -147,7 +147,7 @@ protected:
 
   std::set<SystemCategory> system_categories_;
 
-  bool is_planetary_anomaly_wormhole_empty_{false};
+  bool is_planetary_anomaly_wormhole_or_empty_{false};
 
   bool is_hyperlane_{false};
 
@@ -158,14 +158,14 @@ protected:
   /// \brief If this tile is a home system or the Creuss Gate system, this is the player whose system this is.
   std::optional<uint8_t> home_player_;
 
-  void initialize_is_planetary_anomaly_wormhole_empty() noexcept {
+  void initialize_is_planetary_anomaly_wormhole_or_empty() noexcept {
     if (
       system_categories_.find(SystemCategory::Planetary) != system_categories_.cend()
       || system_categories_.find(SystemCategory::AnomalyWormholeEmpty) != system_categories_.cend()
     ) {
-      is_planetary_anomaly_wormhole_empty_ = true;
+      is_planetary_anomaly_wormhole_or_empty_ = true;
     } else {
-      is_planetary_anomaly_wormhole_empty_ = false;
+      is_planetary_anomaly_wormhole_or_empty_ = false;
     }
   }
 

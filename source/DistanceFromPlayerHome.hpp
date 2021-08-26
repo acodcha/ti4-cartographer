@@ -45,7 +45,7 @@ public:
     return player_ >= other.player_;
   }
 
-protected:
+private:
 
   uint8_t player_{0};
 

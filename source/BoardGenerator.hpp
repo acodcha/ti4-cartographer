@@ -21,7 +21,7 @@ public:
     messages_final(chronometre);
   }
 
-protected:
+private:
 
   /// \brief Each player's score.
   std::map<uint8_t, double> player_scores_;
@@ -142,7 +142,7 @@ protected:
     uint8_t equidistant_system_ids_index{0};
     uint8_t in_slice_system_ids_index{0};
     for (std::map<Position, Tile>::iterator tile = tiles_.begin(); tile != tiles_.end(); ++tile) {
-      if (tile->second.is_planetary_anomaly_wormhole_empty()) {
+      if (tile->second.is_planetary_anomaly_wormhole_or_empty()) {
         if (tile->second.is_equidistant()) {
           tile->second.set_system_id(equidistant_system_ids_[equidistant_system_ids_index]);
           ++equidistant_system_ids_index;
@@ -173,7 +173,7 @@ protected:
   /// \brief If a system is in a player's slice, that player gains its score. If a system is equidistant, each relevant player gets an equal fraction of its score.
   void add_system_scores() noexcept {
     for (std::map<Position, Tile>::iterator tile = tiles_.begin(); tile != tiles_.end(); ++tile) {
-      if (tile->second.is_planetary_anomaly_wormhole_empty()) {
+      if (tile->second.is_planetary_anomaly_wormhole_or_empty()) {
         const double score{Systems.find({tile->second.system_id()})->score() / tile->second.nearest_players().size()};
         for (const uint8_t player : tile->second.nearest_players()) {
           player_scores_[player] += score;
@@ -336,7 +336,7 @@ protected:
   bool contains_adjacent_anomalies_or_wormholes_within_inner_layers() const noexcept {
     std::unordered_set<Position> checked;
     for (std::map<Position, Tile>::const_iterator tile = tiles_.cbegin(); tile != tiles_.cend(); ++tile) {
-      if (tile->second.is_planetary_anomaly_wormhole_empty() && checked.find(tile->first) == checked.cend()) {
+      if (tile->second.is_planetary_anomaly_wormhole_or_empty() && checked.find(tile->first) == checked.cend()) {
         // This tile is of the relevant category and has not yet been checked.
         checked.insert(tile->first);
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
@@ -350,7 +350,7 @@ protected:
             const std::map<Position, Tile>::const_iterator found_neighbor{tiles_.find(position)};
             if (found_neighbor != tiles_.cend()) {
               // This neighboring tile exists on the board.
-              if (found_neighbor->second.is_planetary_anomaly_wormhole_empty() && checked.find(found_neighbor->first) == checked.cend()) {
+              if (found_neighbor->second.is_planetary_anomaly_wormhole_or_empty() && checked.find(found_neighbor->first) == checked.cend()) {
                 // This neighboring tile is of the relevant category and has not yet been checked.
                 const std::string neighbor_system_id{tiles_.find(position)->second.system_id()};
                 const std::unordered_set<System>::const_iterator neighbor_system{Systems.find({neighbor_system_id})};

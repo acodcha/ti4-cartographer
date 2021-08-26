@@ -55,7 +55,7 @@ public:
     return label(mode_);
   }
 
-protected:
+private:
 
   bool is_initialized_{false};
 

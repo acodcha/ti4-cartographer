@@ -22,10 +22,10 @@ public:
     return stream.str();
   }
 
-protected:
+private:
 
   std::chrono::high_resolution_clock::time_point start_;
 
-};
+}; // class Chronometre
 
 } // namespace TI4Cartographer

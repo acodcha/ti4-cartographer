@@ -52,7 +52,7 @@ public:
    return cend();
   }
 
-protected:
+private:
 
   std::set<std::string> data_;
 

@@ -33,7 +33,15 @@ public:
     }
   };
 
-protected:
+  bool operator==(const SystemIdAndScore& other) const noexcept {
+    return id_ == other.id_;
+  }
+
+  bool operator!=(const SystemIdAndScore& other) const noexcept {
+    return id_ != other.id_;
+  }
+
+private:
 
   std::string id_;
 
@@ -42,3 +50,13 @@ protected:
 }; // class SystemIdAndScore
 
 } // namespace TI4Cartographer
+
+namespace std {
+
+  template <> struct hash<TI4Cartographer::SystemIdAndScore> {
+    size_t operator()(const TI4Cartographer::SystemIdAndScore& system_id_and_score) const {
+      return hash<std::string>()(system_id_and_score.id());
+    }
+  };
+
+} // namespace std

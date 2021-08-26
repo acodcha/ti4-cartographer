@@ -132,7 +132,7 @@ private:
   /// \brief If at least two players' homes are the same distance from a given position, then that position is an equidistant position.
   void initialize_equidistant_positions() noexcept {
     for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
-      if (position_and_tile.second.is_planetary_anomaly_wormhole_empty()) {
+      if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()) {
         const std::pair<std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator, std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator> range{positions_to_distances_from_player_homes_.equal_range(position_and_tile.first)};
         std::set<uint8_t> distances_from_homes;
         for (std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator position_and_distance = range.first; position_and_distance != range.second; ++position_and_distance) {
@@ -154,7 +154,7 @@ private:
   void initialize_in_slice_positions() noexcept {
     for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
       if (
-        position_and_tile.second.is_planetary_anomaly_wormhole_empty()
+        position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()
         && equidistant_positions_.find(position_and_tile.first) == equidistant_positions_.cend()
       ) {
         // In this case, this position is not an equidistant position, so it must be an in-slice position.
@@ -235,7 +235,7 @@ private:
 uint8_t number_of_in_slice_systems(const std::set<Tile>& tiles) noexcept {
   uint8_t number{0};
   for (const Tile& tile : tiles) {
-    if (tile.is_in_a_slice() && tile.is_planetary_anomaly_wormhole_empty()) {
+    if (tile.is_in_a_slice() && tile.is_planetary_anomaly_wormhole_or_empty()) {
       ++number;
     }
   }
@@ -245,7 +245,7 @@ uint8_t number_of_in_slice_systems(const std::set<Tile>& tiles) noexcept {
 uint8_t number_of_equidistant_systems(const std::set<Tile>& tiles) noexcept {
   uint8_t number{0};
   for (const Tile& tile : tiles) {
-    if (tile.is_equidistant() && tile.is_planetary_anomaly_wormhole_empty()) {
+    if (tile.is_equidistant() && tile.is_planetary_anomaly_wormhole_or_empty()) {
       ++number;
     }
   }

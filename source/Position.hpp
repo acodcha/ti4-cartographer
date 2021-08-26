@@ -167,13 +167,13 @@ public:
     return text + std::to_string(azimuth_);
   }
 
-protected:
+private:
 
   /// \brief Layer from the central tile that contains the Mecatol Rex system.
   /// \details Layer 0 contains only 1 tile, which is the Mecatol Rex system.
   /// Layer 1 contains the 6 tiles adjacent to the Mecatol Rex system.
   /// Layer 2 contains the 12 tiles around those.
-  /// Layer 3 contains the 18 tiles around those. This is the layer that contains all the home systems in a regular 6-player game.
+  /// Layer 3 contains the 18 tiles around those. This is the layer that contains the home systems in a regular 6-player game.
   /// Layer 4 is only used in 7-8 player games and contains 24 tiles.
   uint8_t layer_{0};
 

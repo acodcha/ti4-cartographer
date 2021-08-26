@@ -64,7 +64,7 @@ public:
     return maximum_number_of_iterations_;
   }
 
-protected:
+private:
 
   std::string executable_name_;
 

@@ -4,7 +4,7 @@
 
 namespace TI4Cartographer {
 
-/// \brief Sequence of tile positions that form a path from a player's home system to Mecatol Rex.
+/// \brief Sequence of positions that form a path from a player's home system to Mecatol Rex.
 class Pathway {
 
 public:
@@ -61,7 +61,7 @@ public:
     data_ >= other.data_;
   }
 
-protected:
+private:
 
   std::vector<Position> data_;
 

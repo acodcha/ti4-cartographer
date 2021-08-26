@@ -84,7 +84,7 @@ public:
     }
   };
 
-protected:
+private:
 
   /// \brief Within a system, each planet must have a unique name.
   std::string name_;
