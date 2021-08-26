@@ -26,6 +26,8 @@ public:
     initialize_equidistant_positions();
     initialize_in_slice_positions();
     initialize_lateral_positions();
+    initialize_pathways_to_mecatol_rex();
+    initialize_space_dock_positions();
   }
 
   const std::set<Position>& equidistant_positions() const noexcept {
@@ -72,8 +74,7 @@ public:
 
 private:
 
-  std::set<Position> sorted_positions_;
-
+  /// \brief Collection of tiles that form the board, indexed by their positions.
   std::unordered_map<Position, Tile> positions_to_tiles_;
 
   Position mecatol_rex_position_;
@@ -84,19 +85,24 @@ private:
 
   std::unordered_multimap<Position, DistanceFromPlayerHome> positions_to_distances_from_player_homes_;
 
+  /// \brief Group of positions that are equidistant to 2 or more players' homes.
   std::set<Position> equidistant_positions_;
 
+  /// \brief Group of in-slice positions for each player, i.e. positions that are nearer to that player's home than other players' homes.
   std::multimap<uint8_t, Position> players_to_in_slice_positions_;
 
+  /// \brief Group of lateral positions for each player, i.e. positions that are NOT closer to Mecatol Rex than each player's home.
   std::multimap<uint8_t, Position> players_to_lateral_positions_;
 
-  // TODO: Pathways to Mecatol Rex.
+  /// \brief Pathways to Mecatol Rex may include equidistant positions and always end with the Mecatol Rex position itself.
+  std::multimap<uint8_t, Pathway> players_to_pathways_to_mecatol_rex_;
 
-  // TODO: Preferred and alternate space dock positions.
+  std::multimap<uint8_t, Position> players_to_preferred_space_dock_positions_;
+
+  std::multimap<uint8_t, Position> players_to_alternate_space_dock_positions_;
 
   void initialize_tiles(const std::set<Tile>& tiles) noexcept {
     for (const Tile& tile : tiles) {
-      sorted_positions_.insert(tile.position());
       positions_to_tiles_.insert({tile.position(), tile});
     }
   }
@@ -176,21 +182,83 @@ private:
   void initialize_lateral_positions() noexcept {
     for (const std::pair<uint8_t, Position>& player_and_home_position : players_to_home_positions_) {
       const uint8_t home_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)->second};
-      for (const Position& position : positions_to_tiles_.find(player_and_home_position.second)->second.position_and_hyperlane_neighbors()) {
+      for (const Position& neighbor_of_home : positions_to_tiles_.find(player_and_home_position.second)->second.position_and_hyperlane_neighbors()) {
         // This position is a neighbor of this player's home, but it may or  may not exist on the board.
-        const std::unordered_map<Position, uint8_t>::const_iterator found{positions_to_distances_from_mecatol_rex_.find(position)};
-        if (found != positions_to_distances_from_mecatol_rex_.cend()) {
-          // This position exists on the board.
-          if (found->second >= home_distance_to_mecatol_rex) {
-            // This position is at an equal or greater distance to Mecatol Rex than this player's home.
-            // Therefore, this position is a lateral position for this player.
-            players_to_lateral_positions_.insert({player_and_home_position.first, position});
-          }
+        const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_of_home)};
+        const std::unordered_map<Position, uint8_t>::const_iterator neighbor_position_and_distance{positions_to_distances_from_mecatol_rex_.find(neighbor_of_home)};
+        if (
+          neighbor_position_and_tile != positions_to_tiles_.cend()
+          && neighbor_position_and_tile->second.is_planetary_anomaly_wormhole_or_empty()
+          && neighbor_position_and_distance != positions_to_distances_from_mecatol_rex_.cend()
+          && neighbor_position_and_distance->second >= home_distance_to_mecatol_rex
+        ) {
+          // This position exists on the board, is of the correct system category, and is at an equal or greater distance to Mecatol Rex than this player's home.
+          // Therefore, this position is a lateral position for this player.
+          players_to_lateral_positions_.insert({player_and_home_position.first, neighbor_of_home});
         }
       }
     }
   }
 
+  void initialize_pathways_to_mecatol_rex() noexcept {
+    for (const std::pair<uint8_t, Position>& player_and_home_position : players_to_home_positions_) {
+      const uint8_t home_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)->second};
+      std::set<Pathway> pathways;
+      for (const Position& neighbor_of_home : positions_to_tiles_.find(player_and_home_position.second)->second.position_and_hyperlane_neighbors()) {
+        // This position is a neighbor of this player's home, but it may or  may not exist on the board.
+        const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_of_home)};
+        const std::unordered_map<Position, uint8_t>::const_iterator neighbor_position_and_distance{positions_to_distances_from_mecatol_rex_.find(neighbor_of_home)};
+        if (
+          neighbor_position_and_tile != positions_to_tiles_.cend()
+          && !neighbor_position_and_tile->second.is_hyperlane()
+          && neighbor_position_and_distance != positions_to_distances_from_mecatol_rex_.cend()
+          && neighbor_position_and_distance->second + 1 == home_distance_to_mecatol_rex
+        ) {
+          // This position exists on the board, is of the correct system category, and is exactly 1 tile closer to Mecatol Rex than this player's home.
+          // Therefore, this position is a starting point for a pathway to Mecatol Rex.
+          pathways.emplace(neighbor_position_and_tile->first);
+        }
+      }
+      // At this point, we have at least 1 position that serves as a start for the pathways to Mecatol Rex.
+      // For each pathway, grow it procedurally by moving closer to Mecatol Rex.
+      // Some pathways can fork into multiple pathways.
+      while (!pathways.empty() && !all_reach_mecatol_rex(pathways)) {
+        std::set<Pathway> updated_pathways;
+        for (const Pathway& pathway : pathways) {
+          const std::set<Position> next_positions{neighbors_closer_to_mecatol_rex(pathway.back())};
+          for (const Position& next_position : next_positions) {
+            Pathway updated_pathway{pathway};
+            updated_pathway.push_back(next_position);
+            updated_pathways.insert(updated_pathway);
+          }
+        }
+        pathways = updated_pathways;
+      }
+      for (const Pathway& pathway : pathways) {
+        players_to_pathways_to_mecatol_rex_.insert({player_and_home_position.first, pathway});
+      }
+    }
+  }
+
+  void initialize_space_dock_positions() noexcept {
+    // TODO: Initialize the preferred and alternate space dock positions using the pathways to Mecatol Rex.
+    // The preferred and alternate space dock positions are selected from the pathways to Mecatol Rex.
+    // However, the preferred and alternate space dock positions must be in-slice positions rather than equidistant positions.
+    // By definitions, for a given player, the pathways to Mecatol Rex all have the same length.
+    // Remember that the last position in the pathway is the Mecatol Rex position itself.
+    // If the pathways to Mecatol Rex have length 1, the player's home is adjacent to Mecatol Rex, so there are no preferred or alternate positions.
+    // If the pathways to Mecatol Rex have length 2, there is only a preferred position, and no alternate position.
+    // If the pathways to Mecatol Rex have length 3, the preferred position is the first one, and the alternate is the second one.
+    // If the pathways to Mecatol Rex have length 4, the preferred position is the second (middle) one, and the alternates are the first and third ones.
+    // Do not bother with cases where the pathways to Mecatol Rex are longer than 4.
+
+
+
+
+
+  }
+
+  /// \brief Returns a map of all non-hyperlane tiles present on the board along with their distance to a given target position.
   std::unordered_map<Position, uint8_t> positions_and_distances_from_target(const Position& target_position) const noexcept {
     std::unordered_map<Position, uint8_t> position_to_distance_from_target;
     uint8_t distance_from_target_position{0};
@@ -205,7 +273,7 @@ private:
           && !current_position_and_tile->second.is_hyperlane()
           && visited.find(current_position) == visited.cend()
         ) {
-          // The current position exists and has not yet been visited.
+          // The current position exists, is of the correct system category, and has not yet been visited.
           visited.insert(current_position);
           position_to_distance_from_target.insert({current_position, distance_from_target_position});
           const std::set<Position> next_positions{current_position_and_tile->second.position_and_hyperlane_neighbors()};
@@ -228,6 +296,46 @@ private:
       next_neighbors.clear();
     }
     return position_to_distance_from_target;
+  }
+
+  /// \brief Returns the set of planetary/anomaly/wormhole/empty neighbors that are closer to Mecatol Rex than a given reference position.
+  /// \details If given a position adjacent to Mecatol Rex as a reference, this returns the Mecatol Rex position itself.
+  std::set<Position> neighbors_closer_to_mecatol_rex(const Position& reference) const noexcept {
+    std::set<Position> neighbors_closer_to_mecatol_rex_;
+    const std::unordered_map<Position, Tile>::const_iterator reference_position_and_tile{positions_to_tiles_.find(reference)};
+    const std::unordered_map<Position, uint8_t>::const_iterator reference_position_and_distance{positions_to_distances_from_mecatol_rex_.find(reference)};
+    if (
+      reference_position_and_tile != positions_to_tiles_.cend()
+      && !reference_position_and_tile->second.is_hyperlane()
+      && reference_position_and_distance != positions_to_distances_from_mecatol_rex_.cend()
+    ) {
+      // The reference exists on the board and is of the correct system category.
+      const std::set<Position> neighbors{reference_position_and_tile->second.position_and_hyperlane_neighbors()};
+      for (const Position& neighbor : neighbors) {
+        const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor)};
+        const std::unordered_map<Position, uint8_t>::const_iterator neighbor_position_and_distance{positions_to_distances_from_mecatol_rex_.find(neighbor)};
+        if (
+          neighbor_position_and_tile != positions_to_tiles_.cend()
+          && !neighbor_position_and_tile->second.is_hyperlane()
+          && neighbor_position_and_distance != positions_to_distances_from_mecatol_rex_.cend()
+          && neighbor_position_and_distance->second < reference_position_and_distance->second
+        ) {
+          // This neighbor exists on the board, is of the correct system category, and is closer to Mecatol Rex than the reference.
+          neighbors_closer_to_mecatol_rex_.insert(neighbor_position_and_tile->first);
+        }
+      }
+    }
+    return neighbors_closer_to_mecatol_rex_;
+  }
+
+  /// \brief Helper function used during the initialization of the pathways to Mecatol Rex.
+  bool all_reach_mecatol_rex(const std::set<Pathway>& pathways) const noexcept {
+    for (const Pathway& pathway : pathways) {
+      if (pathway.empty() || pathway.back() != mecatol_rex_position_) {
+        return false;
+      }
+    }
+    return true;
   }
 
 }; // class Tiles

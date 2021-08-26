@@ -11,11 +11,21 @@ public:
 
   Pathway() noexcept {}
 
-  Pathway(const std::vector<Position>& data) noexcept : data_(data) {}
+  Pathway(const Position& position) noexcept : data_({position}) {}
+
+  Pathway(const std::vector<Position>& positions) noexcept : data_(positions) {}
+
+  void push_back(const Position& position) noexcept {
+    data_.push_back(position);
+  }
 
   struct const_iterator : public std::vector<Position>::const_iterator {
     const_iterator(const std::vector<Position>::const_iterator i) noexcept : std::vector<Position>::const_iterator(i) {}
   };
+
+  bool empty() const noexcept {
+    return data_.empty();
+  }
 
   std::size_t size() const noexcept {
     return data_.size();
@@ -35,6 +45,14 @@ public:
 
   const_iterator end() const noexcept {
    return cend();
+  }
+
+  const Position& front() const noexcept {
+    return data_.front();
+  }
+
+  const Position& back() const noexcept {
+    return data_.back();
   }
 
   bool operator==(const Pathway& other) const noexcept {
