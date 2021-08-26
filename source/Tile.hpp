@@ -32,6 +32,7 @@ public:
     home_player_(home_player)
   {
     initialize_is_planetary_anomaly_wormhole_empty();
+    initialize_is_hyperlane();
     check_system_category();
     check_if_mecatol_rex();
   }
@@ -55,6 +56,14 @@ public:
 
   const std::set<SystemCategory>& system_categories() const noexcept {
     return system_categories_;
+  }
+
+  bool system_categories_contains(const SystemCategory system_category) const noexcept {
+    if (system_categories_.find(system_category) != system_categories_.cend()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   const std::set<Position>& hyperlane_neighbors() const noexcept {
@@ -91,6 +100,10 @@ public:
 
   bool is_planetary_anomaly_wormhole_empty() const noexcept {
     return is_planetary_anomaly_wormhole_empty_;
+  }
+
+  bool is_hyperlane() const noexcept {
+    return is_hyperlane_;
   }
 
   bool operator==(const Tile& other) const noexcept {
@@ -136,6 +149,8 @@ protected:
 
   bool is_planetary_anomaly_wormhole_empty_{false};
 
+  bool is_hyperlane_{false};
+
   std::set<Position> hyperlane_neighbors_;
 
   std::string system_id_;
@@ -149,6 +164,16 @@ protected:
       || system_categories_.find(SystemCategory::AnomalyWormholeEmpty) != system_categories_.cend()
     ) {
       is_planetary_anomaly_wormhole_empty_ = true;
+    } else {
+      is_planetary_anomaly_wormhole_empty_ = false;
+    }
+  }
+
+  void initialize_is_hyperlane() noexcept {
+    if (system_categories_.find(SystemCategory::Hyperlane) != system_categories_.cend()) {
+      is_hyperlane_ = true;
+    } else {
+      is_hyperlane_ = false;
     }
   }
 

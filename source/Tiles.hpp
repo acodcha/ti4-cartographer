@@ -25,6 +25,7 @@ public:
     initialize_distances_from_player_homes();
     initialize_equidistant_positions();
     initialize_in_slice_positions();
+    initialize_lateral_positions();
   }
 
   const std::set<Position>& equidistant_positions() const noexcept {
@@ -87,7 +88,7 @@ private:
 
   std::multimap<uint8_t, Position> players_to_in_slice_positions_;
 
-  // TODO: Lateral positions.
+  std::multimap<uint8_t, Position> players_to_lateral_positions_;
 
   // TODO: Pathways to Mecatol Rex.
 
@@ -172,6 +173,24 @@ private:
     }
   }
 
+  void initialize_lateral_positions() noexcept {
+    for (const std::pair<uint8_t, Position>& player_and_home_position : players_to_home_positions_) {
+      const uint8_t home_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)->second};
+      for (const Position& position : positions_to_tiles_.find(player_and_home_position.second)->second.position_and_hyperlane_neighbors()) {
+        // This position is a neighbor of this player's home, but it may or  may not exist on the board.
+        const std::unordered_map<Position, uint8_t>::const_iterator found{positions_to_distances_from_mecatol_rex_.find(position)};
+        if (found != positions_to_distances_from_mecatol_rex_.cend()) {
+          // This position exists on the board.
+          if (found->second >= home_distance_to_mecatol_rex) {
+            // This position is at an equal or greater distance to Mecatol Rex than this player's home.
+            // Therefore, this position is a lateral position for this player.
+            players_to_lateral_positions_.insert({player_and_home_position.first, position});
+          }
+        }
+      }
+    }
+  }
+
   std::unordered_map<Position, uint8_t> positions_and_distances_from_target(const Position& target_position) const noexcept {
     std::unordered_map<Position, uint8_t> position_to_distance_from_target;
     uint8_t distance_from_target_position{0};
@@ -183,7 +202,7 @@ private:
         const std::unordered_map<Position, Tile>::const_iterator current_position_and_tile{positions_to_tiles_.find(current_position)};
         if (
           current_position_and_tile != positions_to_tiles_.cend()
-          && current_position_and_tile->second.is_planetary_anomaly_wormhole_empty()
+          && !current_position_and_tile->second.is_hyperlane()
           && visited.find(current_position) == visited.cend()
         ) {
           // The current position exists and has not yet been visited.
@@ -194,7 +213,7 @@ private:
             const std::unordered_map<Position, Tile>::const_iterator next_position_and_tile{positions_to_tiles_.find(next_position)};
             if (
               next_position_and_tile != positions_to_tiles_.cend()
-              && next_position_and_tile->second.is_planetary_anomaly_wormhole_empty()
+              && !next_position_and_tile->second.is_hyperlane()
               && visited.find(next_position) == visited.cend()
             ) {
               // The next position exists and has not been visited.
