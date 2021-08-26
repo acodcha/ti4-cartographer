@@ -144,6 +144,18 @@ public:
     return !wormholes_.empty();
   }
 
+  bool can_be_adjacent_to_an_anomaly() const noexcept {
+    return anomalies_.empty();
+  }
+
+  bool can_be_adjacent_to_an_alpha_wormhole() const noexcept {
+    return !contains(Wormhole::Alpha);
+  }
+
+  bool can_be_adjacent_to_a_beta_wormhole() const noexcept {
+    return !contains(Wormhole::Beta);
+  }
+
   std::string print() const noexcept {
     std::string text{"#" + id_ + ":  "};
     uint8_t counter{0};
