@@ -31,6 +31,10 @@ public:
     return data_.size();
   }
 
+  const Position& at(const std::size_t index) const {
+    return data_.at(index);
+  }
+
   const_iterator cbegin() const noexcept {
    return const_iterator(data_.cbegin());
   }
@@ -77,6 +81,10 @@ public:
 
   bool operator>=(const Pathway& other) const noexcept {
     data_ >= other.data_;
+  }
+
+  const Position& operator[](const std::size_t index) const {
+    return data_[index];
   }
 
 private:
