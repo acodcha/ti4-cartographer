@@ -19,15 +19,14 @@ public:
 
 private:
 
-  std::map<uint8_t, double> player_scores_;
+  std::map<Player, double> player_scores_;
 
   std::vector<std::string> equidistant_system_ids_;
 
   std::vector<std::string> in_slice_system_ids_;
 
   void initialize_player_scores() noexcept {
-    const uint8_t number_of_players_{number_of_players(layout)};
-    for (uint8_t player = 1; player <= number_of_players_; ++player) {
+    for (const Player player : this->players_) {
       player_scores_.insert({player, 0.0});
     }
   }

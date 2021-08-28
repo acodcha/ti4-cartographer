@@ -102,13 +102,13 @@ public:
   }
 
   uint8_t highest_planet_resources() const noexcept {
-    uint8_t number{0};
+    uint8_t highest_planet_resources_{0};
     for (const Planet& planet : planets_) {
-      if (number < planet.resources()) {
-        number = planet.resources();
+      if (planet.resources() > highest_planet_resources_) {
+        highest_planet_resources_ = planet.resources();
       }
     }
-    return number;
+    return highest_planet_resources_;
   }
 
   double space_dock_score() const noexcept {

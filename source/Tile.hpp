@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Players.hpp"
 #include "Position.hpp"
 #include "Systems.hpp"
 
@@ -17,11 +18,11 @@ public:
   Tile(
     const Position& position,
     const uint8_t distance_to_mecatol_rex,
-    const std::set<uint8_t>& nearest_players,
+    const std::set<Player>& nearest_players,
     const std::set<SystemCategory>& system_categories,
     const std::set<Position>& hyperlane_neighbors = {},
     const std::string& system_id = {},
-    const std::optional<uint8_t>& home_player = {}
+    const std::optional<Player>& home_player = {}
   ) :
     position_(position),
     distance_to_mecatol_rex_(distance_to_mecatol_rex),
@@ -35,6 +36,7 @@ public:
     initialize_is_hyperlane();
     check_system_category();
     check_if_mecatol_rex();
+    check_if_home_system_or_creuss_gate();
   }
 
   void set_system_id(const std::string& system_id) {
@@ -50,7 +52,7 @@ public:
     return distance_to_mecatol_rex_;
   }
 
-  const std::set<uint8_t>& nearest_players() const noexcept {
+  const std::set<Player>& nearest_players() const noexcept {
     return nearest_players_;
   }
 
@@ -82,7 +84,7 @@ public:
     return system_id_;
   }
 
-  const std::optional<uint8_t>& home_player() const noexcept {
+  const std::optional<Player>& home_player() const noexcept {
     return home_player_;
   }
 
@@ -102,8 +104,8 @@ public:
     return nearest_players_.size() == 1;
   }
 
-  bool is_in_slice(const uint8_t player_index) const noexcept {
-    return nearest_players_.find(player_index) != nearest_players_.cend();
+  bool is_in_slice(const Player player) const noexcept {
+    return nearest_players_.find(player) != nearest_players_.cend();
   }
 
   bool operator==(const Tile& other) const noexcept {
@@ -143,7 +145,7 @@ private:
   /// \brief Set of players whose home systems are equally nearest to this tile. Note that player numbering starts at 1.
   /// \details If this set contains a single player, then this tile is in that player's slice of the game board.
   /// If this set contains multiple players, then this tile is equidistant to each of those players.
-  std::set<uint8_t> nearest_players_;
+  std::set<Player> nearest_players_;
 
   std::set<SystemCategory> system_categories_;
 
@@ -156,7 +158,7 @@ private:
   std::string system_id_;
 
   /// \brief If this tile is a home system or the Creuss Gate system, this is the player whose system this is.
-  std::optional<uint8_t> home_player_;
+  std::optional<Player> home_player_;
 
   void initialize_is_planetary_anomaly_wormhole_or_empty() noexcept {
     if (
@@ -188,9 +190,14 @@ private:
   }
 
   void check_if_mecatol_rex() noexcept {
-    const std::set<SystemCategory>::const_iterator found{system_categories_.find(SystemCategory::MecatolRex)};
-    if (found != system_categories_.cend()) {
+    if (system_categories_.find(SystemCategory::MecatolRex) != system_categories_.cend()) {
       system_id_ = MecatolRexSystemId;
+    }
+  }
+
+  void check_if_home_system_or_creuss_gate() noexcept {
+    if (system_categories_.find(SystemCategory::Home) != system_categories_.cend() || system_categories_.find(SystemCategory::CreussGate) != system_categories_.cend()) {
+      system_id_ = "0";
     }
   }
 

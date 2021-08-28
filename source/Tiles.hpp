@@ -32,14 +32,14 @@ uint8_t number_of_equidistant_systems(const std::set<Tile>& tiles) noexcept {
   return number;
 }
 
-template <Layout layout> const std::map<uint8_t, std::set<Pathway>> PlayerPathwaysToMecatolRex;
+template <Layout layout> const std::map<Player, std::set<Pathway>> PlayerPathwaysToMecatolRex;
 
-template <Layout layout> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockPreferredPositions;
+template <Layout layout> const std::map<Player, std::set<Position>> PlayerForwardSpaceDockPreferredPositions;
 
-template <Layout layout> const std::map<uint8_t, std::set<Position>> PlayerForwardSpaceDockAlternatePositions;
+template <Layout layout> const std::map<Player, std::set<Position>> PlayerForwardSpaceDockAlternatePositions;
 
-template <Layout layout> const std::map<uint8_t, std::set<Position>> PlayerLateralStarboardPositions;
+template <Layout layout> const std::map<Player, std::set<Position>> PlayerLateralStarboardPositions;
 
-template <Layout layout> const std::map<uint8_t, std::set<Position>> PlayerLateralPortPositions;
+template <Layout layout> const std::map<Player, std::set<Position>> PlayerLateralPortPositions;
 
 } // namespace TI4Cartographer
