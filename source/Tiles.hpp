@@ -257,6 +257,8 @@ private:
     // However, the preferred and alternate space dock positions must be in-slice positions rather than equidistant positions.
     // By definitions, for a given player, the pathways to Mecatol Rex all have the same length.
     // Remember that the last position in the pathway is the Mecatol Rex position itself.
+    // If 2 or more positions are tied for preferred space dock position, choose the one with the largest minimum distance from other players' homes.
+    // Do the same for the alternate positions.
     // If the pathways to Mecatol Rex have length 1, the player's home is adjacent to Mecatol Rex, so there are no preferred or alternate positions.
     // If the pathways to Mecatol Rex have length 2, there is only a preferred position, and no alternate position.
     // If the pathways to Mecatol Rex have length 3, the preferred position is the first one, and the alternate is the second one.
