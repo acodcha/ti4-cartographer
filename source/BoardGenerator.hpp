@@ -1,10 +1,6 @@
 #pragma once
 
-#include "Aggressions.hpp"
-#include "Chronometre.hpp"
-#include "Pathway.hpp"
-#include "SelectedSystemIds.hpp"
-#include "Tiles6Players.hpp"
+#include "Board.hpp"
 
 namespace TI4Cartographer {
 
@@ -42,7 +38,7 @@ private:
   }
 
   void initialize_system_ids(const Aggression aggression, const SelectedSystemIds& selected_system_ids) noexcept {
-    const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(LayoutTiles<layout>)};
+    const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(Tiles<layout>)};
     std::vector<SystemIdAndScore> system_ids_and_scores;
     for (const std::string& id : selected_system_ids) {
       system_ids_and_scores.push_back({id, Systems.find({id})->score()});
@@ -76,7 +72,7 @@ private:
   }
 
   void initialize_tiles() noexcept {
-    for (const Tile& tile : LayoutTiles<layout>) {
+    for (const Tile& tile : Tiles<layout>) {
       tiles_.insert({tile.position(), tile});
       if (tile.distance_to_mecatol_rex() > maximum_distance_to_mecatol_rex_) {
         maximum_distance_to_mecatol_rex_ = tile.distance_to_mecatol_rex();
