@@ -36,7 +36,7 @@ protected:
 
   std::map<Player, Position> players_to_home_positions_;
 
-  std::unordered_map<Position, uint8_t> positions_to_distances_from_mecatol_rex_;
+  std::unordered_map<Position, int8_t> positions_to_distances_from_mecatol_rex_;
 
   std::unordered_multimap<Position, DistanceFromPlayerHome> positions_to_distances_from_player_homes_;
 
@@ -91,7 +91,7 @@ private:
 
   void initialize_distances_from_player_homes() noexcept {
     for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
-      for (const std::pair<Position, uint8_t>& position_and_distance_from_target : positions_and_distances_from_target(player_and_home_position.second)) {
+      for (const std::pair<Position, int8_t>& position_and_distance_from_target : positions_and_distances_from_target(player_and_home_position.second)) {
         positions_to_distances_from_player_homes_.insert({position_and_distance_from_target.first, {player_and_home_position.first, position_and_distance_from_target.second}});
       }
     }
@@ -102,9 +102,9 @@ private:
     for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
       if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()) {
         const std::pair<std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator, std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator> range{positions_to_distances_from_player_homes_.equal_range(position_and_tile.first)};
-        std::set<uint8_t> distances_from_homes;
+        std::set<int8_t> distances_from_homes;
         for (std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator position_and_distance = range.first; position_and_distance != range.second; ++position_and_distance) {
-          const std::set<uint8_t>::const_iterator distance_from_home{distances_from_homes.find(position_and_distance->second.distance_from_home())};
+          const std::set<int8_t>::const_iterator distance_from_home{distances_from_homes.find(position_and_distance->second.distance_from_home())};
           if (distance_from_home != distances_from_homes.cend()) {
             // This distance-from-home for this player is the same as at least one other player, so this position is an equidistant position.
             // We can move on to the next position.
@@ -128,7 +128,7 @@ private:
         // In this case, this position is not an equidistant position, so it must be an in-slice position.
         // Find the player whose slice this position lies in.
         const std::pair<std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator, std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator> range{positions_to_distances_from_player_homes_.equal_range(position_and_tile.first)};
-        uint8_t minimum_distance_from_home{std::numeric_limits<uint8_t>::max()};
+        int8_t minimum_distance_from_home{std::numeric_limits<int8_t>::max()};
         Player player{Player::Player1};
         for (std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator position_and_distance = range.first; position_and_distance != range.second; ++position_and_distance) {
           if (position_and_distance->second.distance_from_home() < minimum_distance_from_home) {
@@ -143,11 +143,11 @@ private:
 
   void initialize_lateral_positions() noexcept {
     for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
-      const uint8_t home_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)->second};
+      const int8_t home_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)->second};
       for (const Position& neighbor_of_home : positions_to_tiles_.find(player_and_home_position.second)->second.position_and_hyperlane_neighbors()) {
         // This position is a neighbor of this player's home, but it may or may not exist on the board.
         const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_of_home)};
-        const std::unordered_map<Position, uint8_t>::const_iterator neighbor_position_and_distance{positions_to_distances_from_mecatol_rex_.find(neighbor_of_home)};
+        const std::unordered_map<Position, int8_t>::const_iterator neighbor_position_and_distance{positions_to_distances_from_mecatol_rex_.find(neighbor_of_home)};
         if (
           neighbor_position_and_tile != positions_to_tiles_.cend()
           && neighbor_position_and_tile->second.is_planetary_anomaly_wormhole_or_empty()
@@ -164,12 +164,12 @@ private:
 
   void initialize_pathways_to_mecatol_rex() noexcept {
     for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
-      const uint8_t home_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)->second};
+      const int8_t home_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)->second};
       std::set<Pathway> pathways;
       for (const Position& neighbor_of_home : positions_to_tiles_.find(player_and_home_position.second)->second.position_and_hyperlane_neighbors()) {
         // This position is a neighbor of this player's home, but it may or may not exist on the board.
         const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_of_home)};
-        const std::unordered_map<Position, uint8_t>::const_iterator neighbor_position_and_distance{positions_to_distances_from_mecatol_rex_.find(neighbor_of_home)};
+        const std::unordered_map<Position, int8_t>::const_iterator neighbor_position_and_distance{positions_to_distances_from_mecatol_rex_.find(neighbor_of_home)};
         if (
           neighbor_position_and_tile != positions_to_tiles_.cend()
           && !neighbor_position_and_tile->second.is_hyperlane()
@@ -199,7 +199,7 @@ private:
       // At this point, the pathways to Mecatol Rex have all been assembled.
       // However, due to hyperlanes, some pathways to Mecatol Rex may be longer than others.
       // Keep only the shortest pathways.
-      uint8_t shortest_pathway_distance_to_mecatol_rex{std::numeric_limits<uint8_t>::max()};
+      int8_t shortest_pathway_distance_to_mecatol_rex{std::numeric_limits<int8_t>::max()};
       for (const Pathway& pathway : pathways) {
         if (pathway.size() < shortest_pathway_distance_to_mecatol_rex) {
           shortest_pathway_distance_to_mecatol_rex = pathway.size();
@@ -221,7 +221,7 @@ private:
     // If 2 or more positions are tied for preferred space dock position, choose the one with the largest distance from other players' homes. The same applies to the alternate positions.
     for (const Player player : players_) {
       const std::pair<std::multimap<Player, Pathway>::const_iterator, std::multimap<Player, Pathway>::const_iterator> player_and_pathways{players_to_pathways_to_mecatol_rex_.equal_range(player)};
-      const uint8_t pathway_distance{static_cast<uint8_t>(player_and_pathways.first->second.size())};
+      const int8_t pathway_distance{static_cast<int8_t>(player_and_pathways.first->second.size())};
       // If the pathways to Mecatol Rex have length 1, the player's home is adjacent to Mecatol Rex, so there are no preferred or alternate positions.
       if (pathway_distance == 2) {
         // If the pathways to Mecatol Rex have length 2, there is only a preferred position per pathway, and no alternate position.
@@ -269,9 +269,9 @@ private:
   }
 
   /// \brief Returns a map of all non-hyperlane tiles present on the board along with their distance to a given target position.
-  std::unordered_map<Position, uint8_t> positions_and_distances_from_target(const Position& target_position) const noexcept {
-    std::unordered_map<Position, uint8_t> position_to_distance_from_target;
-    uint8_t distance_from_target_position{0};
+  std::unordered_map<Position, int8_t> positions_and_distances_from_target(const Position& target_position) const noexcept {
+    std::unordered_map<Position, int8_t> position_to_distance_from_target;
+    int8_t distance_from_target_position{0};
     std::unordered_set<Position> visited;
     std::unordered_set<Position> current_neighbors{target_position};
     std::unordered_set<Position> next_neighbors;
@@ -313,7 +313,7 @@ private:
   std::set<Position> neighbors_nearer_to_mecatol_rex(const Position& reference) const noexcept {
     std::set<Position> neighbors_nearer_to_mecatol_rex_;
     const std::unordered_map<Position, Tile>::const_iterator reference_position_and_tile{positions_to_tiles_.find(reference)};
-    const std::unordered_map<Position, uint8_t>::const_iterator reference_position_and_distance{positions_to_distances_from_mecatol_rex_.find(reference)};
+    const std::unordered_map<Position, int8_t>::const_iterator reference_position_and_distance{positions_to_distances_from_mecatol_rex_.find(reference)};
     if (
       reference_position_and_tile != positions_to_tiles_.cend()
       && !reference_position_and_tile->second.is_hyperlane()
@@ -323,7 +323,7 @@ private:
       const std::set<Position> neighbors{reference_position_and_tile->second.position_and_hyperlane_neighbors()};
       for (const Position& neighbor : neighbors) {
         const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor)};
-        const std::unordered_map<Position, uint8_t>::const_iterator neighbor_position_and_distance{positions_to_distances_from_mecatol_rex_.find(neighbor)};
+        const std::unordered_map<Position, int8_t>::const_iterator neighbor_position_and_distance{positions_to_distances_from_mecatol_rex_.find(neighbor)};
         if (
           neighbor_position_and_tile != positions_to_tiles_.cend()
           && !neighbor_position_and_tile->second.is_hyperlane()
@@ -353,7 +353,7 @@ private:
     // Obtain the pathways for this player.
     const std::pair<std::multimap<Player, Pathway>::const_iterator, std::multimap<Player, Pathway>::const_iterator> player_and_pathways{players_to_pathways_to_mecatol_rex_.equal_range(player)};
     // Compute the maximum-minimum distance from other players' homes for all positions at the pathway index.
-    uint8_t maximum_distance_from_other_players_homes_{0};
+    int8_t maximum_distance_from_other_players_homes_{0};
     for (
       std::multimap<Player, Pathway>::const_iterator player_and_pathway = player_and_pathways.first;
       player_and_pathway != player_and_pathways.second;
@@ -362,7 +362,7 @@ private:
       const Position position{player_and_pathway->second[pathway_index]};
       // Optimal positions cannot be equidistant positions.
       if (equidistant_positions_.find(position) == equidistant_positions_.cend()) {
-        const uint8_t minimum_distance_from_other_players_homes_for_this_pathway{minimum_distance_from_other_players_homes(player, position)};
+        const int8_t minimum_distance_from_other_players_homes_for_this_pathway{minimum_distance_from_other_players_homes(player, position)};
         if (minimum_distance_from_other_players_homes_for_this_pathway > maximum_distance_from_other_players_homes_) {
           maximum_distance_from_other_players_homes_ = minimum_distance_from_other_players_homes_for_this_pathway;
         }
@@ -378,7 +378,7 @@ private:
       const Position position{player_and_pathway->second[pathway_index]};
       // Optimal positions cannot be equidistant positions.
       if (equidistant_positions_.find(position) == equidistant_positions_.cend()) {
-        const uint8_t minimum_distance_from_other_players_homes_for_this_pathway{minimum_distance_from_other_players_homes(player, position)};
+        const int8_t minimum_distance_from_other_players_homes_for_this_pathway{minimum_distance_from_other_players_homes(player, position)};
         if (minimum_distance_from_other_players_homes_for_this_pathway == maximum_distance_from_other_players_homes_) {
           optimal_positions_.insert(position);
         }
@@ -388,8 +388,8 @@ private:
   }
 
   /// \brief Helper function used during the initialization of the preferred and alternate space dock positions.
-  uint8_t minimum_distance_from_other_players_homes(const Player player, const Position& position) const noexcept {
-    uint8_t minimum_distance_from_other_players_homes_{std::numeric_limits<uint8_t>::max()};
+  int8_t minimum_distance_from_other_players_homes(const Player player, const Position& position) const noexcept {
+    int8_t minimum_distance_from_other_players_homes_{std::numeric_limits<int8_t>::max()};
     const std::pair<
       std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator,
       std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator

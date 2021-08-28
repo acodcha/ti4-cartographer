@@ -17,7 +17,7 @@ public:
 
   Tile(
     const Position& position,
-    const uint8_t distance_to_mecatol_rex,
+    const int8_t distance_to_mecatol_rex,
     const std::set<Player>& nearest_players,
     const std::set<SystemCategory>& system_categories,
     const std::set<Position>& hyperlane_neighbors = {},
@@ -48,7 +48,7 @@ public:
     return position_;
   }
 
-  uint8_t distance_to_mecatol_rex() const noexcept {
+  int8_t distance_to_mecatol_rex() const noexcept {
     return distance_to_mecatol_rex_;
   }
 
@@ -140,7 +140,7 @@ private:
 
   Position position_;
 
-  uint8_t distance_to_mecatol_rex_{0};
+  int8_t distance_to_mecatol_rex_{0};
 
   /// \brief Set of players whose home systems are equally nearest to this tile. Note that player numbering starts at 1.
   /// \details If this set contains a single player, then this tile is in that player's slice of the game board.
