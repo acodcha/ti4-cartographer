@@ -193,15 +193,15 @@ private:
     message(space + pad_to_length(Arguments::UsageInformation, length) + space + "Displays this information and exits.");
     message(space + pad_to_length(Arguments::NumberOfPlayersPattern, length) + space + "Required. Choices are 2-8. Specifies the number of players.");
     message(space + pad_to_length(Arguments::GameVersionPattern, length) + space + "Optional. Choices are base or expansion. The default is expansion. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Note that 7 and 8 player games require the expansion.");
-    message(space + pad_to_length(Arguments::LayoutPattern, length) + space + "Optional. Choices vary by number of players. Specifies the board layout. By default, the regular layout is used.");
+    message(space + pad_to_length(Arguments::LayoutPattern, length) + space + "Optional. Choices vary by number of players, but typically include regular, small, or large. The default is regular. Specifies the board layout.");
     message(space + space + "2 players: regular");
-    message(space + space + "3 players: regular");
+    message(space + space + "3 players: regular, small, or large");
     message(space + space + "4 players: regular or large");
     message(space + space + "5 players: regular, small, or large");
     message(space + space + "6 players: regular");
     message(space + space + "7 players: regular or large");
     message(space + space + "8 players: regular or large");
-    message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Choices are very-high, high, medium, low, or very-low. Specifies the degree of expected aggression resulting from the placement of systems on the board. By default, medium is used. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
+    message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Choices are very-high, high, medium, low, or very-low. The default is medium. Specifies the degree of expected aggression resulting from the placement of systems on the board. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
     message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the number of board layout iterations.");
     message(space + pad_to_length(Arguments::QuietMode, length) + space + "Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.");
     message("");

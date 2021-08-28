@@ -55,10 +55,12 @@ ti4cartographer --players <number> [--version <type>] [--layout <type>] [--aggre
 
 - `--players <number>`: Required. Choices are `2`, `3`, `4`, `5`, `6`, `7`, or `8`. Specifies the number of players.
 - `--version <type>`: Optional. Choices are `base` or `expansion`. The default is `expansion`. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Note that 7 and 8 player games require the expansion.
-- `--layout <type>`: Optional. Choices vary by number of players; see the [Board Layouts](#board-layouts) section. Specifies the board layout. Boards for 3, 4, 5, 7, and 8 players have multiple board layout options. By default, the regular layout for the given number of players is used. Boards for 2 and 6 players do not have any layout options.
-- `--aggression <amount>`: Optional. Choices are `very-high`, `high`, `medium`, `low`, or `very-low`. Specifies the degree of expected aggression resulting from the placement of systems on the board. By default, `medium` is used. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.
-- `--iterations <number>`: Optional. The default is 1000000. Specifies the number of board layout iterations.
+- `--layout <type>`: Optional. Choices vary by number of players, but typically include `regular`, `small`, or `large`; see the [Board Layouts](#board-layouts) section. The default is `regular`. Specifies the board layout.
+- `--aggression <amount>`: Optional. Choices are `very-high`, `high`, `medium`, `low`, or `very-low`. The default is `medium`. Specifies the degree of expected aggression resulting from the placement of systems on the board. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.
+- `--iterations <number>`: Optional. The default is `1000000`. Specifies the number of board layout iterations.
 - `--quiet`: Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.
+
+The program computes an optimal board given the arguments and outputs its Tabletop Simulator string as well as a link to visualize the board in Keegan Williams' TI4 Map Generator (<https://keeganw.github.io/ti4/>).
 
 [^ Back to Top](#ti4-cartographer)
 
