@@ -28,7 +28,7 @@ private:
 
   std::map<Position, Tile> tiles_;
 
-  int8_t maximum_distance_to_mecatol_rex_{0};
+  Distance maximum_distance_to_mecatol_rex_{0};
 
   void initialize_player_scores() noexcept {
     for (const Player player : players(number_of_players(layout))) {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Distance.hpp"
 #include "Position.hpp"
 
 namespace TI4Cartographer {
@@ -29,6 +30,10 @@ public:
 
   std::size_t size() const noexcept {
     return data_.size();
+  }
+
+  Distance distance() const noexcept {
+    return {static_cast<int8_t>(data_.size())};
   }
 
   const Position& at(const std::size_t index) const {

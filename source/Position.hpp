@@ -191,10 +191,10 @@ private:
 
 namespace std {
 
-  template <> struct hash<TI4Cartographer::Position> {
-    size_t operator()(const TI4Cartographer::Position& position) const {
-      return hash<int8_t>()(position.layer()) ^ hash<int8_t>()(position.azimuth());
-    }
-  };
+template <> struct hash<TI4Cartographer::Position> {
+  size_t operator()(const TI4Cartographer::Position& position) const {
+    return hash<int8_t>()(position.layer()) ^ hash<int8_t>()(position.azimuth());
+  }
+};
 
 } // namespace std

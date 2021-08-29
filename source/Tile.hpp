@@ -17,7 +17,7 @@ public:
 
   Tile(
     const Position& position,
-    const int8_t distance_to_mecatol_rex,
+    const Distance& distance_to_mecatol_rex,
     const std::set<Player>& nearest_players,
     const std::set<SystemCategory>& system_categories,
     const std::set<Position>& hyperlane_neighbors = {},
@@ -48,7 +48,7 @@ public:
     return position_;
   }
 
-  int8_t distance_to_mecatol_rex() const noexcept {
+  const Distance& distance_to_mecatol_rex() const noexcept {
     return distance_to_mecatol_rex_;
   }
 
@@ -140,7 +140,7 @@ private:
 
   Position position_;
 
-  int8_t distance_to_mecatol_rex_{0};
+  Distance distance_to_mecatol_rex_{0};
 
   /// \brief Set of players whose home systems are equally nearest to this tile. Note that player numbering starts at 1.
   /// \details If this set contains a single player, then this tile is in that player's slice of the game board.
@@ -207,10 +207,10 @@ private:
 
 namespace std {
 
-  template <> struct hash<TI4Cartographer::Tile> {
-    size_t operator()(const TI4Cartographer::Tile& tile) const {
-      return hash<TI4Cartographer::Position>()(tile.position());
-    }
-  };
+template <> struct hash<TI4Cartographer::Tile> {
+  size_t operator()(const TI4Cartographer::Tile& tile) const {
+    return hash<TI4Cartographer::Position>()(tile.position());
+  }
+};
 
 } // namespace std

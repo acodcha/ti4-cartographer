@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Distance.hpp"
 #include "Players.hpp"
 
 namespace TI4Cartographer {
@@ -11,13 +12,13 @@ public:
 
   DistanceFromPlayerHome() noexcept {}
 
-  DistanceFromPlayerHome(const Player player, const int8_t distance_from_home) noexcept : player_(player), distance_from_home_(distance_from_home) {}
+  DistanceFromPlayerHome(const Player player, const Distance distance_from_home) noexcept : player_(player), distance_from_home_(distance_from_home) {}
 
   const Player player() const noexcept {
     return player_;
   }
 
-  const int8_t distance_from_home() const noexcept {
+  const Distance distance_from_home() const noexcept {
     return distance_from_home_;
   }
 
@@ -49,7 +50,7 @@ private:
 
   Player player_{Player::Player1};
 
-  int8_t distance_from_home_{0};
+  Distance distance_from_home_{0};
 
 }; // class DistanceFromPlayerHome
 
@@ -57,10 +58,10 @@ private:
 
 namespace std {
 
-  template <> struct hash<TI4Cartographer::DistanceFromPlayerHome> {
-    size_t operator()(const TI4Cartographer::DistanceFromPlayerHome& distance_from_player_home) const {
-      return hash<uint8_t>()(static_cast<uint8_t>(distance_from_player_home.player()));
-    }
-  };
+template <> struct hash<TI4Cartographer::DistanceFromPlayerHome> {
+  size_t operator()(const TI4Cartographer::DistanceFromPlayerHome& distance_from_player_home) const {
+    return hash<uint8_t>()(static_cast<uint8_t>(distance_from_player_home.player()));
+  }
+};
 
 } // namespace std
