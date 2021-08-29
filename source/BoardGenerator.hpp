@@ -20,7 +20,7 @@ public:
 private:
 
   /// \brief Each player's score.
-  std::map<Player, double> player_scores_;
+  std::map<Player, float> player_scores_;
 
   std::vector<std::string> equidistant_system_ids_;
 
@@ -99,9 +99,9 @@ private:
   }
 
   void iterate(const uint64_t maximum_number_of_iterations) {
-    std::map<Player, double> best_player_scores;
+    std::map<Player, float> best_player_scores;
     std::map<Position, Tile> best_tiles;
-    double best_score_imbalance{std::numeric_limits<double>::max()};
+    float best_score_imbalance{std::numeric_limits<float>::max()};
     uint64_t number_of_iterations{0};
     uint64_t number_of_valid_boards{0};
     for (uint64_t counter = 0; counter < maximum_number_of_iterations; ++counter) {
@@ -111,7 +111,7 @@ private:
       if (!contains_adjacent_anomalies_or_wormholes_within_inner_layers()) {
         ++number_of_valid_boards;
         calculate_player_scores();
-        const double score_imbalance_{score_imbalance()};
+        const float score_imbalance_{score_imbalance()};
         if (score_imbalance_ < best_score_imbalance) {
           best_score_imbalance = score_imbalance_;
           best_player_scores = player_scores_;
@@ -160,7 +160,7 @@ private:
   }
 
   void reset_scores() noexcept {
-    for (std::map<Player, double>::iterator player_score = player_scores_.begin(); player_score != player_scores_.end(); ++player_score) {
+    for (std::map<Player, float>::iterator player_score = player_scores_.begin(); player_score != player_scores_.end(); ++player_score) {
       player_score->second = 0.0;
     }
   }
@@ -169,7 +169,7 @@ private:
   void add_system_scores() noexcept {
     for (std::map<Position, Tile>::iterator tile = tiles_.begin(); tile != tiles_.end(); ++tile) {
       if (tile->second.is_planetary_anomaly_wormhole_or_empty()) {
-        const double score{Systems.find({tile->second.system_id()})->score() / tile->second.nearest_players().size()};
+        const float score{Systems.find({tile->second.system_id()})->score() / tile->second.nearest_players().size()};
         for (const Player player : tile->second.nearest_players()) {
           player_scores_[player] += score;
         }
@@ -180,9 +180,9 @@ private:
   /// \brief If a player does not have a clear pathway to Mecatol Rex, the score is penalized.
   void add_pathway_to_mecatol_rex_scores() noexcept {
     for (const std::pair<Player, std::set<Pathway>>& player : PlayerPathwaysToMecatolRex<layout>) {
-      double best_pathway_score{std::numeric_limits<double>::lowest()};
+      float best_pathway_score{std::numeric_limits<float>::lowest()};
       for (const Pathway& pathway : player.second) {
-        double pathway_score{0.0};
+        float pathway_score{0.0};
         std::size_t position_counter{0};
         for (const Position& position : pathway) {
           ++position_counter;
@@ -227,11 +227,11 @@ private:
 
   void add_forward_space_dock_preferred_position_scores() noexcept {
     for (const std::pair<Player, std::set<Position>>& player : PlayerForwardSpaceDockPreferredPositions<layout>) {
-      double best_preferred_position_score{std::numeric_limits<double>::lowest()};
+      float best_preferred_position_score{std::numeric_limits<float>::lowest()};
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
-        double preferred_position_score{0.0};
+        float preferred_position_score{0.0};
         if (system->number_of_planets() > 0 && !system->contains(Anomaly::GravityRift)) {
           preferred_position_score = 2.0 * system->space_dock_score();
           if (system->contains(Anomaly::Nebula)) {
@@ -248,11 +248,11 @@ private:
 
   void add_forward_space_dock_alternate_position_scores() noexcept {
     for (const std::pair<Player, std::set<Position>>& player : PlayerForwardSpaceDockAlternatePositions<layout>) {
-      double best_alternate_position_score{std::numeric_limits<double>::lowest()};
+      float best_alternate_position_score{std::numeric_limits<float>::lowest()};
       for (const Position& position : player.second) {
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
-        double alternate_position_score{0.0};
+        float alternate_position_score{0.0};
         if (system->number_of_planets() > 0 && !system->contains(Anomaly::GravityRift)) {
           alternate_position_score = system->space_dock_score();
           if (system->contains(Anomaly::Nebula)) {
@@ -368,10 +368,10 @@ private:
     return false;
   }
 
-  double score_imbalance() const noexcept {
-    double maximum_score{std::numeric_limits<double>::lowest()};
-    double minimum_score{std::numeric_limits<double>::max()};
-    for (const std::pair<Player, double> player_score : player_scores_) {
+  float score_imbalance() const noexcept {
+    float maximum_score{std::numeric_limits<float>::lowest()};
+    float minimum_score{std::numeric_limits<float>::max()};
+    for (const std::pair<Player, float> player_score : player_scores_) {
       if (player_score.second > maximum_score) {
         maximum_score = player_score.second;
       }
@@ -384,7 +384,7 @@ private:
 
   std::string print_player_scores() const noexcept {
     std::string text;
-    for (const std::pair<Player, double> player_score : player_scores_) {
+    for (const std::pair<Player, float> player_score : player_scores_) {
       if (!text.empty()) {
         text += " ";
       }

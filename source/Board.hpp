@@ -19,7 +19,7 @@ public:
 
 private:
 
-  std::map<Player, double> player_scores_;
+  std::map<Player, float> player_scores_;
 
   std::vector<std::string> equidistant_system_ids_;
 

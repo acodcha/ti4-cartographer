@@ -18,6 +18,6 @@ std::default_random_engine RandomEngine(RandomDevice());
 
 constexpr const uint64_t DefaultMaximumNumberOfIterations{1000000};
 
-constexpr const double ScoreImbalanceTolerance{3.0};
+constexpr const float ScoreImbalanceTolerance{3.0};
 
 } // namespace TI4Cartographer

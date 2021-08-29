@@ -97,7 +97,7 @@ public:
     return faction_;
   }
 
-  double score() const noexcept {
+  float score() const noexcept {
     return score_;
   }
 
@@ -111,7 +111,7 @@ public:
     return highest_planet_resources_;
   }
 
-  double space_dock_score() const noexcept {
+  float space_dock_score() const noexcept {
     const uint8_t highest_planet_resources_{highest_planet_resources()};
     if (highest_planet_resources_ == 0) {
       return 1.0;
@@ -224,7 +224,7 @@ private:
   /// \brief If this system is a home system or the Creuss Gate system, this is its faction.
   std::optional<Faction> faction_;
 
-  double score_{0.0};
+  float score_{0.0};
 
   void check_number_of_planets() const {
     if (planets_.size() > 3) {
@@ -237,8 +237,8 @@ private:
   }
 
   /// \brief The base system score is the sum of the individual planet scores.
-  double individual_planet_scores() const noexcept {
-    double score{0.0};
+  float individual_planet_scores() const noexcept {
+    float score{0.0};
     for (const Planet& planet : planets_) {
       score += planet.score();
     }
@@ -246,7 +246,7 @@ private:
   }
 
   /// \brief It is preferable to have multiple planets in one system due to scoring objectives, command token efficiency, and ease of defending the space area.
-  double number_of_planets_score() const noexcept {
+  float number_of_planets_score() const noexcept {
     const uint8_t number_of_planets_{number_of_planets()};
     if (number_of_planets_ == 1) {
       return 1.0 * number_of_planets_;
@@ -259,8 +259,8 @@ private:
   }
 
   /// \brief Some anomalies are generally beneficial or harmful, whereas others depend heavily on their positioning.
-  double anomalies_score() const noexcept {
-    double total{0.0};
+  float anomalies_score() const noexcept {
+    float total{0.0};
     if (contains(Anomaly::AsteroidField)) {
       // If you have Antimass Deflectors researched, this is effectively an empty system.
       // If you do not, this is worse because it prevents movement and therefore reduces your options.
@@ -285,7 +285,7 @@ private:
   }
 
   /// \brief Wormholes are generally beneficial because they provide additional movement options and lead to the Wormhole Nexus.
-  double wormholes_score() const noexcept {
+  float wormholes_score() const noexcept {
     if (contains_one_or_more_wormholes()) {
       return 1.5;
     }

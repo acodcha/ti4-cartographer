@@ -54,7 +54,7 @@ public:
     return legendary_;
   }
 
-  double score() const noexcept {
+  float score() const noexcept {
     return score_;
   }
 
@@ -99,24 +99,24 @@ private:
 
   std::optional<LegendaryPlanet> legendary_;
 
-  double score_{0.0};
+  float score_{0.0};
 
   void initialize_score() noexcept {
     score_ = utility_score() + voting_score() + technology_specialty_score() + trait_score() + legendary_objective_score() + legendary_component_action_score();
   }
 
   /// \brief This is the main component of a planet's score: it is what the planet is used for when it is exhausted.
-  double utility_score() const noexcept {
-    return static_cast<double>(std::max(resources_, influence_));
+  float utility_score() const noexcept {
+    return static_cast<float>(std::max(resources_, influence_));
   }
 
   /// \brief High influence planets are useful for voting during the Agenda phase.
-  double voting_score() const noexcept {
+  float voting_score() const noexcept {
     return 0.25 * influence_;
   }
 
   /// \brief Planets with a propulsion technology specialty are preferable over other technology specialties, which are in turn preferable to no technology specialty.
-  double technology_specialty_score() const noexcept {
+  float technology_specialty_score() const noexcept {
     if (technology_specialty_.has_value()) {
       switch (technology_specialty_.value()) {
         case TechnologyType::Propulsion:
@@ -137,7 +137,7 @@ private:
   }
 
   /// \brief Cultural planets are slightly preferable to hazardous planets, which are in turn preferable to industrial planets.
-  double trait_score() const noexcept {
+  float trait_score() const noexcept {
     if (trait_.has_value()) {
       switch (trait_.value()) {
         case PlanetTrait::Cultural:
@@ -155,7 +155,7 @@ private:
   }
 
   /// \brief Legendary planets are relevant to scoring objectives.
-  double legendary_objective_score() const noexcept {
+  float legendary_objective_score() const noexcept {
     if (is_legendary()) {
       return 2.0;
     }
@@ -163,7 +163,7 @@ private:
   }
 
   /// \brief Legendary planets grant bonus component actions. Some are preferable to others.
-  double legendary_component_action_score() const noexcept {
+  float legendary_component_action_score() const noexcept {
     if (legendary_.has_value()) {
       switch (legendary_.value()) {
         case LegendaryPlanet::HopesEnd:

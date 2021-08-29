@@ -11,13 +11,13 @@ public:
 
   SystemIdAndScore() noexcept {}
 
-  SystemIdAndScore(const std::string& id, const double score) noexcept : id_(id), score_(score) {}
+  SystemIdAndScore(const std::string& id, const float score) noexcept : id_(id), score_(score) {}
 
   const std::string& id() const noexcept {
     return id_;
   }
 
-  const double score() const noexcept {
+  const float score() const noexcept {
     return score_;
   }
 
@@ -45,7 +45,7 @@ private:
 
   std::string id_;
 
-  double score_{0.0};
+  float score_{0.0};
 
 }; // class SystemIdAndScore
 
@@ -53,10 +53,10 @@ private:
 
 namespace std {
 
-  template <> struct hash<TI4Cartographer::SystemIdAndScore> {
-    size_t operator()(const TI4Cartographer::SystemIdAndScore& system_id_and_score) const {
-      return hash<std::string>()(system_id_and_score.id());
-    }
-  };
+template <> struct hash<TI4Cartographer::SystemIdAndScore> {
+  size_t operator()(const TI4Cartographer::SystemIdAndScore& system_id_and_score) const {
+    return hash<std::string>()(system_id_and_score.id());
+  }
+};
 
 } // namespace std

@@ -63,7 +63,7 @@ std::string snake_case(const std::string& text) noexcept {
 }
 
 /// \brief Print a score.
-std::string score_to_string(const double value) noexcept {
+std::string score_to_string(const float value) noexcept {
   std::ostringstream stream;
   stream << std::fixed << std::setprecision(2);
   if (value >= 0) {
@@ -79,7 +79,7 @@ std::string score_to_string(const double value) noexcept {
 }
 
 /// \brief Print a score imbalance.
-std::string score_imbalance_to_string(const double value) noexcept {
+std::string score_imbalance_to_string(const float value) noexcept {
   std::ostringstream stream;
   stream << std::fixed << std::setprecision(2);
   stream << value;
