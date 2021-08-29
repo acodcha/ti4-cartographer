@@ -14,8 +14,8 @@ public:
 
   Planet(
     const std::string& name,
-    const uint8_t resources,
-    const uint8_t influence,
+    const int8_t resources,
+    const int8_t influence,
     const std::optional<TechnologyType>& technology_specialty,
     const std::optional<PlanetTrait>& trait,
     const std::optional<LegendaryPlanet>& legendary
@@ -34,11 +34,11 @@ public:
     return name_;
   }
 
-  uint8_t resources() const noexcept {
+  int8_t resources() const noexcept {
     return resources_;
   }
 
-  uint8_t influence() const noexcept {
+  int8_t influence() const noexcept {
     return influence_;
   }
 
@@ -89,9 +89,9 @@ private:
   /// \brief Within a system, each planet must have a unique name.
   std::string name_;
 
-  uint8_t resources_{0};
+  int8_t resources_{0};
 
-  uint8_t influence_{0};
+  int8_t influence_{0};
 
   std::optional<TechnologyType> technology_specialty_;
 

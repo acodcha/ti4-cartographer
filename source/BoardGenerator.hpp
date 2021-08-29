@@ -232,7 +232,7 @@ private:
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
         float preferred_position_score{0.0};
-        if (system->number_of_planets() > 0 && !system->contains(Anomaly::GravityRift)) {
+        if (system->planets().size() > 0 && !system->contains(Anomaly::GravityRift)) {
           preferred_position_score = 2.0 * system->space_dock_score();
           if (system->contains(Anomaly::Nebula)) {
             preferred_position_score *= 0.5;
@@ -253,7 +253,7 @@ private:
         const std::map<Position, Tile>::const_iterator tile{tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({tile->second.system_id()})};
         float alternate_position_score{0.0};
-        if (system->number_of_planets() > 0 && !system->contains(Anomaly::GravityRift)) {
+        if (system->planets().size() > 0 && !system->contains(Anomaly::GravityRift)) {
           alternate_position_score = system->space_dock_score();
           if (system->contains(Anomaly::Nebula)) {
             alternate_position_score *= 0.5;

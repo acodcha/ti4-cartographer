@@ -43,36 +43,6 @@ public:
     return id_;
   }
 
-  std::string name() const noexcept {
-    if (planets_.empty() && wormholes_.empty() && anomalies_.empty()) {
-      return "Empty";
-    }
-    std::string text;
-    uint8_t counter{0};
-    for (const Planet& planet : planets_) {
-      if (counter > 0) {
-        text += " + ";
-      }
-      text += planet.name();
-      ++counter;
-    }
-    for (const Anomaly& anomaly : anomalies_) {
-      if (counter > 0) {
-        text += " + ";
-      }
-      text += label(anomaly);
-      ++counter;
-    }
-    for (const Wormhole& wormhole : wormholes_) {
-      if (counter > 0) {
-        text += " + ";
-      }
-      text += label(wormhole);
-      ++counter;
-    }
-    return text;
-  }
-
   GameVersion game_version() const noexcept {
     return game_version_;
   }
@@ -101,8 +71,8 @@ public:
     return score_;
   }
 
-  uint8_t highest_planet_resources() const noexcept {
-    uint8_t highest_planet_resources_{0};
+  int8_t highest_planet_resources() const noexcept {
+    int8_t highest_planet_resources_{0};
     for (const Planet& planet : planets_) {
       if (planet.resources() > highest_planet_resources_) {
         highest_planet_resources_ = planet.resources();
@@ -112,7 +82,7 @@ public:
   }
 
   float space_dock_score() const noexcept {
-    const uint8_t highest_planet_resources_{highest_planet_resources()};
+    const int8_t highest_planet_resources_{highest_planet_resources()};
     if (highest_planet_resources_ == 0) {
       return 1.0;
     } else if (highest_planet_resources_ == 1) {
@@ -122,10 +92,6 @@ public:
     } else if (highest_planet_resources_ >= 3) {
       return 4.5;
     }
-  }
-
-  uint8_t number_of_planets() const noexcept {
-    return static_cast<uint8_t>(planets_.size());
   }
 
   bool contains(const Anomaly anomaly_type) const noexcept {
@@ -156,14 +122,14 @@ public:
     return !contains(Wormhole::Beta);
   }
 
-  std::string print() const noexcept {
-    std::string text{"#" + id_ + ":  "};
-    uint8_t counter{0};
+  std::string name() const noexcept {
+    std::string text;
+    int8_t counter{0};
     for (const Planet& planet : planets_) {
       if (counter > 0) {
         text += "  +  ";
       }
-      text += planet.print();
+      text += planet.name();
       ++counter;
     }
     for (const Anomaly& anomaly : anomalies_) {
@@ -184,6 +150,10 @@ public:
       text += "Empty";
     }
     return text;
+  }
+
+  std::string print() const noexcept {
+    return "#" + id_ + ":  " + name();
   }
 
   bool operator==(const System& other) const noexcept {
@@ -247,7 +217,7 @@ private:
 
   /// \brief It is preferable to have multiple planets in one system due to scoring objectives, command token efficiency, and ease of defending the space area.
   float number_of_planets_score() const noexcept {
-    const uint8_t number_of_planets_{number_of_planets()};
+    const std::size_t number_of_planets_{planets_.size()};
     if (number_of_planets_ == 1) {
       return 1.0 * number_of_planets_;
     } else if (number_of_planets_ == 2) {
