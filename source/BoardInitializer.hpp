@@ -2,19 +2,19 @@
 
 #include "DistanceFromPlayerHome.hpp"
 #include "Pathway.hpp"
-#include "Tiles6Players.hpp"
+#include "Tiles.hpp"
 
 namespace TI4Cartographer {
 
 /// \brief Initializer for the Board class.
-template <Layout layout> class BoardInitializer {
+class BoardInitializer {
 
 public:
 
-  BoardInitializer() noexcept {
-    initialize_tiles();
+  BoardInitializer(const Layout layout) noexcept {
+    initialize_tiles(layout);
     initialize_mecatol_rex_position();
-    initialize_players();
+    initialize_players(layout);
     initialize_players_home_positions();
     initialize_distances_from_mecatol_rex();
     initialize_distances_from_player_homes();
@@ -58,8 +58,8 @@ protected:
 
 private:
 
-  void initialize_tiles() noexcept {
-    for (const Tile& tile : Tiles<layout>) {
+  void initialize_tiles(const Layout layout) noexcept {
+    for (const Tile& tile : tiles(layout)) {
       positions_to_tiles_.insert({tile.position(), tile});
     }
   }
@@ -72,7 +72,7 @@ private:
     }
   }
 
-  void initialize_players() noexcept {
+  void initialize_players(const Layout layout) noexcept {
     players_ = players(number_of_players(layout));
   }
 

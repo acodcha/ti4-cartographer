@@ -8,13 +8,13 @@
 namespace TI4Cartographer {
 
 /// \brief Arrangement of tiles that form a board.
-template <Layout layout> class Board : public BoardInitializer<layout> {
+class Board : public BoardInitializer {
 
 public:
 
-  Board(const GameVersion game_version, const Aggression aggression) noexcept : BoardInitializer<layout>() {
+  Board(const GameVersion game_version, const Layout layout, const Aggression aggression) noexcept : BoardInitializer(layout) {
     initialize_player_scores();
-    initialize_system_ids(game_version, aggression);
+    initialize_system_ids(game_version, layout, aggression);
   }
 
 private:
@@ -31,7 +31,7 @@ private:
     }
   }
 
-  void initialize_system_ids(const GameVersion game_version, const Aggression aggression) noexcept {
+  void initialize_system_ids(const GameVersion game_version, const Layout layout, const Aggression aggression) noexcept {
     const SelectedSystemIds selected_system_ids{game_version, layout};
     std::vector<SystemIdAndScore> system_ids_and_scores;
     for (const std::string& id : selected_system_ids) {

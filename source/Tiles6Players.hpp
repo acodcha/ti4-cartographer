@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tiles.hpp"
+#include "TilesBase.hpp"
 
 namespace TI4Cartographer {
 
@@ -53,7 +53,7 @@ template <> const std::map<Player, std::set<Pathway>> PlayerPathwaysToMecatolRex
   {Player::Player6, {{Pathway{{Position{2, 2}, Position{1, 1}}}}}}
 };
 
-template <> const std::map<Player, std::set<Position>> PlayerForwardSpaceDockPreferredPositions<Layout::Players6>{
+template <> const std::map<Player, std::set<Position>> PlayerSpaceDockPreferredPositions<Layout::Players6>{
   {Player::Player1, {Position{2, 4}}},
   {Player::Player2, {Position{2, 6}}},
   {Player::Player3, {Position{2, 8}}},
@@ -62,7 +62,7 @@ template <> const std::map<Player, std::set<Position>> PlayerForwardSpaceDockPre
   {Player::Player6, {Position{2, 2}}}
 };
 
-template <> const std::map<Player, std::set<Position>> PlayerForwardSpaceDockAlternatePositions<Layout::Players6>{
+template <> const std::map<Player, std::set<Position>> PlayerSpaceDockAlternatePositions<Layout::Players6>{
   {Player::Player1, {Position{1, 2}}},
   {Player::Player2, {Position{1, 3}}},
   {Player::Player3, {Position{1, 4}}},
@@ -71,22 +71,19 @@ template <> const std::map<Player, std::set<Position>> PlayerForwardSpaceDockAlt
   {Player::Player6, {Position{1, 1}}}
 };
 
-template <> const std::map<Player, std::set<Position>> PlayerLateralStarboardPositions<Layout::Players6>{
-  {Player::Player1, {Position{3, 5}}},
-  {Player::Player2, {Position{3, 8}}},
-  {Player::Player3, {Position{3, 11}}},
-  {Player::Player4, {Position{3, 14}}},
-  {Player::Player5, {Position{3, 17}}},
-  {Player::Player6, {Position{3, 2}}}
-};
-
-template <> const std::map<Player, std::set<Position>> PlayerLateralPortPositions<Layout::Players6>{
-  {Player::Player1, {Position{3, 7}}},
+template <> const std::map<Player, std::set<Position>> PlayerLateralPositions<Layout::Players6>{
+  {Player::Player1, {Position{3,  5}}},
+  {Player::Player1, {Position{3,  7}}},
+  {Player::Player2, {Position{3,  8}}},
   {Player::Player2, {Position{3, 10}}},
+  {Player::Player3, {Position{3, 11}}},
   {Player::Player3, {Position{3, 13}}},
+  {Player::Player4, {Position{3, 14}}},
   {Player::Player4, {Position{3, 16}}},
-  {Player::Player5, {Position{3, 1}}},
-  {Player::Player6, {Position{3, 4}}}
+  {Player::Player5, {Position{3, 17}}},
+  {Player::Player5, {Position{3,  1}}},
+  {Player::Player6, {Position{3,  2}}},
+  {Player::Player6, {Position{3,  4}}}
 };
 
 } // namespace TI4Cartographer

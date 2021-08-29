@@ -10,7 +10,7 @@ class Distance {
 
 public:
 
-  Distance() noexcept {}
+  constexpr Distance() noexcept {}
 
   constexpr Distance(const int8_t value) noexcept : value_(value) {}
 
@@ -106,7 +106,7 @@ public:
 
 private:
 
-  int8_t value_;
+  int8_t value_{0};
 
 }; // class Distance
 
