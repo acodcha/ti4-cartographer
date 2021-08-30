@@ -143,18 +143,18 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
   }}
 };
 
-template <SystemCategory system_category> uint8_t number_of_systems_per_player(const Layout layout) noexcept {
-  const std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>>::const_iterator found_system_category{
-    system_categories_to_layouts_to_number_of_systems_per_player.find(system_category)
-  };
+uint8_t number_of_systems_per_player(const SystemCategory system_category, const Layout layout) noexcept {
+  const std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>>::const_iterator found_system_category{system_categories_to_layouts_to_number_of_systems_per_player.find(system_category)};
   if (found_system_category != system_categories_to_layouts_to_number_of_systems_per_player.cend()) {
     const std::unordered_map<Layout, uint8_t>::const_iterator found_layout{found_system_category->second.find(layout)};
     if (found_layout != found_system_category->second.cend()) {
       return found_layout->second;
+    } else {
+      return 0;
     }
+  } else {
     return 0;
   }
-  return 0;
 }
 
 } // namespace TI4Cartographer

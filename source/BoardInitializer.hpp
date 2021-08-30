@@ -1,6 +1,5 @@
 #pragma once
 
-#include "DistanceFromPlayerHome.hpp"
 #include "Pathway.hpp"
 #include "Tiles.hpp"
 
@@ -17,9 +16,8 @@ public:
     initialize_players(layout);
     initialize_players_home_positions();
     initialize_distances_from_mecatol_rex();
-    initialize_distances_from_player_homes();
-    initialize_equidistant_positions();
-    initialize_in_slice_positions();
+    initialize_positions_to_player_home_distances();
+    initialize_relevant_players_and_equidistant_positions();
     initialize_lateral_positions();
     initialize_pathways_to_mecatol_rex();
     initialize_space_dock_positions();
@@ -38,13 +36,12 @@ protected:
 
   std::unordered_map<Position, Distance> positions_to_distances_from_mecatol_rex_;
 
-  std::unordered_multimap<Position, DistanceFromPlayerHome> positions_to_distances_from_player_homes_;
+  std::unordered_map<Position, std::map<Player, Distance>> positions_to_players_home_distances_;
+
+  std::unordered_map<Position, std::set<Player>> positions_to_relevant_players_;
 
   /// \brief Group of positions that are equidistant to 2 or more players' homes.
   std::set<Position> equidistant_positions_;
-
-  /// \brief Group of in-slice positions for each player, i.e. positions that are nearer to that player's home than other players' homes.
-  std::multimap<Player, Position> players_to_in_slice_positions_;
 
   /// \brief Group of lateral positions for each player, i.e. positions that are not nearer to Mecatol Rex than each player's home.
   std::multimap<Player, Position> players_to_lateral_positions_;
@@ -89,54 +86,49 @@ private:
     positions_to_distances_from_mecatol_rex_ = positions_and_distances_from_target(mecatol_rex_position_);
   }
 
-  void initialize_distances_from_player_homes() noexcept {
+  void initialize_positions_to_player_home_distances() noexcept {
     for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
-      for (const std::pair<Position, Distance>& position_and_distance_from_target : positions_and_distances_from_target(player_and_home_position.second)) {
-        positions_to_distances_from_player_homes_.insert({position_and_distance_from_target.first, {player_and_home_position.first, position_and_distance_from_target.second}});
+      const Player player{player_and_home_position.first};
+      const Position home_position{player_and_home_position.second};
+      for (const std::pair<Position, Distance>& position_and_distance_from_target : positions_and_distances_from_target(home_position)) {
+        const Position position{position_and_distance_from_target.first};
+        const Distance distance{position_and_distance_from_target.second};
+        std::pair<Player, Distance> player_and_distance{player, distance};
+        const std::unordered_multimap<Position, std::map<Player, Distance>>::iterator position_to_players_home_distances{positions_to_players_home_distances_.find(position)};
+        if (position_to_players_home_distances != positions_to_players_home_distances_.end()) {
+          position_to_players_home_distances->second.insert({player, distance});
+        } else {
+          positions_to_players_home_distances_.insert({position, {{player, distance}}});
+        }
       }
     }
   }
 
-  /// \brief If at least two players' homes are the same distance from a given position, then that position is an equidistant position.
-  void initialize_equidistant_positions() noexcept {
+  void initialize_relevant_players_and_equidistant_positions() noexcept {
     for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
       if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()) {
-        const std::pair<std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator, std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator> range{positions_to_distances_from_player_homes_.equal_range(position_and_tile.first)};
-        std::set<Distance> distances_from_homes;
-        for (std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator position_and_distance = range.first; position_and_distance != range.second; ++position_and_distance) {
-          const std::set<Distance>::const_iterator distance_from_home{distances_from_homes.find(position_and_distance->second.distance_from_home())};
-          if (distance_from_home != distances_from_homes.cend()) {
-            // This distance-from-home for this player is the same as at least one other player, so this position is an equidistant position.
-            // We can move on to the next position.
-            equidistant_positions_.insert(position_and_tile.first);
-            break;
-          } else {
-            distances_from_homes.insert(position_and_distance->second.distance_from_home());
+        const std::unordered_map<Position, std::map<Player, Distance>>::const_iterator position_and_players_home_distances{positions_to_players_home_distances_.find(position_and_tile.first)};
+        // Compute the minimum distance.
+        Distance minimum_distance{std::numeric_limits<Distance>::max()};
+        for (const std::pair<Player, Distance>& player_and_distance : position_and_players_home_distances->second) {
+          if (player_and_distance.second < minimum_distance) {
+            minimum_distance = player_and_distance.second;
           }
         }
-      }
-    }
-  }
-
-  /// \brief In-slice positions are nearer to a given player's home than to all other players' homes.
-  void initialize_in_slice_positions() noexcept {
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
-      if (
-        position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()
-        && equidistant_positions_.find(position_and_tile.first) == equidistant_positions_.cend()
-      ) {
-        // In this case, this position is not an equidistant position, so it must be an in-slice position.
-        // Find the player whose slice this position lies in.
-        const std::pair<std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator, std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator> range{positions_to_distances_from_player_homes_.equal_range(position_and_tile.first)};
-        Distance minimum_distance_from_home{std::numeric_limits<Distance>::max()};
-        Player player{Player::Player1};
-        for (std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator position_and_distance = range.first; position_and_distance != range.second; ++position_and_distance) {
-          if (position_and_distance->second.distance_from_home() < minimum_distance_from_home) {
-            minimum_distance_from_home = position_and_distance->second.distance_from_home();
-            player = position_and_distance->second.player();;
+        // Find the relevant players.
+        std::set<Player> relevant_players;
+        for (const std::pair<Player, Distance>& player_and_distance : position_and_players_home_distances->second) {
+          if (player_and_distance.second == minimum_distance) {
+            relevant_players.insert(player_and_distance.first);
           }
         }
-        players_to_in_slice_positions_.insert({player, position_and_tile.first});
+        // Initialize the relevant players.
+          positions_to_relevant_players_.insert({position_and_tile.first, relevant_players});
+        // Initialize the equidistant positions.
+        if (relevant_players.size() > 1) {
+          // This is an equidistant position.
+          equidistant_positions_.insert(position_and_tile.first);
+        }
       }
     }
   }
@@ -390,20 +382,12 @@ private:
   /// \brief Helper function used during the initialization of the preferred and alternate space dock positions.
   Distance minimum_distance_from_other_players_homes(const Player player, const Position& position) const noexcept {
     Distance minimum_distance_from_other_players_homes_{std::numeric_limits<Distance>::max()};
-    const std::pair<
-      std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator,
-      std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator
-    > position_and_distances_from_player_homes{positions_to_distances_from_player_homes_.equal_range(position)};
-    for (
-      std::unordered_multimap<Position, DistanceFromPlayerHome>::const_iterator position_and_distance_from_player_home = position_and_distances_from_player_homes.first;
-      position_and_distance_from_player_home != position_and_distances_from_player_homes.second;
-      ++position_and_distance_from_player_home
-    ) {
-      if (
-        player != position_and_distance_from_player_home->second.player()
-        && position_and_distance_from_player_home->second.distance_from_home() < minimum_distance_from_other_players_homes_
-      ) {
-        minimum_distance_from_other_players_homes_ = position_and_distance_from_player_home->second.distance_from_home();
+    const std::unordered_map<Position, std::map<Player, Distance>>::const_iterator position_to_players_home_distances{positions_to_players_home_distances_.find(position)};
+    if (position_to_players_home_distances != positions_to_players_home_distances_.cend()) {
+      for (const std::pair<Player, Distance>& player_and_home_distance : position_to_players_home_distances->second) {
+        if (player != player_and_home_distance.first && player_and_home_distance.second > minimum_distance_from_other_players_homes_) {
+          minimum_distance_from_other_players_homes_ = player_and_home_distance.second;
+        }
       }
     }
     return minimum_distance_from_other_players_homes_;

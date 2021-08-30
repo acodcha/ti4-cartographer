@@ -13,7 +13,7 @@ public:
     const Layout layout,
     const Aggression aggression,
     const uint64_t maximum_number_of_iterations,
-    const SelectedSystemIds& selected_system_ids
+    const OldSelectedSystemIds& selected_system_ids
   ) {
     initialize_player_scores(layout);
     initialize_system_ids(layout, aggression, selected_system_ids);
@@ -51,7 +51,7 @@ private:
     }
   }
 
-  void initialize_system_ids(const Layout layout, const Aggression aggression, const SelectedSystemIds& selected_system_ids) noexcept {
+  void initialize_system_ids(const Layout layout, const Aggression aggression, const OldSelectedSystemIds& selected_system_ids) noexcept {
     const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(tiles(layout))};
     std::vector<SystemIdAndScore> system_ids_and_scores;
     for (const std::string& id : selected_system_ids) {

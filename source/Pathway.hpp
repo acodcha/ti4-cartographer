@@ -102,14 +102,14 @@ private:
 
 namespace std {
 
-  template <> struct hash<TI4Cartographer::Pathway> {
-    size_t operator()(const TI4Cartographer::Pathway& pathway) const {
-      size_t value{7};
-      for (const TI4Cartographer::Position& position : pathway) {
-        value ^= hash<TI4Cartographer::Position>()(position);
-      }
-      return value;
+template <> struct hash<TI4Cartographer::Pathway> {
+  size_t operator()(const TI4Cartographer::Pathway& pathway) const {
+    size_t value{7};
+    for (const TI4Cartographer::Position& position : pathway) {
+      value ^= hash<TI4Cartographer::Position>()(position);
     }
-  };
+    return value;
+  }
+};
 
 } // namespace std
