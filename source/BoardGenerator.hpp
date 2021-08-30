@@ -320,8 +320,6 @@ private:
     message("Tabletop Simulator string: " + print_tabletop_simulator_string());
     quiet_message(print_tabletop_simulator_string());
     message("Runtime: " + chronometre.print());
-    message("End of " + ProgramName + ".");
-    message(Separator);
   }
 
   bool contains_adjacent_anomalies_or_wormholes_within_inner_layers() const noexcept {

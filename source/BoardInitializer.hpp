@@ -40,6 +40,8 @@ protected:
   /// \brief Each position's distance to the Mecatol Rex system.
   std::unordered_map<Position, Distance> positions_to_distances_from_mecatol_rex_;
 
+  Distance maximum_distance_from_mecatol_rex_{0};
+
   /// \brief Each position's distance to each player's home system (or Creuss Gate system, if applicable).
   std::unordered_map<Position, std::map<Player, Distance>> positions_to_players_home_distances_;
 
@@ -92,6 +94,11 @@ private:
 
   void initialize_distances_from_mecatol_rex() noexcept {
     positions_to_distances_from_mecatol_rex_ = positions_and_distances_from_target(mecatol_rex_position_);
+    for (const std::pair<Position, Distance>& position_and_distance_from_mecatol_rex : positions_to_distances_from_mecatol_rex_) {
+      if (position_and_distance_from_mecatol_rex.second > maximum_distance_from_mecatol_rex_) {
+        maximum_distance_from_mecatol_rex_ = position_and_distance_from_mecatol_rex.second;
+      }
+    }
   }
 
   void initialize_distances_from_players_homes() noexcept {

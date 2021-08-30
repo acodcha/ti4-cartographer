@@ -60,6 +60,10 @@ public:
     return system_categories_;
   }
 
+  bool is_adjacent_to_mecatol_rex() const noexcept {
+    return distance_to_mecatol_rex_ <= Distance{1};
+  }
+
   bool system_categories_contains(const SystemCategory system_category) const noexcept {
     if (system_categories_.find(system_category) != system_categories_.cend()) {
       return true;
