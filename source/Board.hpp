@@ -79,7 +79,7 @@ private:
     uint8_t in_slice_system_ids_index{0};
     for (std::unordered_map<Position, Tile>::iterator position_and_tile = positions_to_tiles_.begin(); position_and_tile != positions_to_tiles_.end(); ++position_and_tile) {
       if (position_and_tile->second.is_planetary_anomaly_wormhole_or_empty()) {
-        if (position_and_tile->second.is_equidistant()) {
+        if (equidistant_positions_.find(position_and_tile->first) != equidistant_positions_.cend()) {
           position_and_tile->second.set_system_id(selected_system_ids_.equidistant()[equidistant_system_ids_index]);
           ++equidistant_system_ids_index;
         } else {
@@ -212,14 +212,14 @@ private:
               pathway_score += -3.0;
             }
             if (system->contains(Anomaly::Nebula)) {
-              if (position_and_tile->second.is_adjacent_to_mecatol_rex()) {
+              if (positions_to_distances_from_mecatol_rex_.find(position_and_tile->first)->second <= Distance{1}) {
                 pathway_score += 0.0;
               } else {
                 pathway_score += -5.0;
               }
             }
             if (system->contains(Anomaly::GravityRift)) {
-              if (position_and_tile->second.is_adjacent_to_mecatol_rex()) {
+              if (positions_to_distances_from_mecatol_rex_.find(position_and_tile->first)->second <= Distance{1}) {
                 pathway_score += -5.0;
               } else {
                 pathway_score += -15.0;
