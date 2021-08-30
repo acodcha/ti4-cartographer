@@ -105,23 +105,25 @@ private:
 
   /// \brief If a player's lateral systems protect his/her home system, the score is increased.
   void add_lateral_system_scores() noexcept {
-    for (const std::pair<Player, Position>& player_and_position : this->players_to_lateral_positions_) {
-      const std::unordered_map<Position, Tile>::const_iterator position_and_tile{this->positions_to_tiles_.find(player_and_position.second)};
-      const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-      if (system->contains(Anomaly::AsteroidField)) {
-        player_scores_[player_and_position.first] += 1.0;
-      }
-      if (system->contains(Anomaly::GravityRift)) {
-        player_scores_[player_and_position.first] -= 2.0;
-      }
-      if (system->contains(Anomaly::Nebula)) {
-        player_scores_[player_and_position.first] += 2.0;
-      }
-      if (system->contains(Anomaly::Supernova)) {
-        player_scores_[player_and_position.first] += 3.0;
-      }
-      if (system->contains_one_or_more_wormholes()) {
-        player_scores_[player_and_position.first] += -2.0;
+    for (const std::pair<Player, std::set<Position>>& player_and_lateral_positions : this->players_to_lateral_positions_) {
+      for (const Position& position : player_and_lateral_positions.second) {
+        const std::unordered_map<Position, Tile>::const_iterator position_and_tile{this->positions_to_tiles_.find(position)};
+        const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+        if (system->contains(Anomaly::AsteroidField)) {
+          player_scores_[player_and_lateral_positions.first] += 1.0;
+        }
+        if (system->contains(Anomaly::GravityRift)) {
+          player_scores_[player_and_lateral_positions.first] += -3.0;
+        }
+        if (system->contains(Anomaly::Nebula)) {
+          player_scores_[player_and_lateral_positions.first] += 2.0;
+        }
+        if (system->contains(Anomaly::Supernova)) {
+          player_scores_[player_and_lateral_positions.first] += 3.0;
+        }
+        if (system->contains_one_or_more_wormholes()) {
+          player_scores_[player_and_lateral_positions.first] += -2.0;
+        }
       }
     }
   }

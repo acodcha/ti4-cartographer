@@ -16,11 +16,11 @@ public:
     initialize_players(layout);
     initialize_players_home_positions();
     initialize_distances_from_mecatol_rex();
-    initialize_positions_to_player_home_distances();
+    initialize_distances_from_players_homes();
     initialize_relevant_players_and_equidistant_positions();
     initialize_lateral_positions();
-    initialize_pathways_to_mecatol_rex();
-    initialize_space_dock_positions();
+    initialize_mecatol_rex_pathways();
+    initialize_preferred_and_alternate_positions();
   }
 
 protected:
@@ -28,30 +28,38 @@ protected:
   /// \brief Collection of tiles that form the board, indexed by their positions.
   std::unordered_map<Position, Tile> positions_to_tiles_;
 
+  /// \brief Position of the Mecatol Rex system.
   Position mecatol_rex_position_;
 
+  /// \brief List of all players.
   std::set<Player> players_;
 
+  /// \brief Positions of the home system of each player.
   std::map<Player, Position> players_to_home_positions_;
 
+  /// \brief Each position's distance to the Mecatol Rex system.
   std::unordered_map<Position, Distance> positions_to_distances_from_mecatol_rex_;
 
+  /// \brief Each position's distance to each player's home system (or Creuss Gate system, if applicable).
   std::unordered_map<Position, std::map<Player, Distance>> positions_to_players_home_distances_;
 
+  /// \brief A position's relevant players are players who have this position in their slice or as an equidistant position.
   std::unordered_map<Position, std::set<Player>> positions_to_relevant_players_;
 
   /// \brief Group of positions that are equidistant to 2 or more players' homes.
   std::set<Position> equidistant_positions_;
 
   /// \brief Group of lateral positions for each player, i.e. positions that are not nearer to Mecatol Rex than each player's home.
-  std::multimap<Player, Position> players_to_lateral_positions_;
+  std::map<Player, std::set<Position>> players_to_lateral_positions_;
 
   /// \brief Pathways to Mecatol Rex may include equidistant positions and always end with the Mecatol Rex position itself.
-  std::multimap<Player, Pathway> players_to_pathways_to_mecatol_rex_;
+  std::map<Player, std::set<Pathway>> players_to_mecatol_rex_pathways_;
 
-  std::multimap<Player, Position> players_to_preferred_space_dock_positions_;
+  /// \brief Preferred positions are positions where a player would ideally want to construct their second space dock and use as a forward base.
+  std::map<Player, std::set<Position>> players_to_preferred_positions_;
 
-  std::multimap<Player, Position> players_to_alternate_space_dock_positions_;
+  /// \brief Alternate positions are positiosn where a player would ideally want to construct their third space dock and use as a forward base.
+  std::map<Player, std::set<Position>> players_to_alternate_positions_;
 
 private:
 
@@ -86,7 +94,7 @@ private:
     positions_to_distances_from_mecatol_rex_ = positions_and_distances_from_target(mecatol_rex_position_);
   }
 
-  void initialize_positions_to_player_home_distances() noexcept {
+  void initialize_distances_from_players_homes() noexcept {
     for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
       const Player player{player_and_home_position.first};
       const Position home_position{player_and_home_position.second};
@@ -136,6 +144,7 @@ private:
   void initialize_lateral_positions() noexcept {
     for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
       const Distance home_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)->second};
+      std::set<Position> lateral_positions;
       for (const Position& neighbor_of_home : positions_to_tiles_.find(player_and_home_position.second)->second.position_and_hyperlane_neighbors()) {
         // This position is a neighbor of this player's home, but it may or may not exist on the board.
         const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_of_home)};
@@ -148,13 +157,14 @@ private:
         ) {
           // This position exists on the board, is of the correct system category, and is at an equal or greater distance from Mecatol Rex than this player's home.
           // Therefore, this position is a lateral position for this player.
-          players_to_lateral_positions_.insert({player_and_home_position.first, neighbor_of_home});
+          lateral_positions.insert(neighbor_of_home);
         }
       }
+      players_to_lateral_positions_.insert({player_and_home_position.first, lateral_positions});
     }
   }
 
-  void initialize_pathways_to_mecatol_rex() noexcept {
+  void initialize_mecatol_rex_pathways() noexcept {
     for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
       const Distance home_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)->second};
       std::set<Pathway> pathways;
@@ -197,64 +207,52 @@ private:
           shortest_pathway_distance_to_mecatol_rex = pathway.distance();
         }
       }
+      std::set<Pathway> optimal_pathways;
       for (const Pathway& pathway : pathways) {
         if (pathway.distance() == shortest_pathway_distance_to_mecatol_rex) {
-          players_to_pathways_to_mecatol_rex_.insert({player_and_home_position.first, pathway});
+          optimal_pathways.insert(pathway);
         }
       }
+      players_to_mecatol_rex_pathways_.insert({player_and_home_position.first, optimal_pathways});
     }
   }
 
-  void initialize_space_dock_positions() noexcept {
+  void initialize_preferred_and_alternate_positions() noexcept {
     // The preferred and alternate space dock positions are selected from the pathways to Mecatol Rex.
     // However, the preferred and alternate space dock positions must be in-slice positions rather than equidistant positions.
     // By definitions, for a given player, the pathways to Mecatol Rex all have the same length.
     // Remember that the last position in the pathway is the Mecatol Rex position itself.
     // If 2 or more positions are tied for preferred space dock position, choose the one with the largest distance from other players' homes. The same applies to the alternate positions.
     for (const Player player : players_) {
-      const std::pair<std::multimap<Player, Pathway>::const_iterator, std::multimap<Player, Pathway>::const_iterator> player_and_pathways{players_to_pathways_to_mecatol_rex_.equal_range(player)};
-      const Distance pathway_distance{player_and_pathways.first->second.distance()};
+      const std::map<Player, std::set<Pathway>>::const_iterator player_and_pathways_to_mecatol_rex{players_to_mecatol_rex_pathways_.find(player)};
+      const Distance pathway_distance{player_and_pathways_to_mecatol_rex->second.begin()->distance()};
       // If the pathways to Mecatol Rex have length 1, the player's home is adjacent to Mecatol Rex, so there are no preferred or alternate positions.
       if (pathway_distance == 2) {
         // If the pathways to Mecatol Rex have length 2, there is only a preferred position per pathway, and no alternate position.
         // This distance is relevant to the 3-player small board layout.
-        const std::set<Position> preferred_space_dock_positions{optimal_positions(player, 0)};
-        for (const Position& preferred_space_dock_position : preferred_space_dock_positions) {
-          players_to_preferred_space_dock_positions_.insert({player, preferred_space_dock_position});
-        }
+        const std::set<Position> preferred_positions{optimal_positions(player, 0)};
+        players_to_preferred_positions_.insert({player, preferred_positions});
       } else if (pathway_distance == 3) {
         // If the pathways to Mecatol Rex have length 3, the preferred position is the first one, and the alternate is the second one.
         // This distance is relevant to most board layouts up to 6 players, as well as the 7- and 8-player regular board layouts.
-        const std::set<Position> preferred_space_dock_positions{optimal_positions(player, 0)};
-        for (const Position& preferred_space_dock_position : preferred_space_dock_positions) {
-          players_to_preferred_space_dock_positions_.insert({player, preferred_space_dock_position});
-        }
-        const std::set<Position> alternate_space_dock_positions{optimal_positions(player, 1)};
-        for (const Position& alternate_space_dock_position : alternate_space_dock_positions) {
-          players_to_alternate_space_dock_positions_.insert({player, alternate_space_dock_position});
-        }
+        const std::set<Position> preferred_positions{optimal_positions(player, 0)};
+        players_to_preferred_positions_.insert({player, preferred_positions});
+        const std::set<Position> alternate_positions{optimal_positions(player, 1)};
+        players_to_alternate_positions_.insert({player, alternate_positions});
       } else if (pathway_distance == 4) {
         // If the pathways to Mecatol Rex have length 4, the preferred position is the second (middle) one, and the alternate is the first one.
         // This distance is relevant to the 7- and 8-player large board layouts.
-        const std::set<Position> preferred_space_dock_positions{optimal_positions(player, 1)};
-        for (const Position& preferred_space_dock_position : preferred_space_dock_positions) {
-          players_to_preferred_space_dock_positions_.insert({player, preferred_space_dock_position});
-        }
-        const std::set<Position> alternate_space_dock_positions_1{optimal_positions(player, 0)};
-        for (const Position& alternate_space_dock_position : alternate_space_dock_positions_1) {
-          players_to_alternate_space_dock_positions_.insert({player, alternate_space_dock_position});
-        }
+        const std::set<Position> preferred_positions{optimal_positions(player, 1)};
+        players_to_preferred_positions_.insert({player, preferred_positions});
+        const std::set<Position> alternate_positions{optimal_positions(player, 0)};
+        players_to_alternate_positions_.insert({player, alternate_positions});
       } else if (pathway_distance == 5) {
         // If the pathways to Mecatol Rex have length 5, the preferred position is the second one, and the alternate is the third one.
         // This distance does not exist on any of the board layouts but is included for completeness.
-        const std::set<Position> preferred_space_dock_positions{optimal_positions(player, 1)};
-        for (const Position& preferred_space_dock_position : preferred_space_dock_positions) {
-          players_to_preferred_space_dock_positions_.insert({player, preferred_space_dock_position});
-        }
-        const std::set<Position> alternate_space_dock_positions_1{optimal_positions(player, 2)};
-        for (const Position& alternate_space_dock_position : alternate_space_dock_positions_1) {
-          players_to_alternate_space_dock_positions_.insert({player, alternate_space_dock_position});
-        }
+        const std::set<Position> preferred_positions{optimal_positions(player, 1)};
+        players_to_preferred_positions_.insert({player, preferred_positions});
+        const std::set<Position> alternate_positions{optimal_positions(player, 2)};
+        players_to_alternate_positions_.insert({player, alternate_positions});
       }
       // Do not bother with cases where the pathways to Mecatol Rex are longer.
     }
@@ -341,17 +339,13 @@ private:
   }
 
   /// \brief Helper function used during the initialization of the preferred and alternate space dock positions.
-  std::set<Position> optimal_positions(const Player player, const uint8_t pathway_index) const noexcept {
+  std::set<Position> optimal_positions(const Player& player, const uint8_t index_along_pathway) const noexcept {
     // Obtain the pathways for this player.
-    const std::pair<std::multimap<Player, Pathway>::const_iterator, std::multimap<Player, Pathway>::const_iterator> player_and_pathways{players_to_pathways_to_mecatol_rex_.equal_range(player)};
-    // Compute the maximum-minimum distance from other players' homes for all positions at the pathway index.
+    const std::map<Player, std::set<Pathway>>::const_iterator player_and_pathway_to_mecatol_rex{players_to_mecatol_rex_pathways_.find(player)};
+    // Compute the maximum-minimum distance from other players' homes for all positions at the index.
     Distance maximum_distance_from_other_players_homes_{0};
-    for (
-      std::multimap<Player, Pathway>::const_iterator player_and_pathway = player_and_pathways.first;
-      player_and_pathway != player_and_pathways.second;
-      ++player_and_pathway
-    ) {
-      const Position position{player_and_pathway->second[pathway_index]};
+    for (const Pathway& pathway : player_and_pathway_to_mecatol_rex->second) {
+      const Position position{pathway[index_along_pathway]};
       // Optimal positions cannot be equidistant positions.
       if (equidistant_positions_.find(position) == equidistant_positions_.cend()) {
         const Distance minimum_distance_from_other_players_homes_for_this_pathway{minimum_distance_from_other_players_homes(player, position)};
@@ -360,14 +354,10 @@ private:
         }
       }
     }
-    // Obtain all positions at the pathway index that correspond to this maximum distance. These are the optimal positions.
+    // Obtain all positions at the index that correspond to this maximum distance. These are the optimal positions.
     std::set<Position> optimal_positions_;
-    for (
-      std::multimap<Player, Pathway>::const_iterator player_and_pathway = player_and_pathways.first;
-      player_and_pathway != player_and_pathways.second;
-      ++player_and_pathway
-    ) {
-      const Position position{player_and_pathway->second[pathway_index]};
+    for (const Pathway& pathway : player_and_pathway_to_mecatol_rex->second) {
+      const Position position{pathway[index_along_pathway]};
       // Optimal positions cannot be equidistant positions.
       if (equidistant_positions_.find(position) == equidistant_positions_.cend()) {
         const Distance minimum_distance_from_other_players_homes_for_this_pathway{minimum_distance_from_other_players_homes(player, position)};
