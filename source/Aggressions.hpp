@@ -5,27 +5,21 @@
 namespace TI4Cartographer {
 
 enum class Aggression : uint8_t {
-  VeryLow,
   Low,
   Medium,
-  High,
-  VeryHigh
+  High
 };
 
 template <> const std::unordered_map<Aggression, std::string> labels<Aggression>{
-  {Aggression::VeryLow, "Very Low"},
   {Aggression::Low, "Low"},
   {Aggression::Medium, "Medium"},
-  {Aggression::High, "High"},
-  {Aggression::VeryHigh, "Very High"}
+  {Aggression::High, "High"}
 };
 
 template <> const std::unordered_map<std::string, Aggression> spellings<Aggression>{
-  {"verylow", Aggression::VeryLow},
   {"low", Aggression::Low},
   {"medium", Aggression::Medium},
-  {"high", Aggression::High},
-  {"veryhigh", Aggression::VeryHigh}
+  {"high", Aggression::High}
 };
 
 } // namespace TI4Cartographer

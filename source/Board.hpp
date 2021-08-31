@@ -205,7 +205,7 @@ private:
         }
       }
       if (!at_least_one_good_forward_system)  {
-        player_scores_[player_and_forward_positions.first] += -5.0f;
+        player_scores_[player_and_forward_positions.first] += -6.0f;
       }
     }
   }

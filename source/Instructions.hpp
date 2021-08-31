@@ -201,8 +201,8 @@ private:
     verbose_message(space + space + "6 players: regular");
     verbose_message(space + space + "7 players: regular or large");
     verbose_message(space + space + "8 players: regular or large");
-    verbose_message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Choices are very-high, high, medium, low, or very-low. The default is medium. Specifies the degree of expected aggression resulting from the placement of systems on the board. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
-    verbose_message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the number of board layout iterations.");
+    verbose_message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Choices are low, medium, or high. The default is medium. Specifies the degree of expected aggression resulting from the placement of systems on the board. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
+    verbose_message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the number of board generation iterations.");
     verbose_message(space + pad_to_length(Arguments::QuietMode, length) + space + "Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.");
     verbose_message("");
   }

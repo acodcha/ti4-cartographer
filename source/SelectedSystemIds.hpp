@@ -55,23 +55,34 @@ protected:
     const Aggression aggression,
     const uint8_t number_of_equidistant_systems
   ) {
-    std::vector<SystemIdAndScore> selected_sorted_system_ids_and_scores;
-    for (const std::string& system_id : shuffled_selected_system_ids(SystemCategory::Planetary, game_version, layout)) {
-      selected_sorted_system_ids_and_scores.push_back({system_id, Systems.find({system_id})->score()});
+    const std::vector<SystemIdAndScore> selected_sorted_system_ids_and_scores_{selected_sorted_system_ids_and_scores(game_version, layout)};
+    const uint8_t number_of_systems{static_cast<uint8_t>(selected_sorted_system_ids_and_scores_.size())};
+    // Randomly choose the equidistant systems from among the possible ones.
+    const std::vector<uint8_t> shuffled_possible_equidistant_indices_{shuffled_possible_equidistant_indices(aggression, number_of_systems, number_of_equidistant_systems)};
+    std::unordered_set<uint8_t> equidistant_indices;
+    for (uint8_t counter = 0; counter < number_of_equidistant_systems; ++counter) {
+      const uint8_t index{shuffled_possible_equidistant_indices_[counter]};
+      equidistant_indices.insert(index);
+      equidistant_.push_back(selected_sorted_system_ids_and_scores_[index].id());
     }
-    for (const std::string& system_id : shuffled_selected_system_ids(SystemCategory::AnomalyWormholeEmpty, game_version, layout)) {
-      selected_sorted_system_ids_and_scores.push_back({system_id, Systems.find({system_id})->score()});
-    }
-    std::sort(selected_sorted_system_ids_and_scores.begin(), selected_sorted_system_ids_and_scores.end(), SystemIdAndScore::sort_by_descending_score());
-    const uint8_t number_of_systems{static_cast<uint8_t>(selected_sorted_system_ids_and_scores.size())};
-    const uint8_t start_index_{start_index(aggression, number_of_systems, number_of_equidistant_systems)};
+    // The remaining indices are the in-slice ones.
     for (uint8_t index = 0; index < number_of_systems; ++index) {
-      if (index >= start_index_ && index < start_index_ + number_of_equidistant_systems) {
-        equidistant_.push_back(selected_sorted_system_ids_and_scores[index].id());
-      } else {
-        in_slice_.push_back(selected_sorted_system_ids_and_scores[index].id());
+      if (equidistant_indices.find(index) == equidistant_indices.cend()) {
+        in_slice_.push_back(selected_sorted_system_ids_and_scores_[index].id());
       }
     }
+  }
+
+  std::vector<SystemIdAndScore> selected_sorted_system_ids_and_scores(const GameVersion game_version, const Layout layout) const noexcept {
+    std::vector<SystemIdAndScore> selected_sorted_system_ids_and_scores_;
+    for (const std::string& system_id : shuffled_selected_system_ids(SystemCategory::Planetary, game_version, layout)) {
+      selected_sorted_system_ids_and_scores_.push_back({system_id, Systems.find({system_id})->score()});
+    }
+    for (const std::string& system_id : shuffled_selected_system_ids(SystemCategory::AnomalyWormholeEmpty, game_version, layout)) {
+      selected_sorted_system_ids_and_scores_.push_back({system_id, Systems.find({system_id})->score()});
+    }
+    std::sort(selected_sorted_system_ids_and_scores_.begin(), selected_sorted_system_ids_and_scores_.end(), SystemIdAndScore::sort_by_descending_score());
+    return selected_sorted_system_ids_and_scores_;
   }
 
   std::vector<std::string> shuffled_selected_system_ids(const SystemCategory system_category, const GameVersion game_version, const Layout layout) const {
@@ -95,7 +106,7 @@ protected:
     std::shuffle(all_relevant_system_ids_.begin(), all_relevant_system_ids_.end(), RandomEngine);
     const uint8_t number_of_systems_needed{static_cast<uint8_t>(number_of_systems_per_player(system_category, layout) * number_of_players(layout))};
     if (all_relevant_system_ids_.size() < number_of_systems_needed) {
-      error("This game board needs " + std::to_string(number_of_systems_needed) + " " + label(system_category) + " systems, but there aree only " + std::to_string(all_relevant_system_ids_.size()) + " " + label(system_category) + " systems that exist in the game.");
+      error("This game board needs " + std::to_string(number_of_systems_needed) + " " + label(system_category) + " systems, but there are only " + std::to_string(all_relevant_system_ids_.size()) + " " + label(system_category) + " systems that exist in the game.");
       return {};
     } else {
       std::vector<std::string> selected_relevant_system_ids;
@@ -106,25 +117,62 @@ protected:
     }
   }
 
-  uint8_t start_index(const Aggression aggression, const uint8_t number_of_systems, const uint8_t number_of_equidistant_systems) const noexcept {
+  std::vector<uint8_t> shuffled_possible_equidistant_indices(const Aggression aggression, const uint8_t number_of_systems, const uint8_t number_of_equidistant_systems) const noexcept {
+    std::pair<uint8_t, uint8_t> start_and_end_indices;
     switch (aggression) {
-      case Aggression::VeryLow:
-        return number_of_systems - number_of_equidistant_systems;
-        break;
       case Aggression::Low:
-        return static_cast<uint8_t>(std::floor(number_of_systems * 0.7 - number_of_equidistant_systems * 0.5));
+        start_and_end_indices = start_and_end_indices_low_agggression(number_of_systems, number_of_equidistant_systems);
         break;
       case Aggression::Medium:
-        return static_cast<uint8_t>(std::round(number_of_systems * 0.5 - number_of_equidistant_systems * 0.5));
+        start_and_end_indices = start_and_end_indices_medium_agggression(number_of_systems, number_of_equidistant_systems);
         break;
       case Aggression::High:
-        return static_cast<uint8_t>(std::ceil(number_of_systems * 0.3 - number_of_equidistant_systems * 0.5));
-        break;
-      case Aggression::VeryHigh:
-        return 0;
+        start_and_end_indices = start_and_end_indices_high_agggression(number_of_systems, number_of_equidistant_systems);
         break;
     }
-    return 0;
+    std::vector<uint8_t> possible_equidistant_indices_;
+    for (uint8_t index = start_and_end_indices.first; index < start_and_end_indices.second; ++index) {
+      possible_equidistant_indices_.push_back(index);
+    }
+    std::shuffle(possible_equidistant_indices_.begin(), possible_equidistant_indices_.end(), RandomEngine);
+    return possible_equidistant_indices_;
+  }
+
+  /// \brief The end index is one past the end, as in the standard containers.
+  std::pair<uint8_t, uint8_t> start_and_end_indices_low_agggression(const uint8_t number_of_systems, const uint8_t number_of_equidistant_systems) const noexcept {
+    const uint8_t start_index{0};
+    const uint8_t end_index_1{static_cast<uint8_t>(number_of_systems / 3)};
+    if (end_index_1 - start_index >= number_of_equidistant_systems) {
+      return {start_index, end_index_1};
+    } else {
+      const uint8_t end_index_2{static_cast<uint8_t>(number_of_equidistant_systems)};
+      return {start_index, end_index_2};
+    }
+  }
+
+  /// \brief The end index is one past the end, as in the standard containers.
+  std::pair<uint8_t, uint8_t> start_and_end_indices_medium_agggression(const uint8_t number_of_systems, const uint8_t number_of_equidistant_systems) const noexcept {
+    const uint8_t start_index_1{static_cast<uint8_t>(number_of_systems / 3)};
+    const uint8_t end_index_1{static_cast<uint8_t>(number_of_systems - number_of_systems / 3)};
+    if (end_index_1 - start_index_1 >= number_of_equidistant_systems) {
+      return {start_index_1, end_index_1};
+    } else {
+      const uint8_t start_index_2{static_cast<uint8_t>(std::floor(0.5f * (number_of_systems - number_of_equidistant_systems)))};
+      const uint8_t end_index_2{static_cast<uint8_t>(std::ceil(0.5f * (number_of_systems + number_of_equidistant_systems)))};
+      return {start_index_2, end_index_2};
+    }
+  }
+
+  /// \brief The end index is one past the end, as in the standard containers.
+  std::pair<uint8_t, uint8_t> start_and_end_indices_high_agggression(const uint8_t number_of_systems, const uint8_t number_of_equidistant_systems) const noexcept {
+    const uint8_t start_index_1{static_cast<uint8_t>(number_of_systems - number_of_systems / 3)};
+    const uint8_t end_index{static_cast<uint8_t>(number_of_systems)};
+    if (end_index - start_index_1 >= number_of_equidistant_systems) {
+      return {start_index_1, end_index};
+    } else {
+      const uint8_t start_index_2{static_cast<uint8_t>(number_of_systems - number_of_equidistant_systems)};
+      return {std::min(start_index_1, start_index_2), end_index};
+    }
   }
 
 }; // class SelectedSystemIds
