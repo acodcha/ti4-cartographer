@@ -294,17 +294,19 @@ private:
 
   float score_imbalance_ratio() const noexcept {
     float maximum_score{std::numeric_limits<float>::lowest()};
+    float average_score{0.0f};
     float minimum_score{std::numeric_limits<float>::max()};
     for (const std::pair<Player, float> player_score : player_scores_) {
       if (player_score.second > maximum_score) {
         maximum_score = player_score.second;
       }
+      average_score += player_score.second;
       if (player_score.second < minimum_score) {
         minimum_score = player_score.second;
       }
     }
-    const float average_score{0.5f * (maximum_score + minimum_score)};
-    return (maximum_score - minimum_score) / average_score;
+    average_score /= player_scores_.size();
+    return std::max(average_score - minimum_score, maximum_score - average_score) / average_score;
   }
 
   std::string print_player_scores() const noexcept {
