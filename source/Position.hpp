@@ -41,8 +41,8 @@ public:
     }
   }
 
-  /// \brief Set of positions that are neighbors with this position.
-  std::set<Position> neighbors() const noexcept {
+  /// \brief Set of positions that are neighbors with this position, i.e. adjacent. These positions may or may not exist on the game board.
+  std::set<Position> possible_neighbors() const noexcept {
     std::set<Position> positions;
     const int8_t maximum_azimuth_{maximum_azimuth(layer_)};
     const int8_t number_of_corners{static_cast<int8_t>(layer_ > 0 ? azimuth_ / layer_ : 0)};

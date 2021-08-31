@@ -79,10 +79,10 @@ std::string score_to_string(const float value) noexcept {
 }
 
 /// \brief Print a score imbalance.
-std::string score_imbalance_to_string(const float value) noexcept {
+std::string score_imbalance_ratio_to_string(const float value) noexcept {
   std::ostringstream stream;
   stream << std::fixed << std::setprecision(2);
-  stream << value;
+  stream << value * 100.0 << " %";
   return stream.str();
 }
 

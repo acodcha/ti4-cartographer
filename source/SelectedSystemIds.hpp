@@ -49,7 +49,12 @@ protected:
 
   SelectedInSliceSystemIds in_slice_;
 
-  void initialize(const GameVersion game_version, const Layout layout, const Aggression aggression, const uint8_t number_of_equidistant_systems) {
+  void initialize(
+    const GameVersion game_version,
+    const Layout layout,
+    const Aggression aggression,
+    const uint8_t number_of_equidistant_systems
+  ) {
     std::vector<SystemIdAndScore> selected_sorted_system_ids_and_scores;
     for (const std::string& system_id : shuffled_selected_system_ids(SystemCategory::Planetary, game_version, layout)) {
       selected_sorted_system_ids_and_scores.push_back({system_id, Systems.find({system_id})->score()});

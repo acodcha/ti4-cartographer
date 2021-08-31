@@ -76,14 +76,6 @@ public:
     return home_player_;
   }
 
-  std::set<Position> position_and_hyperlane_neighbors() const noexcept {
-    std::set<Position> all{position_.neighbors()};
-    for (const Position& position : hyperlane_neighbors_) {
-      all.insert(position);
-    }
-    return all;
-  }
-
   bool operator==(const Tile& other) const noexcept {
     return position_ == other.position_ ;
   }

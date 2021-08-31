@@ -25,7 +25,7 @@ public:
     initialize_player_scores();
     iterate(maximum_number_of_iterations);
     verbose_message("Player scores: " + print_player_scores());
-    verbose_message("Player score imbalance: " + score_imbalance_to_string(score_imbalance()));
+    verbose_message("Score imbalance: " + score_imbalance_ratio_to_string(score_imbalance_ratio()));
     verbose_message("Visualization: " + print_visualization_link());
     verbose_message("Tabletop Simulator string: " + print_tabletop_simulator_string());
     quiet_message(print_tabletop_simulator_string());
@@ -38,6 +38,8 @@ private:
 
   std::map<Player, float> player_scores_;
 
+  float score_imbalance_ratio_{0.0};
+
   void initialize_player_scores() noexcept {
     for (const Player player : players_) {
       player_scores_.insert({player, 0.0});
@@ -47,23 +49,23 @@ private:
   void iterate(const uint64_t maximum_number_of_iterations) {
     std::unordered_map<Position, Tile> best_positions_to_tiles{positions_to_tiles_};
     std::map<Player, float> best_player_scores{player_scores_};
-    float best_score_imbalance{std::numeric_limits<float>::max()};
+    float best_score_imbalance_ratio{std::numeric_limits<float>::max()};
     uint64_t number_of_iterations{0};
     uint64_t number_of_valid_boards{0};
     for (uint64_t counter = 0; counter < maximum_number_of_iterations; ++counter) {
       ++number_of_iterations;
       selected_system_ids_.shuffle();
       assign_system_ids_to_tiles_simple();
-      if (!contains_adjacent_anomalies_or_wormholes_within_inner_layers()) {
+      if (!contains_adjacent_anomalies_or_wormholes()) {
         ++number_of_valid_boards;
         calculate_player_scores();
-        const float score_imbalance_{score_imbalance()};
-        if (score_imbalance_ < best_score_imbalance) {
+        score_imbalance_ratio_ = score_imbalance_ratio();
+        if (score_imbalance_ratio_ < best_score_imbalance_ratio) {
           best_positions_to_tiles = positions_to_tiles_;
           best_player_scores = player_scores_;
-          best_score_imbalance = score_imbalance_;
-          verbose_message("Iteration " + std::to_string(number_of_iterations) + ": Player score imbalance: " + score_imbalance_to_string(score_imbalance_));
-          if (score_imbalance_ <= ScoreImbalanceTolerance) {
+          best_score_imbalance_ratio = score_imbalance_ratio_;
+          verbose_message("Iteration " + std::to_string(number_of_iterations) + ": Score imbalance: " + score_imbalance_ratio_to_string(score_imbalance_ratio_));
+          if (score_imbalance_ratio_ <= ScoreImbalanceRatioTolerance) {
             break;
           }
         }
@@ -71,9 +73,11 @@ private:
     }
     positions_to_tiles_ = best_positions_to_tiles;
     player_scores_ = best_player_scores;
+    score_imbalance_ratio_ = best_score_imbalance_ratio;
     verbose_message("Found an optimal game board after " + std::to_string(number_of_iterations) + " iterations which generated " + std::to_string(number_of_valid_boards) + " valid game boards.");
   }
 
+  /// \brief After doing this, need to check for adjacent anomalies or wormholes.
   void assign_system_ids_to_tiles_simple() {
     uint8_t equidistant_system_ids_index{0};
     uint8_t in_slice_system_ids_index{0};
@@ -90,15 +94,33 @@ private:
     }
   }
 
+  /// \brief Guarantees no adjacent anomalies or wormholes.
   void assign_system_ids_to_tiles_smart() {
+    std::unordered_set<uint8_t> equidistant_system_indices_used;
+    std::unordered_set<uint8_t> in_slice_system_indices_used;
+    uint8_t equidistant_system_ids_index{0};
+    uint8_t in_slice_system_ids_index{0};
+    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+      if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()) {
+        const std::unordered_map<Position, std::set<Position>>::const_iterator position_and_neighbors{neighbors_.find(position_and_tile.first)};
+        if (is_equidistant(position_and_tile.first)) {
 
 
 
 
 
+        } else if (is_in_a_slice(position_and_tile.first)) {
+
+
+
+
+
+        }
+      }
+    }
   }
 
-  bool contains_adjacent_anomalies_or_wormholes_within_inner_layers() const noexcept {
+  bool contains_adjacent_anomalies_or_wormholes() const noexcept {
     std::unordered_set<Position> checked;
     for (std::unordered_map<Position, Tile>::const_iterator position_and_tile = positions_to_tiles_.cbegin(); position_and_tile != positions_to_tiles_.cend(); ++position_and_tile) {
       if (position_and_tile->second.is_planetary_anomaly_wormhole_or_empty() && checked.find(position_and_tile->first) == checked.cend()) {
@@ -108,24 +130,23 @@ private:
         const bool contains_anomaly{system->contains_one_or_more_anomalies()};
         const bool contains_alpha_wormhole{system->contains(Wormhole::Alpha)};
         const bool contains_beta_wormhole{system->contains(Wormhole::Beta)};
-        if (positions_to_distances_from_mecatol_rex_.find(position_and_tile->first)->second < maximum_distance_from_mecatol_rex_ && (contains_anomaly || contains_alpha_wormhole || contains_beta_wormhole)) {
-          // This tile is not on the outermost layer and contains one or more anomalies or wormholes.
-          const std::set<Position> neighbors{position_and_tile->second.position_and_hyperlane_neighbors()};
-          for (const Position& position : neighbors) {
-            const std::unordered_map<Position, Tile>::const_iterator found_neighbor{positions_to_tiles_.find(position)};
-            if (found_neighbor != positions_to_tiles_.cend()) {
-              // This neighboring tile exists on the board.
-              if (found_neighbor->second.is_planetary_anomaly_wormhole_or_empty() && checked.find(found_neighbor->first) == checked.cend()) {
-                // This neighboring tile is of the relevant category and has not yet been checked.
-                const std::string neighbor_system_id{positions_to_tiles_.find(position)->second.system_id()};
-                const std::unordered_set<System>::const_iterator neighbor_system{Systems.find({neighbor_system_id})};
-                const bool neighbor_contains_anomaly{neighbor_system->contains_one_or_more_anomalies()};
-                const bool neighbor_contains_alpha_wormhole{neighbor_system->contains(Wormhole::Alpha)};
-                const bool neighbor_contains_beta_wormhole{neighbor_system->contains(Wormhole::Beta)};
+        if (contains_anomaly || contains_alpha_wormhole || contains_beta_wormhole) {
+          // This tile contains one or more anomalies or wormholes.
+          const std::unordered_map<Position, std::set<Position>>::const_iterator position_and_neighbors{neighbors_.find(position_and_tile->first)};
+          if (position_and_neighbors != neighbors_.cend()) {
+            for (const Position& neighbor_position : position_and_neighbors->second) {
+              const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_position)};
+              if (
+                neighbor_position_and_tile != positions_to_tiles_.cend()
+                && neighbor_position_and_tile->second.is_planetary_anomaly_wormhole_or_empty()
+                && checked.find(neighbor_position) == checked.cend()
+              ) {
+                // This neighbor is of the relevant category and has not yet been checked.
+                const std::unordered_set<System>::const_iterator neighbor_system{Systems.find({neighbor_position_and_tile->second.system_id()})};
                 if (
-                  (contains_anomaly && neighbor_contains_anomaly)
-                  || (contains_alpha_wormhole && neighbor_contains_alpha_wormhole)
-                  || (contains_beta_wormhole && neighbor_contains_beta_wormhole)
+                  (contains_anomaly && neighbor_system->contains_one_or_more_anomalies())
+                  || (contains_alpha_wormhole && neighbor_system->contains(Wormhole::Alpha))
+                  || (contains_beta_wormhole && neighbor_system->contains(Wormhole::Beta))
                 ) {
                   return true;
                 }
@@ -155,11 +176,11 @@ private:
 
   /// \brief If a system is in a player's slice, that player gains its score. If a system is equidistant, each relevant player gets an equal fraction of its score.
   void add_base_system_scores() noexcept {
-    for (std::unordered_map<Position, Tile>::iterator position_and_tile = positions_to_tiles_.begin(); position_and_tile != positions_to_tiles_.end(); ++position_and_tile) {
-      if (position_and_tile->second.is_planetary_anomaly_wormhole_or_empty()) {
-        const std::unordered_map<Position, std::set<Player>>::const_iterator position_to_relevant_players{positions_to_relevant_players_.find(position_and_tile->first)};
+    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+      if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()) {
+        const std::unordered_map<Position, std::set<Player>>::const_iterator position_to_relevant_players{positions_to_relevant_players_.find(position_and_tile.first)};
         if (position_to_relevant_players != positions_to_relevant_players_.cend()) {
-          const float score{Systems.find({position_and_tile->second.system_id()})->score()};
+          const float score{Systems.find({position_and_tile.second.system_id()})->score()};
           const uint8_t number_of_relevant_players{static_cast<uint8_t>(position_to_relevant_players->second.size())};
           const float score_per_player{score / number_of_relevant_players};
           for (const Player& player : position_to_relevant_players->second) {
@@ -243,13 +264,7 @@ private:
         for (const Position& position : player_and_preferred_position.second) {
           const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-          float preferred_position_score{0.0};
-          if (system->planets().size() > 0 && !system->contains(Anomaly::GravityRift)) {
-            preferred_position_score = 2.0 * system->space_dock_score();
-            if (system->contains(Anomaly::Nebula)) {
-              preferred_position_score *= 0.5;
-            }
-          }
+          const float preferred_position_score{system->preferred_position_score()};
           if (preferred_position_score > best_preferred_position_score) {
             best_preferred_position_score = preferred_position_score;
           }
@@ -267,13 +282,7 @@ private:
         for (const Position& position : player_and_alternate_position.second) {
           const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-          float alternate_position_score{0.0};
-          if (system->planets().size() > 0 && !system->contains(Anomaly::GravityRift)) {
-            alternate_position_score = system->space_dock_score();
-            if (system->contains(Anomaly::Nebula)) {
-              alternate_position_score *= 0.5;
-            }
-          }
+          const float alternate_position_score{system->alternate_position_score()};
           if (alternate_position_score > best_alternate_position_score) {
             best_alternate_position_score = alternate_position_score;
           }
@@ -283,7 +292,7 @@ private:
     }
   }
 
-  float score_imbalance() const noexcept {
+  float score_imbalance_ratio() const noexcept {
     float maximum_score{std::numeric_limits<float>::lowest()};
     float minimum_score{std::numeric_limits<float>::max()};
     for (const std::pair<Player, float> player_score : player_scores_) {
@@ -294,7 +303,8 @@ private:
         minimum_score = player_score.second;
       }
     }
-    return maximum_score - minimum_score;
+    const float average_score{0.5f * (maximum_score + minimum_score)};
+    return (maximum_score - minimum_score) / average_score;
   }
 
   std::string print_player_scores() const noexcept {

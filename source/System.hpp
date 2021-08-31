@@ -81,17 +81,16 @@ public:
     return highest_planet_resources_;
   }
 
-  float space_dock_score() const noexcept {
-    const int8_t highest_planet_resources_{highest_planet_resources()};
-    if (highest_planet_resources_ == 0) {
-      return 1.0;
-    } else if (highest_planet_resources_ == 1) {
-      return 1.5;
-    } else if (highest_planet_resources_ == 2) {
-      return 2.5;
-    } else if (highest_planet_resources_ >= 3) {
-      return 4.5;
+  float preferred_position_score() const noexcept {
+    if (planets_.empty() || contains(Anomaly::GravityRift)) {
+      return -5.0f;
+    } else {
+      return space_dock_score();
     }
+  }
+
+  float alternate_position_score() const noexcept {
+    return space_dock_score() / 3.0f;
   }
 
   bool contains(const Anomaly anomaly_type) const noexcept {
@@ -108,18 +107,6 @@ public:
 
   bool contains_one_or_more_wormholes() const noexcept {
     return !wormholes_.empty();
-  }
-
-  bool can_be_adjacent_to_an_anomaly() const noexcept {
-    return anomalies_.empty();
-  }
-
-  bool can_be_adjacent_to_an_alpha_wormhole() const noexcept {
-    return !contains(Wormhole::Alpha);
-  }
-
-  bool can_be_adjacent_to_a_beta_wormhole() const noexcept {
-    return !contains(Wormhole::Beta);
   }
 
   std::string name() const noexcept {
@@ -194,7 +181,7 @@ private:
   /// \brief If this system is a home system or the Creuss Gate system, this is its faction.
   std::optional<Faction> faction_;
 
-  float score_{0.0};
+  float score_{0.0f};
 
   void check_number_of_planets() const {
     if (planets_.size() > 3) {
@@ -208,7 +195,7 @@ private:
 
   /// \brief The base system score is the sum of the individual planet scores.
   float individual_planet_scores() const noexcept {
-    float score{0.0};
+    float score{0.0f};
     for (const Planet& planet : planets_) {
       score += planet.score();
     }
@@ -219,37 +206,37 @@ private:
   float number_of_planets_score() const noexcept {
     const std::size_t number_of_planets_{planets_.size()};
     if (number_of_planets_ == 1) {
-      return 1.0 * number_of_planets_;
+      return 1.0f * number_of_planets_;
     } else if (number_of_planets_ == 2) {
-      return 2.0 * number_of_planets_;
+      return 2.0f * number_of_planets_;
     } else if (number_of_planets_ == 3) {
-      return 3.0 * number_of_planets_;
+      return 3.0f * number_of_planets_;
     }
-    return 0.0;
+    return 0.0f;
   }
 
   /// \brief Some anomalies are generally beneficial or harmful, whereas others depend heavily on their positioning.
   float anomalies_score() const noexcept {
-    float total{0.0};
+    float total{0.0f};
     if (contains(Anomaly::AsteroidField)) {
       // If you have Antimass Deflectors researched, this is effectively an empty system.
       // If you do not, this is worse because it prevents movement and therefore reduces your options. Generally bad.
       // The Clan of Saar strongly prefers these due to their faction technology.
-      total += -1.0;
+      total += -1.0f;
     }
     if (contains(Anomaly::GravityRift)) {
       // Gives extra movement and therefore extra options, but might destroy your ships. Generally beneficial.
-      total += 0.5;
+      total += 0.5f;
     }
     if (contains(Anomaly::Nebula)) {
       // Better defense, but slows movement. Slightly worse than neutral.
       // The Empyrean strongly prefers these due to their faction ability.
-      total += -0.5;
+      total += -0.5f;
     }
     if (contains(Anomaly::Supernova)) {
       // Prevents movement and therefore reduces your options. Generally bad.
       // The Embers of Muaat strongly prefer these due to their faction ability and technology.
-      total += -1.5;
+      total += -1.5f;
     }
     return total;
   }
@@ -257,9 +244,22 @@ private:
   /// \brief Wormholes are generally beneficial because they provide additional movement options and lead to the Wormhole Nexus.
   float wormholes_score() const noexcept {
     if (contains_one_or_more_wormholes()) {
-      return 1.25;
+      return 1.25f;
     }
-    return 0.0;
+    return 0.0f;
+  }
+
+  float space_dock_score() const noexcept {
+    if (planets_.empty() || contains(Anomaly::GravityRift)) {
+      return 0.0f;
+    } else {
+      const float score{1.5f * std::pow(static_cast<float>(2 + highest_planet_resources()), std::sqrt(1.618034f))};
+      if (contains(Anomaly::Nebula)) {
+        return 0.25f * score;
+      } else {
+        return score;
+      }
+    }
   }
 
 }; // class System
