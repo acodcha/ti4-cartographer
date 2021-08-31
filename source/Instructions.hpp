@@ -44,7 +44,6 @@ public:
     assign_arguments(argc, argv);
     initialize();
     message_header_information();
-    message("Command: " + command());
     message_start_information();
   }
 
@@ -170,16 +169,17 @@ private:
   }
 
   void message_header_information() const noexcept {
-    message(Separator);
-    message(ProgramName);
-    message("Generates randomized balanced boards for the Twilight Imperium 4th Edition board game.");
-    message("Compiled: " + CompilationDateAndTime);
+    verbose_message(Separator);
+    verbose_message(ProgramName);
+    verbose_message("Generates randomized balanced boards for the Twilight Imperium 4th Edition board game.");
+    verbose_message("Compiled: " + CompilationDateAndTime);
+    verbose_message("Command: " + command());
   }
 
   void message_usage_information() const noexcept {
     const std::string space{"  "};
-    message("Usage:");
-    message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::LayoutPattern + "] [" + Arguments::AggressionPattern + "] [" + Arguments::NumberOfIterationsPattern + "] [" + Arguments::QuietMode + "]");
+    verbose_message("Usage:");
+    verbose_message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::LayoutPattern + "] [" + Arguments::AggressionPattern + "] [" + Arguments::NumberOfIterationsPattern + "] [" + Arguments::QuietMode + "]");
     const uint_least64_t length{std::max({
       Arguments::UsageInformation.length(),
       Arguments::NumberOfPlayersPattern.length(),
@@ -189,22 +189,22 @@ private:
       Arguments::NumberOfIterationsPattern.length(),
       Arguments::QuietMode.length()
     })};
-    message("Arguments:");
-    message(space + pad_to_length(Arguments::UsageInformation, length) + space + "Displays this information and exits.");
-    message(space + pad_to_length(Arguments::NumberOfPlayersPattern, length) + space + "Required. Choices are 2-8. Specifies the number of players.");
-    message(space + pad_to_length(Arguments::GameVersionPattern, length) + space + "Optional. Choices are base or expansion. The default is expansion. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Note that 7 and 8 player games require the expansion.");
-    message(space + pad_to_length(Arguments::LayoutPattern, length) + space + "Optional. Choices vary by number of players, but typically include regular, small, or large. The default is regular. Specifies the board layout.");
-    message(space + space + "2 players: regular");
-    message(space + space + "3 players: regular, small, or large");
-    message(space + space + "4 players: regular or large");
-    message(space + space + "5 players: regular, small, or large");
-    message(space + space + "6 players: regular");
-    message(space + space + "7 players: regular or large");
-    message(space + space + "8 players: regular or large");
-    message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Choices are very-high, high, medium, low, or very-low. The default is medium. Specifies the degree of expected aggression resulting from the placement of systems on the board. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
-    message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the number of board layout iterations.");
-    message(space + pad_to_length(Arguments::QuietMode, length) + space + "Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.");
-    message("");
+    verbose_message("Arguments:");
+    verbose_message(space + pad_to_length(Arguments::UsageInformation, length) + space + "Displays this information and exits.");
+    verbose_message(space + pad_to_length(Arguments::NumberOfPlayersPattern, length) + space + "Required. Choices are 2-8. Specifies the number of players.");
+    verbose_message(space + pad_to_length(Arguments::GameVersionPattern, length) + space + "Optional. Choices are base or expansion. The default is expansion. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Note that 7 and 8 player games require the expansion.");
+    verbose_message(space + pad_to_length(Arguments::LayoutPattern, length) + space + "Optional. Choices vary by number of players, but typically include regular, small, or large. The default is regular. Specifies the board layout.");
+    verbose_message(space + space + "2 players: regular");
+    verbose_message(space + space + "3 players: regular, small, or large");
+    verbose_message(space + space + "4 players: regular or large");
+    verbose_message(space + space + "5 players: regular, small, or large");
+    verbose_message(space + space + "6 players: regular");
+    verbose_message(space + space + "7 players: regular or large");
+    verbose_message(space + space + "8 players: regular or large");
+    verbose_message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Choices are very-high, high, medium, low, or very-low. The default is medium. Specifies the degree of expected aggression resulting from the placement of systems on the board. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
+    verbose_message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the number of board layout iterations.");
+    verbose_message(space + pad_to_length(Arguments::QuietMode, length) + space + "Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.");
+    verbose_message("");
   }
 
   std::string command() const noexcept {
@@ -216,10 +216,10 @@ private:
   }
 
   void message_start_information() const noexcept {
-    message("The number of players and board layout is: " + label(layout_));
-    message("The game version is: " + label(game_version_));
-    message("The aggression is: " + label(aggression_));
-    message("The number of iterations is: " + std::to_string(maximum_number_of_iterations_));
+    verbose_message("The number of players and board layout is: " + label(layout_));
+    verbose_message("The game version is: " + label(game_version_));
+    verbose_message("The aggression is: " + label(aggression_));
+    verbose_message("The number of iterations is: " + std::to_string(maximum_number_of_iterations_));
   }
 
 }; // class Instructions

@@ -45,9 +45,7 @@ This installs the programs to `/usr/local/bin/ti4cartographer` and `/usr/local/b
 [^ Back to Top](#ti4-cartographer)
 
 ## Usage
-Run `ti4cartographer` with no arguments or with the `--help` argument to obtain usage information.
-
-Otherwise, for regular use, run with:
+Run `ti4cartographer` with no arguments or with the `--help` argument to obtain usage information. Otherwise, for regular use, run `ti4cartographer` with:
 
 ```
 ti4cartographer --players <number> [--version <type>] [--layout <type>] [--aggression <amount>] [--iterations <number>] [--quiet]
@@ -60,7 +58,9 @@ ti4cartographer --players <number> [--version <type>] [--layout <type>] [--aggre
 - `--iterations <number>`: Optional. The default is `1000000`. Specifies the number of board layout iterations.
 - `--quiet`: Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.
 
-The program computes an optimal board given the arguments and outputs its Tabletop Simulator string as well as a link to visualize the board in Keegan Williams' TI4 Map Generator (<https://keeganw.github.io/ti4/>).
+The `ti4cartographer` program computes an optimal board given the arguments and outputs its Tabletop Simulator string as well as a link to visualize the board in Keegan Williams' TI4 Map Generator (<https://keeganw.github.io/ti4/>).
+
+The `ti4atlas` utility takes no arguments and simply prints out a list of the various systems ranked from best to worst. This ranking only takes into account the individual systems by themselves, and does not account for position on the game board, suitability as a forward outpost, or other interactions; such considerations are handled by the `ti4cartographer` program.
 
 [^ Back to Top](#ti4-cartographer)
 

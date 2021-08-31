@@ -24,12 +24,12 @@ public:
   {
     initialize_player_scores();
     iterate(maximum_number_of_iterations);
-    message("Player scores: " + print_player_scores());
-    message("Player score imbalance: " + score_imbalance_to_string(score_imbalance()));
-    message("Visualization: " + print_visualization_link());
-    message("Tabletop Simulator string: " + print_tabletop_simulator_string());
+    verbose_message("Player scores: " + print_player_scores());
+    verbose_message("Player score imbalance: " + score_imbalance_to_string(score_imbalance()));
+    verbose_message("Visualization: " + print_visualization_link());
+    verbose_message("Tabletop Simulator string: " + print_tabletop_simulator_string());
     quiet_message(print_tabletop_simulator_string());
-    message("Runtime: " + chronometre.print());
+    verbose_message("Runtime: " + chronometre.print());
   }
 
 private:
@@ -62,7 +62,7 @@ private:
           best_positions_to_tiles = positions_to_tiles_;
           best_player_scores = player_scores_;
           best_score_imbalance = score_imbalance_;
-          message("Iteration " + std::to_string(number_of_iterations) + ": Player score imbalance: " + score_imbalance_to_string(score_imbalance_));
+          verbose_message("Iteration " + std::to_string(number_of_iterations) + ": Player score imbalance: " + score_imbalance_to_string(score_imbalance_));
           if (score_imbalance_ <= ScoreImbalanceTolerance) {
             break;
           }
@@ -71,7 +71,7 @@ private:
     }
     positions_to_tiles_ = best_positions_to_tiles;
     player_scores_ = best_player_scores;
-    message("Found an optimal game board after " + std::to_string(number_of_iterations) + " iterations which generated " + std::to_string(number_of_valid_boards) + " valid game boards.");
+    verbose_message("Found an optimal game board after " + std::to_string(number_of_iterations) + " iterations which generated " + std::to_string(number_of_valid_boards) + " valid game boards.");
   }
 
   void assign_system_ids_to_tiles_simple() {

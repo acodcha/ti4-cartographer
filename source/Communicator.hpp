@@ -72,7 +72,7 @@ private:
 }; // class Communicator
 
 /// \brief Print a general-purpose message to the console when in verbose mode.
-inline void message(const std::string& text) noexcept {
+inline void verbose_message(const std::string& text) noexcept {
   if (Communicator::get().mode() == CommunicatorMode::Verbose) {
     std::cout << text << std::endl;
   }
@@ -82,13 +82,6 @@ inline void message(const std::string& text) noexcept {
 inline void quiet_message(const std::string& text) noexcept {
   if (Communicator::get().mode() == CommunicatorMode::Quiet) {
     std::cout << text << std::endl;
-  }
-}
-
-/// \brief Print a warning to the console when in verbose mode.
-inline void warning(const std::string& text) noexcept {
-  if (Communicator::get().mode() == CommunicatorMode::Verbose) {
-    std::cout << "Warning: " << text << std::endl;
   }
 }
 

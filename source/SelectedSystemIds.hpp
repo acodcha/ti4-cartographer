@@ -22,12 +22,12 @@ public:
     const uint8_t number_of_equidistant_systems
   ) {
     initialize(game_version, layout, aggression, number_of_equidistant_systems);
-    message("Equidistant system IDs: " + equidistant_.print_brief());
-    message("In-slice system IDs: " + in_slice_.print_brief());
-    message("Equidistant systems:");
-    message(equidistant_.print_details());
-    message("In-slice systems:");
-    message(in_slice_.print_details());
+    verbose_message("Equidistant system IDs: " + equidistant_.print_brief());
+    verbose_message("In-slice system IDs: " + in_slice_.print_brief());
+    verbose_message("Equidistant systems:");
+    verbose_message(equidistant_.print_details());
+    verbose_message("In-slice systems:");
+    verbose_message(in_slice_.print_details());
   }
 
   void shuffle() noexcept {
