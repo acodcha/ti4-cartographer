@@ -81,16 +81,17 @@ public:
     return highest_planet_resources_;
   }
 
-  float preferred_position_score() const noexcept {
+  float space_dock_score() const noexcept {
     if (planets_.empty() || contains(Anomaly::GravityRift)) {
-      return -5.0f;
+      return 0.0f;
     } else {
-      return space_dock_score();
+      const float score{1.5f * std::pow(static_cast<float>(2 + highest_planet_resources()), std::sqrt(1.618034f))};
+      if (contains(Anomaly::Nebula)) {
+        return 0.25f * score;
+      } else {
+        return score;
+      }
     }
-  }
-
-  float alternate_position_score() const noexcept {
-    return space_dock_score() / 3.0f;
   }
 
   bool contains(const Anomaly anomaly_type) const noexcept {
@@ -247,19 +248,6 @@ private:
       return 1.25f;
     }
     return 0.0f;
-  }
-
-  float space_dock_score() const noexcept {
-    if (planets_.empty() || contains(Anomaly::GravityRift)) {
-      return 0.0f;
-    } else {
-      const float score{1.5f * std::pow(static_cast<float>(2 + highest_planet_resources()), std::sqrt(1.618034f))};
-      if (contains(Anomaly::Nebula)) {
-        return 0.25f * score;
-      } else {
-        return score;
-      }
-    }
   }
 
 }; // class System

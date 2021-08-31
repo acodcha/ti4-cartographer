@@ -162,6 +162,7 @@ private:
   void calculate_player_scores() noexcept {
     reset_scores();
     add_base_system_scores();
+    add_forward_system_scores();
     add_lateral_system_scores();
     add_mecatol_rex_pathway_scores();
     add_preferred_position_scores();
@@ -191,26 +192,44 @@ private:
     }
   }
 
-  /// \brief If a player's lateral systems protect his/her home system, the score is increased.
+  /// \brief If a player does not have at least one good forward system, the score is penalized.
+  void add_forward_system_scores() noexcept {
+    for (const std::pair<Player, std::set<Position>>& player_and_forward_positions : players_to_forward_positions_) {
+      bool at_least_one_good_forward_system{false};
+      for (const Position& position : player_and_forward_positions.second) {
+        const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+        const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+        if (!system->planets().empty() && !system->contains_one_or_more_anomalies()) {
+          at_least_one_good_forward_system = true;
+          break;
+        }
+      }
+      if (!at_least_one_good_forward_system)  {
+        player_scores_[player_and_forward_positions.first] += -5.0f;
+      }
+    }
+  }
+
+  /// \brief If a player's lateral systems protect their home system, the score is increased.
   void add_lateral_system_scores() noexcept {
     for (const std::pair<Player, std::set<Position>>& player_and_lateral_positions : players_to_lateral_positions_) {
       for (const Position& position : player_and_lateral_positions.second) {
         const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
         if (system->contains(Anomaly::AsteroidField)) {
-          player_scores_[player_and_lateral_positions.first] += 1.0;
+          player_scores_[player_and_lateral_positions.first] += 1.0f;
         }
         if (system->contains(Anomaly::GravityRift)) {
-          player_scores_[player_and_lateral_positions.first] += -3.0;
+          player_scores_[player_and_lateral_positions.first] += -3.0f;
         }
         if (system->contains(Anomaly::Nebula)) {
-          player_scores_[player_and_lateral_positions.first] += 2.0;
+          player_scores_[player_and_lateral_positions.first] += 2.0f;
         }
         if (system->contains(Anomaly::Supernova)) {
-          player_scores_[player_and_lateral_positions.first] += 3.0;
+          player_scores_[player_and_lateral_positions.first] += 3.0f;
         }
         if (system->contains_one_or_more_wormholes()) {
-          player_scores_[player_and_lateral_positions.first] += -2.0;
+          player_scores_[player_and_lateral_positions.first] += -2.0f;
         }
       }
     }
@@ -264,7 +283,7 @@ private:
         for (const Position& position : player_and_preferred_position.second) {
           const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-          const float preferred_position_score{system->preferred_position_score()};
+          const float preferred_position_score{system->space_dock_score()};
           if (preferred_position_score > best_preferred_position_score) {
             best_preferred_position_score = preferred_position_score;
           }
@@ -282,7 +301,7 @@ private:
         for (const Position& position : player_and_alternate_position.second) {
           const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-          const float alternate_position_score{system->alternate_position_score()};
+          const float alternate_position_score{system->space_dock_score() / 3.0f};
           if (alternate_position_score > best_alternate_position_score) {
             best_alternate_position_score = alternate_position_score;
           }

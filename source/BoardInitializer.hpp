@@ -19,7 +19,7 @@ public:
     initialize_distances_from_mecatol_rex();
     initialize_distances_from_players_homes();
     initialize_relevant_players_and_equidistant_and_in_slice_positions();
-    initialize_lateral_positions();
+    initialize_forward_and_lateral_positions();
     initialize_mecatol_rex_pathways();
     initialize_preferred_and_alternate_positions();
   }
@@ -62,7 +62,10 @@ protected:
   /// \brief Each player's slice.
   std::unordered_map<Player, std::set<Position>> players_to_in_slice_positions_;
 
-  /// \brief Group of lateral positions for each player, i.e. positions that are not nearer to Mecatol Rex than each player's home.
+  /// \brief Group of forward positions for each player, i.e. home-adjacent positions that are nearer to Mecatol Rex than each player's home.
+  std::map<Player, std::set<Position>> players_to_forward_positions_;
+
+  /// \brief Group of lateral positions for each player, i.e. home-adjacent positions that are not nearer to Mecatol Rex than each player's home.
   std::map<Player, std::set<Position>> players_to_lateral_positions_;
 
   /// \brief Pathways to Mecatol Rex may include equidistant positions and always end with the Mecatol Rex position itself.
@@ -193,11 +196,12 @@ private:
     }
   }
 
-  void initialize_lateral_positions() noexcept {
+  void initialize_forward_and_lateral_positions() noexcept {
     for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
       const std::unordered_map<Position, Distance>::const_iterator home_and_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)};
       const std::unordered_map<Position, std::set<Position>>::const_iterator home_position_and_neighbors{neighbors_.find(player_and_home_position.second)};
       if (home_and_distance_to_mecatol_rex != positions_to_distances_from_mecatol_rex_.cend() && home_position_and_neighbors != neighbors_.cend()) {
+        std::set<Position> forward_positions;
         std::set<Position> lateral_positions;
         for (const Position& neighbor_of_home : home_position_and_neighbors->second) {
           // This position is a neighbor of this player's home.
@@ -209,11 +213,19 @@ private:
             && neighbor_position_and_distance != positions_to_distances_from_mecatol_rex_.cend()
             && neighbor_position_and_distance->second >= home_and_distance_to_mecatol_rex->second
           ) {
-            // This position is of the correct system category and is at an equal or greater distance from Mecatol Rex than this player's home.
-            // Therefore, this position is a lateral position for this player.
-            lateral_positions.insert(neighbor_of_home);
+            // This position is of the correct system category.
+            if (neighbor_position_and_distance->second < home_and_distance_to_mecatol_rex->second) {
+              // This position is nearer to Mecatol Rex than this player's home.
+              // Therefore, this position is a forward position for this player.
+              forward_positions.insert(neighbor_of_home);
+            } else {
+              // This position is at an equal or greater distance from Mecatol Rex than this player's home.
+              // Therefore, this position is a lateral position for this player.
+              lateral_positions.insert(neighbor_of_home);
+            }
           }
         }
+        players_to_forward_positions_.insert({player_and_home_position.first, forward_positions});
         players_to_lateral_positions_.insert({player_and_home_position.first, lateral_positions});
       }
     }
