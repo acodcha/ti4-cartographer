@@ -138,13 +138,13 @@ protected:
 
   /// \brief The end index is one past the end, as in the standard containers.
   std::pair<uint8_t, uint8_t> start_and_end_indices_low_agggression(const uint8_t number_of_systems, const uint8_t number_of_equidistant_systems) const noexcept {
-    const uint8_t start_index{0};
-    const uint8_t end_index_1{static_cast<uint8_t>(number_of_systems / 3)};
-    if (end_index_1 - start_index >= number_of_equidistant_systems) {
-      return {start_index, end_index_1};
+    const uint8_t start_index_1{static_cast<uint8_t>(number_of_systems - number_of_systems / 3)};
+    const uint8_t end_index{static_cast<uint8_t>(number_of_systems)};
+    if (end_index - start_index_1 >= number_of_equidistant_systems) {
+      return {start_index_1, end_index};
     } else {
-      const uint8_t end_index_2{static_cast<uint8_t>(number_of_equidistant_systems)};
-      return {start_index, end_index_2};
+      const uint8_t start_index_2{static_cast<uint8_t>(number_of_systems - number_of_equidistant_systems)};
+      return {std::min(start_index_1, start_index_2), end_index};
     }
   }
 
@@ -163,13 +163,13 @@ protected:
 
   /// \brief The end index is one past the end, as in the standard containers.
   std::pair<uint8_t, uint8_t> start_and_end_indices_high_agggression(const uint8_t number_of_systems, const uint8_t number_of_equidistant_systems) const noexcept {
-    const uint8_t start_index_1{static_cast<uint8_t>(number_of_systems - number_of_systems / 3)};
-    const uint8_t end_index{static_cast<uint8_t>(number_of_systems)};
-    if (end_index - start_index_1 >= number_of_equidistant_systems) {
-      return {start_index_1, end_index};
+    const uint8_t start_index{0};
+    const uint8_t end_index_1{static_cast<uint8_t>(number_of_systems / 3)};
+    if (end_index_1 - start_index >= number_of_equidistant_systems) {
+      return {start_index, end_index_1};
     } else {
-      const uint8_t start_index_2{static_cast<uint8_t>(number_of_systems - number_of_equidistant_systems)};
-      return {std::min(start_index_1, start_index_2), end_index};
+      const uint8_t end_index_2{static_cast<uint8_t>(number_of_equidistant_systems)};
+      return {start_index, end_index_2};
     }
   }
 
