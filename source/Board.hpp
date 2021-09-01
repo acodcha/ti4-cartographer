@@ -401,7 +401,7 @@ private:
         for (const Position& position : player_and_preferred_position.second) {
           const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-          const float preferred_position_score{system->space_dock_score()};
+          const float preferred_position_score{system->preferred_and_alternate_position_score()};
           if (preferred_position_score > best_preferred_position_score) {
             best_preferred_position_score = preferred_position_score;
           }
@@ -419,7 +419,7 @@ private:
         for (const Position& position : player_and_alternate_position.second) {
           const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-          const float alternate_position_score{0.5f * system->space_dock_score()};
+          const float alternate_position_score{0.5f * system->preferred_and_alternate_position_score()};
           if (alternate_position_score > best_alternate_position_score) {
             best_alternate_position_score = alternate_position_score;
           }
@@ -429,12 +429,14 @@ private:
     }
   }
 
-  /// \brief Each player ideally wants 5+ planets and 4+ planets of the same trait in their slice. Adjust the score accordingly.
+  /// \brief Each player ideally wants 5+ planets, 2+ technology specialties, and 4+ planets of the same trait in their slice. Adjust the score accordingly.
   void add_number_of_planets_scores() noexcept {
     std::map<Player, float> players_to_number_of_planets;
+    std::map<Player, float> players_to_number_of_technology_specialties;
     std::map<Player, std::map<PlanetTrait, float>> players_to_planet_traits_to_number_of_planets;
     for (const Player& player : players_) {
       players_to_number_of_planets.insert({player, 0.0f});
+      players_to_number_of_technology_specialties.insert({player, 0.0f});
       players_to_planet_traits_to_number_of_planets.insert({player, {{PlanetTrait::Cultural, 0.0f}, {PlanetTrait::Hazardous, 0.0f}, {PlanetTrait::Industrial, 0.0f}}});
     }
     for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
@@ -448,6 +450,11 @@ private:
           }
           const float one_over_relevant_players{1.0f / static_cast<float>(position_and_relevant_players.second.size())};
           for (const Planet& planet : system->planets()) {
+            if (planet.technology_specialty().has_value()) {
+              for (const Player& player : position_and_relevant_players.second) {
+                players_to_number_of_technology_specialties[player] += one_over_relevant_players;
+              }
+            }
             if (planet.trait().has_value()) {
               for (const Player& player : position_and_relevant_players.second) {
                 players_to_planet_traits_to_number_of_planets[player][planet.trait().value()] += one_over_relevant_players;
@@ -460,6 +467,10 @@ private:
     for (const std::pair<Player, float>& player_and_number_of_planets : players_to_number_of_planets) {
       const float number_of_planets_minus_5{player_and_number_of_planets.second - 5.0f};
       player_scores_[player_and_number_of_planets.first] += 0.068f * std::pow(number_of_planets_minus_5, 3) + 1.34f * number_of_planets_minus_5;
+    }
+    for (const std::pair<Player, float>& player_and_number_of_technology_specialties : players_to_number_of_technology_specialties) {
+      const float number_of_technology_specialties_minus_2{player_and_number_of_technology_specialties.second - 2.0f};
+      player_scores_[player_and_number_of_technology_specialties.first] += 0.0486f * std::pow(number_of_technology_specialties_minus_2, 3) + -0.426f * std::pow(number_of_technology_specialties_minus_2, 2) + 1.44f * number_of_technology_specialties_minus_2 + 0.952f;
     }
     for (const std::pair<Player, std::map<PlanetTrait, float>>& player_and_planet_traits_to_number_of_planets : players_to_planet_traits_to_number_of_planets) {
       for (const std::pair<PlanetTrait, float>& planet_trait_to_number_of_planets : player_and_planet_traits_to_number_of_planets.second) {

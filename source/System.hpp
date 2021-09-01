@@ -81,7 +81,7 @@ public:
     return highest_planet_resources_;
   }
 
-  float space_dock_score() const noexcept {
+  float preferred_and_alternate_position_score() const noexcept {
     if (planets_.empty() || contains(Anomaly::GravityRift)) {
       return 0.0f;
     } else {
@@ -191,7 +191,7 @@ private:
   }
 
   void initialize_score() noexcept {
-    score_ = individual_planet_scores() + number_of_planets_score() + anomalies_score() + wormholes_score();
+    score_ = individual_planet_scores() + number_of_planets_score() + space_dock_score() + anomalies_score() + wormholes_score();
   }
 
   /// \brief The base system score is the sum of the individual planet scores.
@@ -214,6 +214,12 @@ private:
       return 3.0f * number_of_planets_;
     }
     return 0.0f;
+  }
+
+  /// \brief If this system contains a planet that would be good for a space dock, the score is increased slightly.
+  /// \details Space docks are taken into account in greater detail with preferred and alternate positions, so this is a very small adjustment.
+  float space_dock_score() const noexcept {
+    return preferred_and_alternate_position_score() / 7.0f;
   }
 
   /// \brief Some anomalies are generally beneficial or harmful, whereas others depend heavily on their positioning.
