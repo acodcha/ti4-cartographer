@@ -96,14 +96,16 @@ private:
   void initialize_neighbors() noexcept {
     for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
       std::set<Position> neighbors;
-      for (const Position& position : position_and_tile.first.possible_neighbors()) {
-        if (positions_to_tiles_.find(position) != positions_to_tiles_.cend()) {
-          neighbors.insert(position);
+      for (const Position& neighbor_position : position_and_tile.first.possible_neighbors()) {
+        const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_position)};
+        if (neighbor_position_and_tile != positions_to_tiles_.cend() && !neighbor_position_and_tile->second.is_hyperlane()) {
+          neighbors.insert(neighbor_position);
         }
       }
-      for (const Position& position : position_and_tile.second.hyperlane_neighbors()) {
-        if (positions_to_tiles_.find(position) != positions_to_tiles_.cend()) {
-          neighbors.insert(position);
+      for (const Position& neighbor_position : position_and_tile.second.hyperlane_neighbors()) {
+        const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_position)};
+        if (neighbor_position_and_tile != positions_to_tiles_.cend() && !neighbor_position_and_tile->second.is_hyperlane()) {
+          neighbors.insert(neighbor_position);
         }
       }
       neighbors_.insert({position_and_tile.first, neighbors});

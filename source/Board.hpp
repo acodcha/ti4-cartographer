@@ -81,8 +81,9 @@ private:
     for (uint64_t counter = 0; counter < maximum_number_of_iterations; ++counter) {
       ++number_of_iterations;
       selected_system_ids_.shuffle();
-      assign_system_ids_to_tiles_simple();
-      if (!contains_adjacent_anomalies_or_wormholes()) {
+      const bool board_is_valid = assign_system_ids_to_tiles_simple();
+      //const bool board_is_valid = assign_system_ids_to_tiles_smart();
+      if (board_is_valid) {
         ++number_of_valid_boards;
         calculate_player_scores();
         score_imbalance_ratio_ = score_imbalance_ratio();
@@ -108,8 +109,8 @@ private:
     }
   }
 
-  /// \brief After doing this, need to check for adjacent anomalies or wormholes.
-  void assign_system_ids_to_tiles_simple() {
+  /// \brief Assigns system IDs in a simple manner. Returns true if the board is valid and false otherwise. Most boards are invalid with this method.
+  bool assign_system_ids_to_tiles_simple() {
     uint8_t equidistant_system_ids_index{0};
     uint8_t in_slice_system_ids_index{0};
     for (std::unordered_map<Position, Tile>::iterator position_and_tile = positions_to_tiles_.begin(); position_and_tile != positions_to_tiles_.end(); ++position_and_tile) {
@@ -123,32 +124,106 @@ private:
         }
       }
     }
+    return !contains_adjacent_anomalies_or_wormholes();
   }
 
-  /// \brief Guarantees no adjacent anomalies or wormholes.
-  void assign_system_ids_to_tiles_smart() {
+  struct NeighborsContents {
+    NeighborsContents(const std::set<Position>& neighbor_positions, const std::unordered_map<Position, Tile>& positions_to_tiles) noexcept {
+      for (const Position& neighbor_position : neighbor_positions) {
+        const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles.find(neighbor_position)};
+        if (neighbor_position_and_tile->second.is_planetary_anomaly_wormhole_or_empty()) {
+          const std::unordered_set<System>::const_iterator neighbor_system{Systems.find({neighbor_position_and_tile->second.system_id()})};
+          if (!one_or_more_anomalies && neighbor_system->contains_one_or_more_anomalies()) {
+            one_or_more_anomalies = true;
+          }
+          if (!one_or_more_alpha_wormholes && neighbor_system->contains(Wormhole::Alpha)) {
+            one_or_more_alpha_wormholes = true;
+          }
+          if (!one_or_more_beta_wormholes && neighbor_system->contains(Wormhole::Beta)) {
+            one_or_more_beta_wormholes = true;
+          }
+        }
+      }
+    }
+    bool one_or_more_anomalies{false};
+    bool one_or_more_alpha_wormholes{false};
+    bool one_or_more_beta_wormholes{false};
+  };
+
+  /// \brief Assigns system IDs in a smart manner, trying to avoid invalid boards. Returns true if the board is valid and false otherwise.
+  bool assign_system_ids_to_tiles_smart() {
     std::unordered_set<uint8_t> equidistant_system_indices_used;
     std::unordered_set<uint8_t> in_slice_system_indices_used;
     uint8_t equidistant_system_ids_index{0};
     uint8_t in_slice_system_ids_index{0};
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
-      if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()) {
-        const std::unordered_map<Position, std::set<Position>>::const_iterator position_and_neighbors{neighbors_.find(position_and_tile.first)};
-        if (is_equidistant(position_and_tile.first)) {
-
-
-
-
-
-        } else if (is_in_a_slice(position_and_tile.first)) {
-
-
-
-
-
+    for (std::unordered_map<Position, Tile>::iterator position_and_tile = positions_to_tiles_.begin(); position_and_tile != positions_to_tiles_.end(); ++position_and_tile) {
+      if (position_and_tile->second.is_planetary_anomaly_wormhole_or_empty()) {
+        const std::unordered_map<Position, std::set<Position>>::const_iterator position_and_neighbors{neighbors_.find(position_and_tile->first)};
+        if (position_and_neighbors != neighbors_.cend()) {
+          const NeighborsContents neighbors_contents{position_and_neighbors->second, positions_to_tiles_};
+          if (is_equidistant(position_and_tile->first)) {
+            std::unordered_set<uint8_t> equidistant_system_indices_attempted;
+            while (equidistant_system_indices_attempted.size() < selected_system_ids_.equidistant().size()) {
+              const std::unordered_set<System>::const_iterator system{Systems.find({selected_system_ids_.equidistant()[equidistant_system_ids_index]})};
+              bool success{false};
+              if (equidistant_system_indices_used.find(equidistant_system_ids_index) == equidistant_system_indices_used.cend()) {
+                if (!(system->contains_one_or_more_anomalies() && neighbors_contents.one_or_more_anomalies) && !(system->contains(Wormhole::Alpha) && neighbors_contents.one_or_more_alpha_wormholes) && !(system->contains(Wormhole::Beta) && neighbors_contents.one_or_more_beta_wormholes)) {
+                  success = true;
+                }
+              }
+              if (success) {
+                position_and_tile->second.set_system_id(system->id());
+                equidistant_system_indices_used.insert(equidistant_system_ids_index);
+              } else {
+                equidistant_system_indices_attempted.insert(equidistant_system_ids_index);
+              }
+              if (equidistant_system_ids_index + 1u < selected_system_ids_.equidistant().size()) {
+                ++equidistant_system_ids_index;
+              } else {
+                equidistant_system_ids_index = 0;
+              }
+              if (success) {
+                break;
+              }
+            }
+            if (equidistant_system_indices_attempted.size() == selected_system_ids_.equidistant().size()) {
+              return false;
+              break;
+            }
+          } else if (is_in_a_slice(position_and_tile->first)) {
+            std::unordered_set<uint8_t> in_slice_system_indices_attempted;
+            while (in_slice_system_indices_attempted.size() < selected_system_ids_.in_slice().size()) {
+              const std::unordered_set<System>::const_iterator system{Systems.find({selected_system_ids_.equidistant()[equidistant_system_ids_index]})};
+              bool success{false};
+              if (in_slice_system_indices_used.find(in_slice_system_ids_index) == in_slice_system_indices_used.cend()) {
+                if (!(system->contains_one_or_more_anomalies() && neighbors_contents.one_or_more_anomalies) && !(system->contains(Wormhole::Alpha) && neighbors_contents.one_or_more_alpha_wormholes) && !(system->contains(Wormhole::Beta) && neighbors_contents.one_or_more_beta_wormholes)) {
+                  success = true;
+                }
+              }
+              if (success) {
+                position_and_tile->second.set_system_id(selected_system_ids_.equidistant()[in_slice_system_ids_index]);
+                in_slice_system_indices_used.insert(in_slice_system_ids_index);
+              } else {
+                in_slice_system_indices_attempted.insert(in_slice_system_ids_index);
+              }
+              if (in_slice_system_ids_index + 1u < selected_system_ids_.in_slice().size()) {
+                ++in_slice_system_ids_index;
+              } else {
+                in_slice_system_ids_index = 0;
+              }
+              if (success) {
+                break;
+              }
+            }
+            if (in_slice_system_indices_attempted.size() == selected_system_ids_.in_slice().size()) {
+              return false;
+              break;
+            }
+          }
         }
       }
     }
+    return true;
   }
 
   bool contains_adjacent_anomalies_or_wormholes() const noexcept {
