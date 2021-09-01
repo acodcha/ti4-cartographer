@@ -18,7 +18,9 @@ std::default_random_engine RandomEngine(RandomDevice());
 
 constexpr const uint64_t DefaultMaximumNumberOfIterations{1000000};
 
-constexpr const float ScoreImbalanceRatioTolerance{0.1};
+constexpr const uint64_t DefaultMaximumNumberOfAttempts{10};
+
+constexpr const float InitialScoreImbalanceRatioTolerance{0.1};
 
 namespace Score {
 

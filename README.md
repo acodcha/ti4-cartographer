@@ -48,14 +48,16 @@ This installs the programs to `/usr/local/bin/ti4cartographer` and `/usr/local/b
 Run `ti4cartographer` with no arguments or with the `--help` argument to obtain usage information. Otherwise, for regular use, run `ti4cartographer` with:
 
 ```
-ti4cartographer --players <number> [--version <type>] [--layout <type>] [--aggression <amount>] [--iterations <number>] [--quiet]
+ti4cartographer --players <number> [--version <type>] [--layout <type>] [--aggression <amount>] \
+  [--attempts <number>] [--iterations <number>] [--quiet]
 ```
 
 - `--players <number>`: Required. Choices are `2`, `3`, `4`, `5`, `6`, `7`, or `8`. Specifies the number of players.
 - `--version <type>`: Optional. Choices are `base` or `expansion`. The default is `expansion`. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Note that 7 and 8 player games require the expansion.
 - `--layout <type>`: Optional. Choices vary by number of players, but typically include `regular`, `small`, or `large`; see the [Board Layouts](#board-layouts) section. The default is `regular`. Specifies the board layout.
 - `--aggression <amount>`: Optional. Choices are `low`, `medium`, or `high`. The default is `medium`. Specifies the degree of expected aggression resulting from the placement of systems on the board. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.
-- `--iterations <number>`: Optional. The default is `1000000`. Specifies the number of board generation iterations.
+- `--attempts <number>`: Optional. The default is `10`. Specifies the maximum number of board generation attempts.
+- `--iterations <number>`: Optional. The default is `1000000`. Specifies the maximum number of iterations for each board generation attempt.
 - `--quiet`: Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.
 
 The `ti4cartographer` program computes an optimal board given the arguments and outputs its Tabletop Simulator string as well as a link to visualize the board in Keegan Williams' TI4 Map Generator (<https://keeganw.github.io/ti4/>).

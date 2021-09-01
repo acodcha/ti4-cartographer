@@ -29,9 +29,13 @@ const std::string AggressionKey{"--aggression"};
 
 const std::string AggressionPattern{AggressionKey + " <amount>"};
 
-const std::string NumberOfIterationsKey{"--iterations"};
+const std::string MaximumNumberOfAttemptsKey{"--attempts"};
 
-const std::string NumberOfIterationsPattern{NumberOfIterationsKey + " <number>"};
+const std::string MaximumNumberOfAttemptsPattern{MaximumNumberOfAttemptsKey + " <number>"};
+
+const std::string MaximumNumberOfIterationsKey{"--iterations"};
+
+const std::string MaximumNumberOfIterationsPattern{MaximumNumberOfIterationsKey + " <number>"};
 
 } // namespace Arguments
 
@@ -59,6 +63,10 @@ public:
     return aggression_;
   }
 
+  uint64_t maximum_number_of_attempts() const noexcept {
+    return maximum_number_of_attempts_;
+  }
+
   uint64_t maximum_number_of_iterations() const noexcept {
     return maximum_number_of_iterations_;
   }
@@ -74,6 +82,8 @@ private:
   Layout layout_{Layout::Players6};
 
   Aggression aggression_{Aggression::Medium};
+
+  uint64_t maximum_number_of_attempts_{DefaultMaximumNumberOfAttempts};
 
   uint64_t maximum_number_of_iterations_{DefaultMaximumNumberOfIterations};
 
@@ -112,7 +122,9 @@ private:
         layout_string = *(argument + 1);
       } else if (*argument == Arguments::AggressionKey && argument + 1 < arguments_.cend()) {
         initialize_aggression(*(argument + 1));
-      } else if (*argument == Arguments::NumberOfIterationsKey && argument + 1 < arguments_.cend()) {
+      } else if (*argument == Arguments::MaximumNumberOfAttemptsKey && argument + 1 < arguments_.cend()) {
+        initialize_maximum_number_of_attempts(*(argument + 1));
+      } else if (*argument == Arguments::MaximumNumberOfIterationsKey && argument + 1 < arguments_.cend()) {
         initialize_maximum_number_of_iterations(*(argument + 1));
       }
     }
@@ -142,6 +154,13 @@ private:
       aggression_ = found.value();
     } else {
       message_usage_information_and_error("Unknown board aggression: " + aggression);
+    }
+  }
+
+  void initialize_maximum_number_of_attempts(const std::string maximum_number_of_attempts) {
+    maximum_number_of_attempts_ = static_cast<uint64_t>(std::stoull(maximum_number_of_attempts));
+    if (maximum_number_of_attempts_ == 0) {
+      message_usage_information_and_error("The number of attempts must be greater than zero.");
     }
   }
 
@@ -179,14 +198,15 @@ private:
   void message_usage_information() const noexcept {
     const std::string space{"  "};
     verbose_message("Usage:");
-    verbose_message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::LayoutPattern + "] [" + Arguments::AggressionPattern + "] [" + Arguments::NumberOfIterationsPattern + "] [" + Arguments::QuietMode + "]");
+    verbose_message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::LayoutPattern + "] [" + Arguments::AggressionPattern + "] [" + Arguments::MaximumNumberOfAttemptsPattern + "] [" + Arguments::MaximumNumberOfIterationsPattern + "] [" + Arguments::QuietMode + "]");
     const uint_least64_t length{std::max({
       Arguments::UsageInformation.length(),
       Arguments::NumberOfPlayersPattern.length(),
       Arguments::GameVersionPattern.length(),
       Arguments::LayoutPattern.length(),
       Arguments::AggressionPattern.length(),
-      Arguments::NumberOfIterationsPattern.length(),
+      Arguments::MaximumNumberOfAttemptsPattern.length(),
+      Arguments::MaximumNumberOfIterationsPattern.length(),
       Arguments::QuietMode.length()
     })};
     verbose_message("Arguments:");
@@ -202,7 +222,8 @@ private:
     verbose_message(space + space + "7 players: regular or large");
     verbose_message(space + space + "8 players: regular or large");
     verbose_message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Choices are low, medium, or high. The default is medium. Specifies the degree of expected aggression resulting from the placement of systems on the board. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
-    verbose_message(space + pad_to_length(Arguments::NumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the number of board generation iterations.");
+    verbose_message(space + pad_to_length(Arguments::MaximumNumberOfAttemptsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfAttempts) + ". Specifies the maximum number of board generation attempts.");
+    verbose_message(space + pad_to_length(Arguments::MaximumNumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the maximum number of iterations for each board generation attempt.");
     verbose_message(space + pad_to_length(Arguments::QuietMode, length) + space + "Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.");
     verbose_message("");
   }
@@ -219,7 +240,8 @@ private:
     verbose_message("The number of players and board layout is: " + label(layout_));
     verbose_message("The game version is: " + label(game_version_));
     verbose_message("The aggression is: " + label(aggression_));
-    verbose_message("The number of iterations is: " + std::to_string(maximum_number_of_iterations_));
+    verbose_message("The maximum number of attempts is: " + std::to_string(maximum_number_of_attempts_));
+    verbose_message("The maximum number of iterations per attempt is: " + std::to_string(maximum_number_of_iterations_));
   }
 
 }; // class Instructions
