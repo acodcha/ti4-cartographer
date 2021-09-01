@@ -167,6 +167,7 @@ private:
     add_mecatol_rex_pathway_scores();
     add_preferred_position_scores();
     add_alternate_position_scores();
+    add_number_of_planets_scores();
   }
 
   void reset_scores() noexcept {
@@ -210,26 +211,31 @@ private:
     }
   }
 
-  /// \brief If a player's lateral systems protect their home system, the score is increased.
+  /// \brief If a player's lateral systems protect or endanger their home system, the score is adjusted accordingly.
   void add_lateral_system_scores() noexcept {
     for (const std::pair<Player, std::set<Position>>& player_and_lateral_positions : players_to_lateral_positions_) {
       for (const Position& position : player_and_lateral_positions.second) {
         const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
         if (system->contains(Anomaly::AsteroidField)) {
-          player_scores_[player_and_lateral_positions.first] += 1.0f;
+          // An asteroid field in a lateral system is beneficial.
+          player_scores_[player_and_lateral_positions.first] += -2.0f * Score::AsteroidField;
         }
         if (system->contains(Anomaly::GravityRift)) {
-          player_scores_[player_and_lateral_positions.first] += -3.0f;
+          // A gravity rift in a lateral system is very dangerous.
+          player_scores_[player_and_lateral_positions.first] += 7.0f * Score::GravityRift;
         }
         if (system->contains(Anomaly::Nebula)) {
-          player_scores_[player_and_lateral_positions.first] += 2.0f;
+          // A nebula in a lateral system is beneficial.
+          player_scores_[player_and_lateral_positions.first] += -2.0f * Score::Nebula;
         }
         if (system->contains(Anomaly::Supernova)) {
-          player_scores_[player_and_lateral_positions.first] += 3.0f;
+          // A nebula in a lateral system is beneficial.
+          player_scores_[player_and_lateral_positions.first] += -2.0f * Score::Supernova;
         }
         if (system->contains_one_or_more_wormholes()) {
-          player_scores_[player_and_lateral_positions.first] += -2.0f;
+          // A gravity rift in a lateral system is somewhat dangerous.
+          player_scores_[player_and_lateral_positions.first] += -1.0f * Score::Wormhole;
         }
       }
     }
@@ -246,23 +252,29 @@ private:
             const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
             const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
             if (system->contains(Anomaly::Supernova)) {
-              pathway_score += -15.0;
+              // A supernova anywhere along the pathway to Mecatol Rex is quite bad.
+              pathway_score += 11.0f * Score::Supernova;
             }
             if (system->contains(Anomaly::AsteroidField)) {
-              pathway_score += -3.0;
+              // An asteroid field along the pathway to Mecatol Rex is bad but manageable.
+              pathway_score += 3.0f * Score::AsteroidField;
             }
             if (system->contains(Anomaly::Nebula)) {
               if (positions_to_distances_from_mecatol_rex_.find(position_and_tile->first)->second <= Distance{1}) {
-                pathway_score += 0.0;
+                // A nebula adjacent to Mecatol Rex is somewhat annoying but manageable.
+                pathway_score += 3.0f * Score::Nebula;
               } else {
-                pathway_score += -5.0;
+                // A nebula elsewhere along the pathway to Mecatol Rex is quite bad.
+                pathway_score += 7.0f * Score::Nebula;
               }
             }
             if (system->contains(Anomaly::GravityRift)) {
               if (positions_to_distances_from_mecatol_rex_.find(position_and_tile->first)->second <= Distance{1}) {
-                pathway_score += -5.0;
+                // A gravity rift adjacent to Mecatol Rex is annoying.
+                pathway_score += 11.0f * Score::GravityRift;
               } else {
-                pathway_score += -15.0;
+                // A gravity rift elsewhere on the pathway to Mecatol Rex is quite bad.
+                pathway_score += 23.0f * Score::GravityRift;
               }
             }
           }
@@ -301,12 +313,52 @@ private:
         for (const Position& position : player_and_alternate_position.second) {
           const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-          const float alternate_position_score{system->space_dock_score() / 3.0f};
+          const float alternate_position_score{0.5f * system->space_dock_score()};
           if (alternate_position_score > best_alternate_position_score) {
             best_alternate_position_score = alternate_position_score;
           }
         }
         player_scores_[player_and_alternate_position.first] += best_alternate_position_score;
+      }
+    }
+  }
+
+  /// \brief Each player ideally wants 5+ planets and 4+ planets of the same trait in their slice. Adjust the score accordingly.
+  void add_number_of_planets_scores() noexcept {
+    std::map<Player, float> players_to_number_of_planets;
+    std::map<Player, std::map<PlanetTrait, float>> players_to_planet_traits_to_number_of_planets;
+    for (const Player& player : players_) {
+      players_to_number_of_planets.insert({player, 0.0f});
+      players_to_planet_traits_to_number_of_planets.insert({player, {{PlanetTrait::Cultural, 0.0f}, {PlanetTrait::Hazardous, 0.0f}, {PlanetTrait::Industrial, 0.0f}}});
+    }
+    for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
+      const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position_and_relevant_players.first)};
+      if (position_and_tile->second.is_planetary_anomaly_wormhole_or_empty()) {
+        const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+        if (!system->planets().empty()) {
+          const float number_of_planets_per_relevant_player{static_cast<float>(system->planets().size()) / static_cast<float>(position_and_relevant_players.second.size())};
+          for (const Player& player : position_and_relevant_players.second) {
+            players_to_number_of_planets[player] += number_of_planets_per_relevant_player;
+          }
+          const float one_over_relevant_players{1.0f / static_cast<float>(position_and_relevant_players.second.size())};
+          for (const Planet& planet : system->planets()) {
+            if (planet.trait().has_value()) {
+              for (const Player& player : position_and_relevant_players.second) {
+                players_to_planet_traits_to_number_of_planets[player][planet.trait().value()] += one_over_relevant_players;
+              }
+            }
+          }
+        }
+      }
+    }
+    for (const std::pair<Player, float>& player_and_number_of_planets : players_to_number_of_planets) {
+      const float number_of_planets_minus_5{player_and_number_of_planets.second - 5.0f};
+      player_scores_[player_and_number_of_planets.first] += 0.068f * std::pow(number_of_planets_minus_5, 3) + 1.34f * number_of_planets_minus_5;
+    }
+    for (const std::pair<Player, std::map<PlanetTrait, float>>& player_and_planet_traits_to_number_of_planets : players_to_planet_traits_to_number_of_planets) {
+      for (const std::pair<PlanetTrait, float>& planet_trait_to_number_of_planets : player_and_planet_traits_to_number_of_planets.second) {
+        const float number_of_planets_minus_4{planet_trait_to_number_of_planets.second - 4.0f};
+        player_scores_[player_and_planet_traits_to_number_of_planets.first] += 0.036f * std::pow(number_of_planets_minus_4, 3) + -0.285f * std::pow(number_of_planets_minus_4, 2) + 0.798f * number_of_planets_minus_4 + 2.02;
       }
     }
   }
