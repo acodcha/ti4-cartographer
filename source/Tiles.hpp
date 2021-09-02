@@ -9,6 +9,28 @@ namespace TI4Cartographer {
 /// \brief All the tiles on the board.
 template <Layout layout> const std::set<Tile> Tiles;
 
+template <> std::set<Tile> const Tiles<Layout::Players2>{
+  {Position{0, 0}},
+  {Position{1, 0}},
+  {Position{1, 3}},
+  {Position{1, 4}},
+  {Position{1, 5}},
+  {Position{2, 7}},
+  {Position{2, 8}},
+  {Position{2, 9}},
+  {Position{2, 10}},
+  {Position{2, 11}},
+  {Position{3, 11}},
+  {Position{3, 12}, Player::Player1},
+  {Position{3, 13}},
+  {Position{3, 14}},
+  {Position{3, 15}, Player::Player2},
+  {Position{3, 16}},
+  {Position{4, 17}},
+  {Position{4, 18}},
+  {Position{4, 19}}
+};
+
 template <> std::set<Tile> const Tiles<Layout::Players4Regular>{
   {Position{0, 0}},
   {Position{1, 0}, "85A-3"},
