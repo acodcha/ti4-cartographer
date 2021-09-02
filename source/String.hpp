@@ -4,25 +4,36 @@
 
 namespace TI4Cartographer {
 
-/// \brief Make each character in a string lowercase.
+/// \brief Make all characters in a string lowercase.
 std::string lowercase(const std::string& text) noexcept {
   std::string new_text{text};
   std::transform(new_text.begin(), new_text.end(), new_text.begin(), [](const char character)->char{return std::tolower(character);});
   return new_text;
 }
 
-/// \brief Remove whitespace in a string.
+/// \brief Remove all whitespace from a string.
 std::string remove_whitespace(const std::string& text) noexcept {
   std::string new_text{text};
   new_text.erase(remove_if(new_text.begin(), new_text.end(), ::isspace), new_text.end());
   return new_text;
 }
 
-/// \brief Remove non-alphanumeric characters in a string.
+/// \brief Remove all non-alphanumeric characters from a string.
 std::string remove_non_alphanumeric_characters(const std::string& text) noexcept {
   std::string new_text;
   for (const char character : text) {
     if (::isalnum(character)) {
+      new_text += character;
+    }
+  }
+  return new_text;
+}
+
+/// \brief Remove all occurrences of a specific character from a string.
+std::string remove_character(const std::string& text, const char character_to_remove) noexcept {
+  std::string new_text;
+  for (const char character : text) {
+    if (character != character_to_remove) {
       new_text += character;
     }
   }

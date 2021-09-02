@@ -523,7 +523,11 @@ private:
           // ID 0 is the same ID used to represent home systems, so carefully position home systems before loading the Tabletop Simulator string.
           text += "0";
         } else {
-          text += tile.system_id();
+          // Tabletop Simulator and the visualizer use different naming conventions for the orientation of the hyperlane tiles.
+          // In Tabletop Simulator, the orientation directly follows the base name, for example: 85A0.
+          // In the visualizer, there is a hyphen between the base name and the orientation, for example: 85A-0.
+          // A hyphen is included in the system IDs by default, so remove it when printing the Tabletop Simultor string.
+          text += remove_character(tile.system_id(), '-');
         }
       }
     }
@@ -532,7 +536,7 @@ private:
 
   std::string print_visualization_link() const noexcept {
     const std::set<Tile> ordered_tiles_{ordered_tiles()};
-    const std::string prefix{"https://keeganw.github.io/ti4/?settings=T" + std::to_string(players_.size()) + "&tiles="};
+    const std::string prefix{"https://keeganw.github.io/ti4/?settings=T" + std::to_string(players_.size()) + "0000&tiles="};
     std::string text;
     for (const Tile& tile : ordered_tiles_) {
       if (!text.empty()) {
