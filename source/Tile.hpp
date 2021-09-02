@@ -11,28 +11,46 @@ class Tile {
 
 public:
 
-  Tile() noexcept {}
+  /// \brief Constructor for a planetary system, an anomaly/wormhole/empty system, or the Mecatol Rex system.
+  Tile(const Position& position, const std::set<Position>& hyperlane_neighbors = {}) noexcept : position_(position), hyperlane_neighbors_(hyperlane_neighbors) {
+    if (position_ == MecatolRexPosition) {
+      system_categories_.insert(SystemCategory::MecatolRex);
+      system_id_ = MecatolRexSystemId;
+    } else {
+      system_categories_.insert(SystemCategory::Planetary);
+      system_categories_.insert(SystemCategory::AnomalyWormholeEmpty);
+      is_planetary_anomaly_wormhole_or_empty_ = true;
+    }
+  }
 
-  Tile(const Position& position) noexcept : position_(position) {}
-
+  /// \brief Constructor for a home system.
   Tile(
     const Position& position,
-    const std::set<SystemCategory>& system_categories,
-    const std::set<Position>& hyperlane_neighbors = {},
-    const std::string& system_id = {},
-    const std::optional<Player>& home_player = {}
-  ) :
+    const Player home_player,
+    const std::set<Position>& hyperlane_neighbors = {}
+  ) noexcept :
     position_(position),
-    system_categories_(system_categories),
     hyperlane_neighbors_(hyperlane_neighbors),
-    system_id_(system_id),
     home_player_(home_player)
   {
-    initialize_is_planetary_anomaly_wormhole_or_empty();
-    initialize_is_hyperlane();
-    check_system_category();
-    check_if_mecatol_rex();
-    check_if_home_system_or_creuss_gate();
+    system_categories_.insert(SystemCategory::Home);
+    system_categories_.insert(SystemCategory::CreussGate);
+    system_id_ = "0";
+  }
+
+  /// \brief Constructor for a hyperlane system or a skipped tile. System ID -1 indicates a skipped tile.
+  Tile(const Position& position, const std::string& system_id) : position_(position), system_id_(system_id) {
+    if (system_id_ != "-1") {
+      system_categories_.insert(SystemCategory::Hyperlane);
+      is_hyperlane_ = true;
+      const std::unordered_set<System>::const_iterator system{Systems.find({system_id_})};
+      if (system == Systems.cend()) {
+        error("System ID " + system_id + " does not exist. Trying to assign this system to the tile at position " + position.print() + ".");
+      }
+      if (system != Systems.cend() && system->category() != SystemCategory::Hyperlane) {
+        error("System " + system->print() + " is not a hyperlane. Trying to assign this system to the tile at position " + position.print() + ".");
+      }
+    }
   }
 
   void set_system_id(const std::string& system_id) {
@@ -121,44 +139,13 @@ private:
   /// \brief If this tile is a home system or the Creuss Gate system, this is the player whose system this is.
   std::optional<Player> home_player_;
 
-  void initialize_is_planetary_anomaly_wormhole_or_empty() noexcept {
-    if (
-      system_categories_.find(SystemCategory::Planetary) != system_categories_.cend()
-      || system_categories_.find(SystemCategory::AnomalyWormholeEmpty) != system_categories_.cend()
-    ) {
-      is_planetary_anomaly_wormhole_or_empty_ = true;
-    } else {
-      is_planetary_anomaly_wormhole_or_empty_ = false;
-    }
-  }
-
-  void initialize_is_hyperlane() noexcept {
-    if (system_categories_.find(SystemCategory::Hyperlane) != system_categories_.cend()) {
-      is_hyperlane_ = true;
-    } else {
-      is_hyperlane_ = false;
-    }
-  }
-
   void check_system_category() const {
-    const std::unordered_set<System>::const_iterator found_system{Systems.find({system_id_})};
-    if (found_system != Systems.cend()) {
-      const std::set<SystemCategory>::const_iterator found_category{system_categories_.find(found_system->category())};
-      if (found_category == system_categories_.cend()) {
-        error("System " + found_system->print() + " is of the wrong type for the tile at position " + position_.print() + ".");
+    const std::unordered_set<System>::const_iterator system{Systems.find({system_id_})};
+    if (system != Systems.cend()) {
+      const std::set<SystemCategory>::const_iterator system_category{system_categories_.find(system->category())};
+      if (system_category == system_categories_.cend()) {
+        error("System " + system->print() + " is of the wrong type for the tile at position " + position_.print() + ".");
       }
-    }
-  }
-
-  void check_if_mecatol_rex() noexcept {
-    if (system_categories_.find(SystemCategory::MecatolRex) != system_categories_.cend()) {
-      system_id_ = MecatolRexSystemId;
-    }
-  }
-
-  void check_if_home_system_or_creuss_gate() noexcept {
-    if (system_categories_.find(SystemCategory::Home) != system_categories_.cend() || system_categories_.find(SystemCategory::CreussGate) != system_categories_.cend()) {
-      system_id_ = "0";
     }
   }
 

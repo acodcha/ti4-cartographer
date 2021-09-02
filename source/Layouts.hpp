@@ -74,14 +74,6 @@ std::unordered_map<Layout, uint8_t> layouts_to_number_of_players{
   {Layout::Players8Large, 8}
 };
 
-uint8_t number_of_players(const Layout layout) noexcept {
-  const std::unordered_map<Layout, uint8_t>::const_iterator found{layouts_to_number_of_players.find(layout)};
-  if (found != layouts_to_number_of_players.cend()) {
-    return found->second;
-  }
-  return 0;
-}
-
 std::unordered_multimap<uint8_t, Layout> number_of_players_to_layouts{
   {2, Layout::Players2},
   {3, Layout::Players3Regular},
@@ -98,15 +90,6 @@ std::unordered_multimap<uint8_t, Layout> number_of_players_to_layouts{
   {8, Layout::Players8Regular},
   {8, Layout::Players8Large}
 };
-
-std::set<Layout> layouts(const uint8_t number_of_players) {
-  const std::pair<std::unordered_multimap<uint8_t, Layout>::const_iterator, std::unordered_multimap<uint8_t, Layout>::const_iterator> range{number_of_players_to_layouts.equal_range(number_of_players)};
-  std::set<Layout> results;
-  for (std::unordered_multimap<uint8_t, Layout>::const_iterator element = range.first; element != range.second; ++element) {
-    results.insert(element->second);
-  }
-  return results;
-}
 
 std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const system_categories_to_layouts_to_number_of_systems_per_player{
   {SystemCategory::Planetary, {
@@ -143,6 +126,58 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
   }}
 };
 
+std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const system_categories_to_layouts_to_additional_systems{
+  {SystemCategory::Planetary, {
+    {Layout::Players2, 0},
+    {Layout::Players3Regular, 0},
+    {Layout::Players3Small, 0},
+    {Layout::Players3Large, 0},
+    {Layout::Players4Regular, 0},
+    {Layout::Players4Large, 0},
+    {Layout::Players5Regular, 0},
+    {Layout::Players5Small, 0},
+    {Layout::Players5Large, 0},
+    {Layout::Players6, 0},
+    {Layout::Players7Regular, 0},
+    {Layout::Players7Large, 0},
+    {Layout::Players8Regular, 0},
+    {Layout::Players8Large, 0}
+  }},
+  {SystemCategory::AnomalyWormholeEmpty, {
+    {Layout::Players2, 0},
+    {Layout::Players3Regular, 0},
+    {Layout::Players3Small, 0},
+    {Layout::Players3Large, 0},
+    {Layout::Players4Regular, 0},
+    {Layout::Players4Large, 0},
+    {Layout::Players5Regular, 0},
+    {Layout::Players5Small, 0},
+    {Layout::Players5Large, 0},
+    {Layout::Players6, 0},
+    {Layout::Players7Regular, 0},
+    {Layout::Players7Large, 0},
+    {Layout::Players8Regular, 0},
+    {Layout::Players8Large, 0}
+  }}
+};
+
+uint8_t number_of_players(const Layout layout) noexcept {
+  const std::unordered_map<Layout, uint8_t>::const_iterator found{layouts_to_number_of_players.find(layout)};
+  if (found != layouts_to_number_of_players.cend()) {
+    return found->second;
+  }
+  return 0;
+}
+
+std::set<Layout> layouts(const uint8_t number_of_players) {
+  const std::pair<std::unordered_multimap<uint8_t, Layout>::const_iterator, std::unordered_multimap<uint8_t, Layout>::const_iterator> range{number_of_players_to_layouts.equal_range(number_of_players)};
+  std::set<Layout> results;
+  for (std::unordered_multimap<uint8_t, Layout>::const_iterator element = range.first; element != range.second; ++element) {
+    results.insert(element->second);
+  }
+  return results;
+}
+
 uint8_t number_of_systems_per_player(const SystemCategory system_category, const Layout layout) noexcept {
   const std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>>::const_iterator found_system_category{system_categories_to_layouts_to_number_of_systems_per_player.find(system_category)};
   if (found_system_category != system_categories_to_layouts_to_number_of_systems_per_player.cend()) {
@@ -155,6 +190,24 @@ uint8_t number_of_systems_per_player(const SystemCategory system_category, const
   } else {
     return 0;
   }
+}
+
+uint8_t additional_systems(const SystemCategory system_category, const Layout layout) noexcept {
+  const std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>>::const_iterator found_system_category{system_categories_to_layouts_to_additional_systems.find(system_category)};
+  if (found_system_category != system_categories_to_layouts_to_additional_systems.cend()) {
+    const std::unordered_map<Layout, uint8_t>::const_iterator found_layout{found_system_category->second.find(layout)};
+    if (found_layout != found_system_category->second.cend()) {
+      return found_layout->second;
+    } else {
+      return 0;
+    }
+  } else {
+    return 0;
+  }
+}
+
+uint8_t number_of_systems(const SystemCategory system_category, const Layout layout) noexcept {
+  return number_of_players(layout) * number_of_systems_per_player(system_category, layout) + additional_systems(system_category, layout);
 }
 
 } // namespace TI4Cartographer

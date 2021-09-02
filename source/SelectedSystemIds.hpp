@@ -102,9 +102,9 @@ protected:
         break;
     }
     std::shuffle(all_relevant_system_ids_.begin(), all_relevant_system_ids_.end(), RandomEngine);
-    const uint8_t number_of_systems_needed{static_cast<uint8_t>(number_of_systems_per_player(system_category, layout) * number_of_players(layout))};
+    const uint8_t number_of_systems_needed{number_of_systems(system_category, layout)};
     if (all_relevant_system_ids_.size() < number_of_systems_needed) {
-      error("This game board needs " + std::to_string(number_of_systems_needed) + " " + label(system_category) + " systems, but there are only " + std::to_string(all_relevant_system_ids_.size()) + " " + label(system_category) + " systems that exist in the game.");
+      error("This game board needs " + std::to_string(number_of_systems_needed) + " " + label(system_category) + " systems, but there are only " + std::to_string(all_relevant_system_ids_.size()) + " " + label(system_category) + " systems that exist in total.");
       return {};
     } else {
       std::vector<std::string> selected_relevant_system_ids;

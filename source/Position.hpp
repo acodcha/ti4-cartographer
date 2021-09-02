@@ -187,6 +187,8 @@ private:
 
 }; // class Position
 
+const Position MecatolRexPosition{0, 0};
+
 } // namespace TI4Cartographer
 
 namespace std {

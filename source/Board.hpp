@@ -509,39 +509,58 @@ private:
   }
 
   std::string print_tabletop_simulator_string() const noexcept {
-    // Order the tiles by their position.
-    std::set<Tile> tiles;
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
-      tiles.insert(position_and_tile.second);
-    }
-    // Print the tiles.
+    const std::set<Tile> ordered_tiles_{ordered_tiles()};
     std::string text;
-    for (const Tile& tile : tiles) {
+    for (const Tile& tile : ordered_tiles_) {
       if (tile.system_id() != MecatolRexSystemId) {
         if (!text.empty()) {
+          // Tabletop Simulator uses a space as separator.
           text += " ";
         }
-        text += tile.system_id();
+        if (tile.system_categories().empty()) {
+          // In this case, this is a skipped tile.
+          // Tabletop Simulator identifies skipped tiles with system ID 0 instead of -1.
+          // ID 0 is the same ID used to represent home systems, so carefully position home systems before loading the Tabletop Simulator string.
+          text += "0";
+        } else {
+          text += tile.system_id();
+        }
       }
     }
     return text;
   }
 
   std::string print_visualization_link() const noexcept {
-    // Order the tiles by their position.
-    std::set<Tile> tiles;
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
-      tiles.insert(position_and_tile.second);
-    }
-    const std::string prefix{"https://keeganw.github.io/ti4/?settings=&tiles="};
-    std::string tiles_text;
-    for (const Tile& tile : tiles) {
-      if (!tiles_text.empty()) {
-        tiles_text += ",";
+    const std::set<Tile> ordered_tiles_{ordered_tiles()};
+    const std::string prefix{"https://keeganw.github.io/ti4/?settings=T" + std::to_string(players_.size()) + "&tiles="};
+    std::string text;
+    for (const Tile& tile : ordered_tiles_) {
+      if (!text.empty()) {
+        // The visualizer uses a comma as separator.
+        text += ",";
       }
-      tiles_text += tile.system_id();
+      text += tile.system_id();
     }
-    return prefix + tiles_text;
+    return prefix + text;
+  }
+
+  std::set<Tile> ordered_tiles() const noexcept {
+    std::set<Tile> ordered_tiles_;
+    const int8_t maximum_layer{maximum_distance_from_mecatol_rex_.value()};
+    for (int8_t layer = 0; layer <= maximum_layer; ++layer) {
+      const int8_t maximum_azimuth_{maximum_azimuth(layer)};
+      for (int8_t azimuth = 0; azimuth <= maximum_azimuth_; ++azimuth) {
+        const Position position{layer, azimuth};
+        const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+        if (position_and_tile != positions_to_tiles_.cend()) {
+          ordered_tiles_.insert(position_and_tile->second);
+        } else {
+          // In this case, this is a skipped tile.
+          ordered_tiles_.insert({position, "-1"});
+        }
+      }
+    }
+    return ordered_tiles_;
   }
 
 }; // class Board
