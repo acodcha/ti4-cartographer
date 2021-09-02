@@ -349,7 +349,7 @@ private:
 
   /// \brief If a player does not have a clear pathway to Mecatol Rex, the score is penalized.
   void add_mecatol_rex_pathway_scores() noexcept {
-    for (const std::pair<Player, std::set<Pathway>>& player_and_mecatol_rex_pathways : players_to_mecatol_rex_pathways_) {
+    for (const std::pair<Player, std::vector<Pathway>>& player_and_mecatol_rex_pathways : players_to_mecatol_rex_pathways_) {
       if (!player_and_mecatol_rex_pathways.second.empty()) {
         float best_pathway_score{std::numeric_limits<float>::lowest()};
         for (const Pathway& pathway : player_and_mecatol_rex_pathways.second) {

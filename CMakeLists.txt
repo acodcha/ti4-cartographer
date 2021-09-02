@@ -32,8 +32,11 @@ install(TARGETS ${ATLAS_EXECUTABLE_NAME} DESTINATION /usr/local/bin)
 include(CTest)
 if(BUILD_TESTING)
   enable_testing()
-  add_test(NAME cartographer_6_players_medium_test COMMAND ../test/6_players_medium.sh)
   add_test(NAME atlas_test COMMAND ../test/atlas.sh)
+  add_test(NAME cartographer_5_players_regular_medium COMMAND ../test/5_players_regular_medium.sh)
+  add_test(NAME cartographer_5_players_small_medium COMMAND ../test/5_players_small_medium.sh)
+  add_test(NAME cartographer_5_players_large_medium COMMAND ../test/5_players_large_medium.sh)
+  add_test(NAME cartographer_6_players_medium COMMAND ../test/6_players_medium.sh)
 endif()
 
 # Build the documentation.
@@ -50,4 +53,3 @@ if(BUILD_DOCS)
     COMMENT "Building the documentation using Doxygen..."
     VERBATIM)
 endif()
-

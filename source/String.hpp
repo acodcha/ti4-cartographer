@@ -86,4 +86,37 @@ std::string score_imbalance_ratio_to_string(const float value) noexcept {
   return stream.str();
 }
 
+template <class Type> std::string print_vector(const std::vector<Type>& data) noexcept {
+  std::string text;
+  for (const Type& element : data) {
+    if (!text.empty()) {
+      text += ", ";
+    }
+    text += element.print();
+  }
+  return text;
+}
+
+template <class Type> std::string print_set(const std::set<Type>& data) noexcept {
+  std::string text;
+  for (const Type& element : data) {
+    if (!text.empty()) {
+      text += ", ";
+    }
+    text += element.print();
+  }
+  return text;
+}
+
+template <class Type> std::string print_unordered_set(const std::unordered_set<Type>& data) noexcept {
+  std::string text;
+  for (const Type& element : data) {
+    if (!text.empty()) {
+      text += ", ";
+    }
+    text += element.print();
+  }
+  return text;
+}
+
 } // namespace TI4Cartographer

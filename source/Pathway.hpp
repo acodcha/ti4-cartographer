@@ -12,10 +12,6 @@ public:
 
   Pathway() noexcept {}
 
-  Pathway(const Position& position) noexcept : data_({position}) {}
-
-  Pathway(const std::vector<Position>& positions) noexcept : data_(positions) {}
-
   void push_back(const Position& position) noexcept {
     data_.push_back(position);
   }
@@ -92,6 +88,17 @@ public:
     return data_[index];
   }
 
+  std::string print() const noexcept {
+    std::string text;
+    for (const Position& position : data_) {
+      if (!text.empty()) {
+        text += " ";
+      }
+      text += position.print();
+    }
+    return text;
+  }
+
 private:
 
   std::vector<Position> data_;
@@ -104,7 +111,7 @@ namespace std {
 
 template <> struct hash<TI4Cartographer::Pathway> {
   size_t operator()(const TI4Cartographer::Pathway& pathway) const {
-    size_t value{7};
+    size_t value{1234567890};
     for (const TI4Cartographer::Position& position : pathway) {
       value ^= hash<TI4Cartographer::Position>()(position);
     }

@@ -85,4 +85,11 @@ inline void quiet_message(const std::string& text) noexcept {
   }
 }
 
+/// \brief Print a debugging message to the console when in verbose mode.
+inline void debug_message(const std::string& text) noexcept {
+  if (Communicator::get().mode() == CommunicatorMode::Verbose) {
+    std::cout << "DEBUG: " << text << std::endl;
+  }
+}
+
 } // namespace TI4Cartographer
