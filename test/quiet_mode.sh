@@ -1,5 +1,4 @@
 #!/bin/sh
 set -e
 cd "${0%/*}"
-../build/bin/ti4cartographer --players 6 --aggression medium --quiet
-
+../build/bin/ti4cartographer --players 6 --aggression moderate --quiet

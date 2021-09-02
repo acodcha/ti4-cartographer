@@ -121,8 +121,8 @@ protected:
       case Aggression::Low:
         start_and_end_indices = start_and_end_indices_low_agggression(number_of_systems, number_of_equidistant_systems);
         break;
-      case Aggression::Medium:
-        start_and_end_indices = start_and_end_indices_medium_agggression(number_of_systems, number_of_equidistant_systems);
+      case Aggression::Moderate:
+        start_and_end_indices = start_and_end_indices_moderate_agggression(number_of_systems, number_of_equidistant_systems);
         break;
       case Aggression::High:
         start_and_end_indices = start_and_end_indices_high_agggression(number_of_systems, number_of_equidistant_systems);
@@ -149,7 +149,7 @@ protected:
   }
 
   /// \brief The end index is one past the end, as in the standard containers.
-  std::pair<uint8_t, uint8_t> start_and_end_indices_medium_agggression(const uint8_t number_of_systems, const uint8_t number_of_equidistant_systems) const noexcept {
+  std::pair<uint8_t, uint8_t> start_and_end_indices_moderate_agggression(const uint8_t number_of_systems, const uint8_t number_of_equidistant_systems) const noexcept {
     const uint8_t start_index_1{static_cast<uint8_t>(number_of_systems / 3)};
     const uint8_t end_index_1{static_cast<uint8_t>(number_of_systems - number_of_systems / 3)};
     if (end_index_1 - start_index_1 >= number_of_equidistant_systems) {

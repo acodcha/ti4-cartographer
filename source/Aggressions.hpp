@@ -6,19 +6,19 @@ namespace TI4Cartographer {
 
 enum class Aggression : uint8_t {
   Low,
-  Medium,
+  Moderate,
   High
 };
 
 template <> const std::unordered_map<Aggression, std::string> labels<Aggression>{
   {Aggression::Low, "Low"},
-  {Aggression::Medium, "Medium"},
+  {Aggression::Moderate, "Moderate"},
   {Aggression::High, "High"}
 };
 
 template <> const std::unordered_map<std::string, Aggression> spellings<Aggression>{
   {"low", Aggression::Low},
-  {"medium", Aggression::Medium},
+  {"moderate", Aggression::Moderate},
   {"high", Aggression::High}
 };
 
