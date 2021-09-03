@@ -93,12 +93,10 @@ template <> std::set<Tile> const Tiles<Layout::Players4Large>{
   {Position{2, 11}},
   {Position{3, 4}, Player::Player4},
   {Position{3, 5}},
-  {Position{3, 6}},
   {Position{3, 7}},
   {Position{3, 8}, Player::Player1},
   {Position{3, 13}, Player::Player2},
   {Position{3, 14}},
-  {Position{3, 15}},
   {Position{3, 16}},
   {Position{3, 17}, Player::Player3}
 };
@@ -206,6 +204,7 @@ template <> std::set<Tile> const Tiles<Layout::Players5Large>{
   {Position{3, 6}},
   {Position{3, 7}, Player::Player1},
   {Position{3, 8}},
+  {Position{3, 9}},
   {Position{3, 10}},
   {Position{3, 11}, Player::Player2},
   {Position{3, 12}},
