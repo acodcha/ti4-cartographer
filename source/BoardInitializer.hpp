@@ -110,10 +110,6 @@ private:
       }
       neighbors_.insert({position_and_tile.first, neighbors});
     }
-    debug_message("Neighbors:");
-    for (const std::pair<Position, std::set<Position>>& position_and_neighbors : neighbors_) {
-      debug_message(position_and_neighbors.first.print() + ": " + print_set(position_and_neighbors.second));
-    }
   }
 
   void initialize_mecatol_rex_position() noexcept {
@@ -122,7 +118,7 @@ private:
         mecatol_rex_position_ = position_and_tile.first;
       }
     }
-    debug_message("Mecatol Rex position: " + mecatol_rex_position_.print());
+    verbose_message("Mecatol Rex position: " + mecatol_rex_position_.print());
   }
 
   void initialize_players(const Layout layout) noexcept {
@@ -135,9 +131,9 @@ private:
         players_to_home_positions_.insert({position_and_tile.second.home_player().value(), position_and_tile.first});
       }
     }
-    debug_message("Home positions:");
+    verbose_message("Home positions:");
     for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
-      debug_message(label(player_and_home_position.first) + ": " + player_and_home_position.second.print());
+      verbose_message("- " + label(player_and_home_position.first) + ": " + player_and_home_position.second.print());
     }
   }
 
@@ -147,10 +143,6 @@ private:
       if (position_and_distance_from_mecatol_rex.second > maximum_distance_from_mecatol_rex_) {
         maximum_distance_from_mecatol_rex_ = position_and_distance_from_mecatol_rex.second;
       }
-    }
-    debug_message("Mecatol Rex distance:");
-    for (const std::pair<Position, Distance>& position_and_distance : positions_to_distances_from_mecatol_rex_) {
-      debug_message(position_and_distance.first.print() + ": " + position_and_distance.second.print());
     }
   }
 
@@ -169,17 +161,6 @@ private:
           positions_to_players_home_distances_.insert({position, {{player, distance}}});
         }
       }
-    }
-    debug_message("Home distance:");
-    for (const std::pair<Position, std::map<Player, Distance>>& position_and_players_home_distances : positions_to_players_home_distances_) {
-      std::string text;
-      for (const std::pair<Player, Distance>& player_and_distance : position_and_players_home_distances.second) {
-        if (!text.empty()) {
-          text += ". ";
-        }
-        text += label(player_and_distance.first) + ": " + player_and_distance.second.print();
-      }
-      debug_message(position_and_players_home_distances.first.print() + ": " + text);
     }
   }
 
@@ -219,13 +200,13 @@ private:
         }
       }
     }
-    debug_message("Equidistant positions:");
+    verbose_message("Equidistant positions:");
     for (const Position& position : equidistant_positions_) {
-      debug_message(position.print());
+      verbose_message("- " + position.print());
     }
-    debug_message("In-slice positions:");
+    verbose_message("In-slice positions:");
     for (const std::pair<Player, std::set<Position>>& player_and_positions : players_to_in_slice_positions_) {
-      debug_message(label(player_and_positions.first) + ": " + print_set(player_and_positions.second));
+      verbose_message("- " + label(player_and_positions.first) + ": " + print_set(player_and_positions.second));
     }
   }
 
@@ -261,13 +242,13 @@ private:
         players_to_lateral_positions_.insert({player_and_home_position.first, lateral_positions});
       }
     }
-    debug_message("Forward positions:");
+    verbose_message("Forward positions:");
     for (const std::pair<Player, std::set<Position>>& player_and_positions : players_to_forward_positions_) {
-      debug_message(label(player_and_positions.first) + ": " + print_set(player_and_positions.second));
+      verbose_message("- " + label(player_and_positions.first) + ": " + print_set(player_and_positions.second));
     }
-    debug_message("Lateral positions:");
+    verbose_message("Lateral positions:");
     for (const std::pair<Player, std::set<Position>>& player_and_positions : players_to_lateral_positions_) {
-      debug_message(label(player_and_positions.first) + ": " + print_set(player_and_positions.second));
+      verbose_message("- " + label(player_and_positions.first) + ": " + print_set(player_and_positions.second));
     }
   }
 
@@ -310,18 +291,33 @@ private:
             shortest_pathway_distance_to_mecatol_rex = pathway.distance();
           }
         }
-        std::vector<Pathway> optimal_pathways;
+        std::vector<Pathway> shortest_pathways;
         for (const Pathway& pathway : pathways) {
           if (pathway.distance() == shortest_pathway_distance_to_mecatol_rex) {
+            shortest_pathways.push_back(pathway);
+          }
+        }
+        // Prefer pathways with few equidistant systems, ideally none.
+        // Keep only the pathways with the fewest equidistant systems.
+        uint8_t smallest_number_of_equidistant_systems{std::numeric_limits<uint8_t>::max()};
+        for (const Pathway& pathway : shortest_pathways) {
+          const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(pathway)};
+          if (number_of_equidistant_systems_ < smallest_number_of_equidistant_systems) {
+            smallest_number_of_equidistant_systems = number_of_equidistant_systems_;
+          }
+        }
+        std::vector<Pathway> optimal_pathways;
+        for (const Pathway& pathway : shortest_pathways) {
+          if (number_of_equidistant_systems(pathway) == smallest_number_of_equidistant_systems) {
             optimal_pathways.push_back(pathway);
           }
         }
         players_to_mecatol_rex_pathways_.insert({player, optimal_pathways});
       }
     }
-    debug_message("Pathways to Mecatol Rex:");
+    verbose_message("Pathways to Mecatol Rex:");
     for (const std::pair<Player, std::vector<Pathway>>& player_and_pathways : players_to_mecatol_rex_pathways_) {
-      debug_message(label(player_and_pathways.first) + ": " + print_vector(player_and_pathways.second));
+      verbose_message("- " + label(player_and_pathways.first) + ": " + print_vector(player_and_pathways.second));
     }
   }
 
@@ -366,11 +362,11 @@ private:
         // Do not bother with cases where the pathways to Mecatol Rex are longer.
       }
     }
-    debug_message("Preferred and alternate positions:");
+    verbose_message("Preferred and alternate positions:");
     for (const Player& player : players_) {
       const std::map<Player, std::set<Position>>::const_iterator player_and_preferred_positions{players_to_preferred_positions_.find(player)};
       const std::map<Player, std::set<Position>>::const_iterator player_and_alternate_positions{players_to_alternate_positions_.find(player)};
-      debug_message(label(player) + ": Preferred: " + print_set(player_and_preferred_positions->second) + ". Alternate: " + print_set(player_and_alternate_positions->second) + ".");
+      verbose_message("- " + label(player) + ": Preferred: " + print_set(player_and_preferred_positions->second) + ". Alternate: " + print_set(player_and_alternate_positions->second) + ".");
     }
   }
 
@@ -501,6 +497,16 @@ private:
       }
     }
     return minimum_distance_from_other_players_homes_;
+  }
+
+  uint8_t number_of_equidistant_systems(const Pathway& pathway) const noexcept {
+    uint8_t number_of_equidistant_systems_{0};
+    for (const Position& position : pathway) {
+      if (equidistant_positions_.find(position) != equidistant_positions_.cend()) {
+        ++number_of_equidistant_systems_;
+      }
+    }
+    return number_of_equidistant_systems_;
   }
 
 }; // class BoardInitializer

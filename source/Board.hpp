@@ -329,18 +329,18 @@ private:
         }
         if (system->contains(Anomaly::GravityRift)) {
           // A gravity rift in a lateral system is very dangerous.
-          player_scores_[player_and_lateral_positions.first] += 7.0f * Score::GravityRift;
+          player_scores_[player_and_lateral_positions.first] += -3.0f;
         }
         if (system->contains(Anomaly::Nebula)) {
           // A nebula in a lateral system is beneficial.
           player_scores_[player_and_lateral_positions.first] += -2.0f * Score::Nebula;
         }
         if (system->contains(Anomaly::Supernova)) {
-          // A nebula in a lateral system is beneficial.
+          // A supernova in a lateral system is beneficial.
           player_scores_[player_and_lateral_positions.first] += -2.0f * Score::Supernova;
         }
         if (system->contains_one_or_more_wormholes()) {
-          // A gravity rift in a lateral system is somewhat dangerous.
+          // A wormhole in a lateral system is somewhat dangerous and cancels out the benefit of the wormhole.
           player_scores_[player_and_lateral_positions.first] += -1.0f * Score::Wormhole;
         }
       }
@@ -351,80 +351,77 @@ private:
   void add_mecatol_rex_pathway_scores() noexcept {
     for (const std::pair<Player, std::vector<Pathway>>& player_and_mecatol_rex_pathways : players_to_mecatol_rex_pathways_) {
       if (!player_and_mecatol_rex_pathways.second.empty()) {
-        float best_pathway_score{std::numeric_limits<float>::lowest()};
+        float average_pathway_score{0.0f};
         for (const Pathway& pathway : player_and_mecatol_rex_pathways.second) {
-          float pathway_score{0.0};
+          float pathway_score{0.0f};
           for (const Position& position : pathway) {
             const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
             const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
             if (system->contains(Anomaly::Supernova)) {
               // A supernova anywhere along the pathway to Mecatol Rex is quite bad.
-              pathway_score += 11.0f * Score::Supernova;
+              pathway_score += -8.0f;
             }
             if (system->contains(Anomaly::AsteroidField)) {
-              // An asteroid field along the pathway to Mecatol Rex is bad but manageable.
-              pathway_score += 3.0f * Score::AsteroidField;
+              // An asteroid field along the pathway to Mecatol Rex is annoying.
+              pathway_score += -2.0f;
             }
             if (system->contains(Anomaly::Nebula)) {
               if (positions_to_distances_from_mecatol_rex_.find(position_and_tile->first)->second <= Distance{1}) {
-                // A nebula adjacent to Mecatol Rex is somewhat annoying but manageable.
-                pathway_score += 3.0f * Score::Nebula;
+                // A nebula adjacent to Mecatol Rex is somewhat annoying.
+                pathway_score += -3.0f;
               } else {
                 // A nebula elsewhere along the pathway to Mecatol Rex is quite bad.
-                pathway_score += 7.0f * Score::Nebula;
+                pathway_score += -6.0f;
               }
             }
             if (system->contains(Anomaly::GravityRift)) {
               if (positions_to_distances_from_mecatol_rex_.find(position_and_tile->first)->second <= Distance{1}) {
                 // A gravity rift adjacent to Mecatol Rex is annoying.
-                pathway_score += 11.0f * Score::GravityRift;
+                pathway_score += -4.0f;
               } else {
                 // A gravity rift elsewhere on the pathway to Mecatol Rex is quite bad.
-                pathway_score += 23.0f * Score::GravityRift;
+                pathway_score += -8.0f;
               }
             }
           }
-          if (pathway_score > best_pathway_score) {
-            best_pathway_score = pathway_score;
-          }
+          average_pathway_score += pathway_score;
         }
-        player_scores_[player_and_mecatol_rex_pathways.first] += best_pathway_score;
+        average_pathway_score /= static_cast<float>(player_and_mecatol_rex_pathways.second.size());
+        player_scores_[player_and_mecatol_rex_pathways.first] += average_pathway_score;
       }
     }
   }
 
-  /// \brief If a player can construct a space dock on at least one of their preferred positions, the score is increased.
+  /// \brief If a player can construct a space dock on their preferred positions, the score is increased.
   void add_preferred_position_scores() noexcept {
-    for (const std::pair<Player, std::set<Position>>& player_and_preferred_position : players_to_preferred_positions_) {
-      if (!player_and_preferred_position.second.empty()) {
-        float best_preferred_position_score{std::numeric_limits<float>::lowest()};
-        for (const Position& position : player_and_preferred_position.second) {
+    for (const std::pair<Player, std::set<Position>>& player_and_preferred_positions : players_to_preferred_positions_) {
+      if (!player_and_preferred_positions.second.empty()) {
+        float average_preferred_position_score{0.0f};
+        for (const Position& position : player_and_preferred_positions.second) {
           const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
           const float preferred_position_score{system->preferred_and_alternate_position_score()};
-          if (preferred_position_score > best_preferred_position_score) {
-            best_preferred_position_score = preferred_position_score;
-          }
+          average_preferred_position_score += preferred_position_score;
         }
-        player_scores_[player_and_preferred_position.first] += best_preferred_position_score;
+        average_preferred_position_score /= static_cast<float>(player_and_preferred_positions.second.size());
+        player_scores_[player_and_preferred_positions.first] += average_preferred_position_score;
       }
     }
   }
 
-  /// \brief If a player can construct a space dock on at least one of their alternate positions, the score is increased.
+  /// \brief If a player can construct a space dock on their alternate positions, the score is increased.
   void add_alternate_position_scores() noexcept {
-    for (const std::pair<Player, std::set<Position>>& player_and_alternate_position : players_to_alternate_positions_) {
-      if (!player_and_alternate_position.second.empty()) {
-        float best_alternate_position_score{std::numeric_limits<float>::lowest()};
-        for (const Position& position : player_and_alternate_position.second) {
+    for (const std::pair<Player, std::set<Position>>& player_and_alternate_positions : players_to_alternate_positions_) {
+      if (!player_and_alternate_positions.second.empty()) {
+        float average_alternate_position_score{0.0f};
+        for (const Position& position : player_and_alternate_positions.second) {
           const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
           const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
           const float alternate_position_score{0.5f * system->preferred_and_alternate_position_score()};
-          if (alternate_position_score > best_alternate_position_score) {
-            best_alternate_position_score = alternate_position_score;
-          }
+          average_alternate_position_score += alternate_position_score;
         }
-        player_scores_[player_and_alternate_position.first] += best_alternate_position_score;
+        average_alternate_position_score /= static_cast<float>(player_and_alternate_positions.second.size());
+        player_scores_[player_and_alternate_positions.first] += average_alternate_position_score;
       }
     }
   }
