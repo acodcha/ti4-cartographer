@@ -362,11 +362,13 @@ private:
         // Do not bother with cases where the pathways to Mecatol Rex are longer.
       }
     }
-    verbose_message("Preferred and alternate positions:");
-    for (const Player& player : players_) {
-      const std::map<Player, std::set<Position>>::const_iterator player_and_preferred_positions{players_to_preferred_positions_.find(player)};
-      const std::map<Player, std::set<Position>>::const_iterator player_and_alternate_positions{players_to_alternate_positions_.find(player)};
-      verbose_message("- " + label(player) + ": Preferred: " + print_set(player_and_preferred_positions->second) + ". Alternate: " + print_set(player_and_alternate_positions->second) + ".");
+    verbose_message("Preferred positions:");
+    for (const std::pair<Player, std::set<Position>>& player_and_preferred_positions : players_to_preferred_positions_) {
+      verbose_message("- " + label(player_and_preferred_positions.first) + ": " + print_set(player_and_preferred_positions.second));
+    }
+    verbose_message("Alternate positions:");
+    for (const std::pair<Player, std::set<Position>>& player_and_alternate_positions : players_to_alternate_positions_) {
+      verbose_message("- " + label(player_and_alternate_positions.first) + ": " + print_set(player_and_alternate_positions.second));
     }
   }
 
