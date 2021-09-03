@@ -96,7 +96,7 @@ ti4cartographer --players 2
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 3 Players Regular
-3 planetary systems and 2 anomaly/wormhole/empty systems per player.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes.
 
 ```
 ti4cartographer --players 3 --layout regular
@@ -228,7 +228,7 @@ ti4cartographer --players 8 --layout regular
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 8 Players Large
-4 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes.
+4 planetary systems and 2 anomaly/wormhole/empty systems per player.
 
 ```
 ti4cartographer --players 8 --layout large
