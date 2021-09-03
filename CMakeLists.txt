@@ -43,6 +43,8 @@ if(BUILD_TESTING)
   add_test(NAME cartographer_5_players_small_moderate COMMAND ../test/5_players_small_moderate.sh)
   add_test(NAME cartographer_5_players_large_moderate COMMAND ../test/5_players_large_moderate.sh)
   add_test(NAME cartographer_6_players_moderate COMMAND ../test/6_players_moderate.sh)
+  add_test(NAME cartographer_8_players_regular_moderate COMMAND ../test/8_players_regular_moderate.sh)
+  add_test(NAME cartographer_8_players_large_moderate COMMAND ../test/8_players_large_moderate.sh)
 endif()
 
 # Build the documentation.

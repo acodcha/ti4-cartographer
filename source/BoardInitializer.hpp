@@ -29,6 +29,8 @@ protected:
   /// \brief Collection of tiles that form the board, indexed by their positions.
   std::unordered_map<Position, Tile> positions_to_tiles_;
 
+  int8_t maximum_layer_{0};
+
   /// \brief Each position's neighbors. Each of these neighbors exists on this game board.
   std::unordered_map<Position, std::set<Position>> neighbors_;
 
@@ -90,6 +92,9 @@ private:
   void initialize_tiles(const Layout layout) noexcept {
     for (const Tile& tile : tiles(layout)) {
       positions_to_tiles_.insert({tile.position(), tile});
+      if (tile.position().layer() > maximum_layer_) {
+        maximum_layer_ = tile.position().layer();
+      }
     }
   }
 

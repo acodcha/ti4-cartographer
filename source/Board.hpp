@@ -75,10 +75,12 @@ private:
     std::unordered_map<Position, Tile> best_positions_to_tiles{positions_to_tiles_};
     std::map<Player, float> best_player_scores{player_scores_};
     float best_score_imbalance_ratio{std::numeric_limits<float>::max()};
+    // max_iterations = base * tiles^2
+    const uint64_t actual_maximum_number_of_iterations{maximum_number_of_iterations * static_cast<uint64_t>(std::pow(selected_system_ids_.equidistant().size() + selected_system_ids_.in_slice().size(), 2))};
     uint64_t number_of_iterations{0};
     uint64_t number_of_valid_boards{0};
     bool success{false};
-    for (uint64_t counter = 0; counter < maximum_number_of_iterations; ++counter) {
+    for (uint64_t counter = 0; counter < actual_maximum_number_of_iterations; ++counter) {
       ++number_of_iterations;
       selected_system_ids_.shuffle();
       const bool board_is_valid = assign_system_ids_to_tiles_simple();
@@ -285,14 +287,29 @@ private:
   /// \brief If a system is in a player's slice, that player gains its score. If a system is equidistant, each relevant player gets an equal fraction of its score.
   void add_base_system_scores() noexcept {
     for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
-      if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()) {
+      const std::unordered_map<Position, std::map<Player, Distance>>::const_iterator position_and_players_home_distances{positions_to_players_home_distances_.find(position_and_tile.first)};
+      if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty() && position_and_players_home_distances != positions_to_players_home_distances_.cend()) {
         const std::unordered_map<Position, std::set<Player>>::const_iterator position_to_relevant_players{positions_to_relevant_players_.find(position_and_tile.first)};
         if (position_to_relevant_players != positions_to_relevant_players_.cend()) {
           const float score{Systems.find({position_and_tile.second.system_id()})->score()};
           const uint8_t number_of_relevant_players{static_cast<uint8_t>(position_to_relevant_players->second.size())};
           const float score_per_player{score / number_of_relevant_players};
           for (const Player& player : position_to_relevant_players->second) {
-            player_scores_[player] += score_per_player;
+            const std::map<Player, Distance>::const_iterator player_and_distance{position_and_players_home_distances->second.find(player)};
+            if (player_and_distance != position_and_players_home_distances->second.cend()) {
+              // Further systems are worth less: 100% if adjacent to home (at distance 1), 80% if at distance 2, and 60% if at distance 3+.
+              float factor{1.0f};
+              if (player_and_distance->second == Distance{0}) {
+                factor = 1.0f;
+              } else if (player_and_distance->second == Distance{1}) {
+                factor = 1.0f;
+              } else if (player_and_distance->second == Distance{2}) {
+                factor = 0.8f;
+              } else {
+                factor = 0.6f;
+              }
+              player_scores_[player] += factor * score_per_player;
+            }
           }
         }
       }
@@ -547,8 +564,7 @@ private:
 
   std::set<Tile> ordered_tiles() const noexcept {
     std::set<Tile> ordered_tiles_;
-    const int8_t maximum_layer{maximum_distance_from_mecatol_rex_.value()};
-    for (int8_t layer = 0; layer <= maximum_layer; ++layer) {
+    for (int8_t layer = 0; layer <= maximum_layer_; ++layer) {
       const int8_t maximum_azimuth_{maximum_azimuth(layer)};
       for (int8_t azimuth = 0; azimuth <= maximum_azimuth_; ++azimuth) {
         const Position position{layer, azimuth};

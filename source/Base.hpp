@@ -16,7 +16,7 @@ std::random_device RandomDevice;
 
 std::default_random_engine RandomEngine(RandomDevice());
 
-constexpr const uint64_t DefaultMaximumNumberOfIterations{1000000};
+constexpr const uint64_t DefaultMaximumNumberOfIterations{1000};
 
 constexpr const uint64_t DefaultMaximumNumberOfAttempts{10};
 
