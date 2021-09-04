@@ -9,9 +9,7 @@ int main(int argc, char *argv[]) {
     chronometre,
     instructions.game_version(),
     instructions.layout(),
-    instructions.aggression(),
-    instructions.maximum_number_of_attempts(),
-    instructions.maximum_number_of_iterations()
+    instructions.aggression()
   };
   TI4Cartographer::verbose_message("End of " + TI4Cartographer::ProgramName + ".");
   TI4Cartographer::verbose_message(TI4Cartographer::Separator);

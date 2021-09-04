@@ -5,7 +5,7 @@
 namespace TI4Cartographer {
 
 enum class Layout : uint8_t {
-  Players2,
+  Players2Regular,
   Players3Regular,
   Players3Small,
   Players3Large,
@@ -14,7 +14,7 @@ enum class Layout : uint8_t {
   Players5Regular,
   Players5Small,
   Players5Large,
-  Players6,
+  Players6Regular,
   Players7Regular,
   Players7Large,
   Players8Regular,
@@ -22,7 +22,7 @@ enum class Layout : uint8_t {
 };
 
 template <> const std::unordered_map<Layout, std::string> labels<Layout>{
-  {Layout::Players2, "2 Players"},
+  {Layout::Players2Regular, "2 Players Regular"},
   {Layout::Players3Regular, "3 Players Regular"},
   {Layout::Players3Small, "3 Players Small"},
   {Layout::Players3Large, "3 Players Large"},
@@ -31,7 +31,7 @@ template <> const std::unordered_map<Layout, std::string> labels<Layout>{
   {Layout::Players5Regular, "5 Players Regular"},
   {Layout::Players5Small, "5 Players Small"},
   {Layout::Players5Large, "5 Players Large"},
-  {Layout::Players6, "6 Players"},
+  {Layout::Players6Regular, "6 Players Regular"},
   {Layout::Players7Regular, "7 Players Regular"},
   {Layout::Players7Large, "7 Players Large"},
   {Layout::Players8Regular, "8 Players Regular"},
@@ -39,8 +39,7 @@ template <> const std::unordered_map<Layout, std::string> labels<Layout>{
 };
 
 template <> const std::unordered_map<std::string, Layout> spellings<Layout>{
-  {"2players", Layout::Players2},
-  {"2playersregular", Layout::Players2},
+  {"2playersregular", Layout::Players2Regular},
   {"3playersregular", Layout::Players3Regular},
   {"3playerssmall", Layout::Players3Small},
   {"3playerslarge", Layout::Players3Large},
@@ -49,8 +48,7 @@ template <> const std::unordered_map<std::string, Layout> spellings<Layout>{
   {"5playersregular", Layout::Players5Regular},
   {"5playerssmall", Layout::Players5Small},
   {"5playerslarge", Layout::Players5Large},
-  {"6players", Layout::Players6},
-  {"6playersregular", Layout::Players6},
+  {"6playersregular", Layout::Players6Regular},
   {"7playersregular", Layout::Players7Regular},
   {"7playerslarge", Layout::Players7Large},
   {"8playersregular", Layout::Players8Regular},
@@ -58,7 +56,7 @@ template <> const std::unordered_map<std::string, Layout> spellings<Layout>{
 };
 
 std::unordered_map<Layout, uint8_t> layouts_to_number_of_players{
-  {Layout::Players2, 2},
+  {Layout::Players2Regular, 2},
   {Layout::Players3Regular, 3},
   {Layout::Players3Small, 3},
   {Layout::Players3Large, 3},
@@ -67,7 +65,7 @@ std::unordered_map<Layout, uint8_t> layouts_to_number_of_players{
   {Layout::Players5Regular, 5},
   {Layout::Players5Small, 5},
   {Layout::Players5Large, 5},
-  {Layout::Players6, 6},
+  {Layout::Players6Regular, 6},
   {Layout::Players7Regular, 7},
   {Layout::Players7Large, 7},
   {Layout::Players8Regular, 8},
@@ -75,7 +73,7 @@ std::unordered_map<Layout, uint8_t> layouts_to_number_of_players{
 };
 
 std::unordered_multimap<uint8_t, Layout> number_of_players_to_layouts{
-  {2, Layout::Players2},
+  {2, Layout::Players2Regular},
   {3, Layout::Players3Regular},
   {3, Layout::Players3Small},
   {3, Layout::Players3Large},
@@ -84,7 +82,7 @@ std::unordered_multimap<uint8_t, Layout> number_of_players_to_layouts{
   {5, Layout::Players5Regular},
   {5, Layout::Players5Small},
   {5, Layout::Players5Large},
-  {6, Layout::Players6},
+  {6, Layout::Players6Regular},
   {7, Layout::Players7Regular},
   {7, Layout::Players7Large},
   {8, Layout::Players8Regular},
@@ -93,7 +91,7 @@ std::unordered_multimap<uint8_t, Layout> number_of_players_to_layouts{
 
 std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const system_categories_to_layouts_to_number_of_systems_per_player{
   {SystemCategory::Planetary, {
-    {Layout::Players2, 4},
+    {Layout::Players2Regular, 4},
     {Layout::Players3Regular, 3},
     {Layout::Players3Small, 3},
     {Layout::Players3Large, 4},
@@ -102,14 +100,14 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
     {Layout::Players5Regular, 3},
     {Layout::Players5Small, 3},
     {Layout::Players5Large, 3},
-    {Layout::Players6, 3},
+    {Layout::Players6Regular, 3},
     {Layout::Players7Regular, 3},
     {Layout::Players7Large, 4},
     {Layout::Players8Regular, 3},
     {Layout::Players8Large, 4}
   }},
   {SystemCategory::AnomalyWormholeEmpty, {
-    {Layout::Players2, 4},
+    {Layout::Players2Regular, 4},
     {Layout::Players3Regular, 2},
     {Layout::Players3Small, 2},
     {Layout::Players3Large, 4},
@@ -118,7 +116,7 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
     {Layout::Players5Regular, 2},
     {Layout::Players5Small, 2},
     {Layout::Players5Large, 3},
-    {Layout::Players6, 2},
+    {Layout::Players6Regular, 2},
     {Layout::Players7Regular, 2},
     {Layout::Players7Large, 2},
     {Layout::Players8Regular, 2},
@@ -128,7 +126,7 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
 
 std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const system_categories_to_layouts_to_additional_systems{
   {SystemCategory::Planetary, {
-    {Layout::Players2, 0},
+    {Layout::Players2Regular, 0},
     {Layout::Players3Regular, 0},
     {Layout::Players3Small, 0},
     {Layout::Players3Large, 0},
@@ -137,14 +135,14 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
     {Layout::Players5Regular, 0},
     {Layout::Players5Small, 0},
     {Layout::Players5Large, 1},
-    {Layout::Players6, 0},
+    {Layout::Players6Regular, 0},
     {Layout::Players7Regular, 0},
     {Layout::Players7Large, 0},
     {Layout::Players8Regular, 0},
     {Layout::Players8Large, 0}
   }},
   {SystemCategory::AnomalyWormholeEmpty, {
-    {Layout::Players2, 0},
+    {Layout::Players2Regular, 0},
     {Layout::Players3Regular, 0},
     {Layout::Players3Small, 0},
     {Layout::Players3Large, 0},
@@ -153,7 +151,7 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
     {Layout::Players5Regular, 0},
     {Layout::Players5Small, 0},
     {Layout::Players5Large, 0},
-    {Layout::Players6, 0},
+    {Layout::Players6Regular, 0},
     {Layout::Players7Regular, 0},
     {Layout::Players7Large, 0},
     {Layout::Players8Regular, 0},

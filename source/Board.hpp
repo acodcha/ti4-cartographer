@@ -16,14 +16,12 @@ public:
     const Chronometre& chronometre,
     const GameVersion game_version,
     const Layout layout,
-    const Aggression aggression,
-    const uint64_t maximum_number_of_attempts,
-    const uint64_t maximum_number_of_iterations
+    const Aggression aggression
   ) noexcept :
     BoardInitializer(layout)
   {
     initialize_player_scores();
-    attempt(game_version, layout, aggression, maximum_number_of_attempts, maximum_number_of_iterations);
+    attempt(game_version, layout, aggression);
     verbose_message("Player scores: " + print_player_scores());
     verbose_message("Score imbalance: " + score_imbalance_ratio_to_string(score_imbalance_ratio()));
     verbose_message("Visualization: " + print_visualization_link());
@@ -49,17 +47,15 @@ private:
   void attempt(
     const GameVersion game_version,
     const Layout layout,
-    const Aggression aggression,
-    const uint64_t maximum_number_of_attempts,
-    const uint64_t maximum_number_of_iterations
+    const Aggression aggression
   ) noexcept {
-    uint64_t number_of_attempts{0};
-    for (uint64_t counter = 0; counter < maximum_number_of_attempts; ++counter) {
+    uint8_t number_of_attempts{0};
+    for (uint8_t counter = 0; counter < MaximumNumberOfAttempts; ++counter) {
       ++number_of_attempts;
       const float score_imbalance_ratio_tolerance{InitialScoreImbalanceRatioTolerance * std::pow(1.2f, static_cast<float>(counter))};
       verbose_message("Start of board generation attempt #" + std::to_string(number_of_attempts) + ": target score imbalance: " + score_imbalance_ratio_to_string(score_imbalance_ratio_tolerance));
       initialize_selected_system_ids(game_version, layout, aggression);
-      iterate(maximum_number_of_iterations, score_imbalance_ratio_tolerance);
+      iterate(score_imbalance_ratio_tolerance);
       verbose_message("End of board generation attempt #" + std::to_string(number_of_attempts) + ".");
       if (score_imbalance_ratio_ <= score_imbalance_ratio_tolerance) {
         break;
@@ -95,16 +91,14 @@ private:
     }
   }
 
-  void iterate(const uint64_t maximum_number_of_iterations, const float score_imbalance_ratio_tolerance) {
+  void iterate(const float score_imbalance_ratio_tolerance) {
     std::unordered_map<Position, Tile> best_positions_to_tiles{positions_to_tiles_};
     std::map<Player, float> best_player_scores{player_scores_};
     float best_score_imbalance_ratio{std::numeric_limits<float>::max()};
-    // max_iterations = base * tiles^2
-    const uint64_t actual_maximum_number_of_iterations{maximum_number_of_iterations * static_cast<uint64_t>(std::pow(selected_system_ids_.equidistant().size() + selected_system_ids_.in_slice().size(), 2))};
     uint64_t number_of_iterations{0};
     uint64_t number_of_valid_boards{0};
     bool success{false};
-    for (uint64_t counter = 0; counter < actual_maximum_number_of_iterations; ++counter) {
+    for (uint64_t counter = 0; counter < MaximumNumberOfIterations; ++counter) {
       ++number_of_iterations;
       selected_system_ids_.shuffle();
       const bool board_is_valid = assign_system_ids_to_tiles_simple();

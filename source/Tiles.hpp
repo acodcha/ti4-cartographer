@@ -9,7 +9,7 @@ namespace TI4Cartographer {
 /// \brief All the tiles on the board.
 template <Layout layout> const std::set<Tile> Tiles;
 
-template <> std::set<Tile> const Tiles<Layout::Players2>{
+template <> std::set<Tile> const Tiles<Layout::Players2Regular>{
   {Position{0, 0}},
   {Position{1, 0}},
   {Position{1, 3}},
@@ -308,7 +308,7 @@ template <> std::set<Tile> const Tiles<Layout::Players5Large>{
   {Position{3, 17}}
 };
 
-template <> std::set<Tile> const Tiles<Layout::Players6>{
+template <> std::set<Tile> const Tiles<Layout::Players6Regular>{
   {Position{0, 0}},
   {Position{1, 0}},
   {Position{1, 1}},
@@ -578,8 +578,8 @@ template <> std::set<Tile> const Tiles<Layout::Players8Large>{
 
 const std::set<Tile>& tiles(const Layout layout) noexcept {
   switch (layout) {
-    case Layout::Players2:
-      return Tiles<Layout::Players2>;
+    case Layout::Players2Regular:
+      return Tiles<Layout::Players2Regular>;
       break;
     case Layout::Players3Regular:
       return Tiles<Layout::Players3Regular>;
@@ -605,8 +605,8 @@ const std::set<Tile>& tiles(const Layout layout) noexcept {
     case Layout::Players5Large:
       return Tiles<Layout::Players5Large>;
       break;
-    case Layout::Players6:
-      return Tiles<Layout::Players6>;
+    case Layout::Players6Regular:
+      return Tiles<Layout::Players6Regular>;
       break;
     case Layout::Players7Regular:
       return Tiles<Layout::Players7Regular>;

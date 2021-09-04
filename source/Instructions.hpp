@@ -17,25 +17,17 @@ const std::string NumberOfPlayersKey{"--players"};
 
 const std::string NumberOfPlayersPattern{NumberOfPlayersKey + " <number>"};
 
-const std::string GameVersionKey{"--version"};
-
-const std::string GameVersionPattern{GameVersionKey + " <type>"};
-
 const std::string LayoutKey{"--layout"};
 
 const std::string LayoutPattern{LayoutKey + " <type>"};
 
 const std::string AggressionKey{"--aggression"};
 
-const std::string AggressionPattern{AggressionKey + " <amount>"};
+const std::string AggressionPattern{AggressionKey + " <type>"};
 
-const std::string MaximumNumberOfAttemptsKey{"--attempts"};
+const std::string GameVersionKey{"--version"};
 
-const std::string MaximumNumberOfAttemptsPattern{MaximumNumberOfAttemptsKey + " <number>"};
-
-const std::string MaximumNumberOfIterationsKey{"--iterations"};
-
-const std::string MaximumNumberOfIterationsPattern{MaximumNumberOfIterationsKey + " <number>"};
+const std::string GameVersionPattern{GameVersionKey + " <type>"};
 
 } // namespace Arguments
 
@@ -51,10 +43,6 @@ public:
     message_start_information();
   }
 
-  GameVersion game_version() const noexcept {
-    return game_version_;
-  }
-
   Layout layout() const noexcept {
     return layout_;
   }
@@ -63,12 +51,8 @@ public:
     return aggression_;
   }
 
-  uint64_t maximum_number_of_attempts() const noexcept {
-    return maximum_number_of_attempts_;
-  }
-
-  uint64_t maximum_number_of_iterations() const noexcept {
-    return maximum_number_of_iterations_;
+  GameVersion game_version() const noexcept {
+    return game_version_;
   }
 
 private:
@@ -77,15 +61,11 @@ private:
 
   std::vector<std::string> arguments_;
 
-  GameVersion game_version_{GameVersion::ProphecyOfKingsExpansion};
-
-  Layout layout_{Layout::Players6};
+  Layout layout_{Layout::Players6Regular};
 
   Aggression aggression_{Aggression::Moderate};
 
-  uint64_t maximum_number_of_attempts_{DefaultMaximumNumberOfAttempts};
-
-  uint64_t maximum_number_of_iterations_{DefaultMaximumNumberOfIterations};
+  GameVersion game_version_{GameVersion::ProphecyOfKingsExpansion};
 
   void assign_arguments(int argc, char *argv[]) noexcept {
     if (argc > 1) {
@@ -116,16 +96,12 @@ private:
       } else if (*argument == Arguments::NumberOfPlayersKey && argument + 1 < arguments_.cend()) {
         number_of_players = static_cast<uint8_t>(std::stoi(*(argument + 1)));
         check_number_of_players(number_of_players);
-      } else if (*argument == Arguments::GameVersionKey && argument + 1 < arguments_.cend()) {
-        initialize_game_version(*(argument + 1));
       } else if (*argument == Arguments::LayoutKey && argument + 1 < arguments_.cend()) {
         layout_string = *(argument + 1);
       } else if (*argument == Arguments::AggressionKey && argument + 1 < arguments_.cend()) {
         initialize_aggression(*(argument + 1));
-      } else if (*argument == Arguments::MaximumNumberOfAttemptsKey && argument + 1 < arguments_.cend()) {
-        initialize_maximum_number_of_attempts(*(argument + 1));
-      } else if (*argument == Arguments::MaximumNumberOfIterationsKey && argument + 1 < arguments_.cend()) {
-        initialize_maximum_number_of_iterations(*(argument + 1));
+      } else if (*argument == Arguments::GameVersionKey && argument + 1 < arguments_.cend()) {
+        initialize_game_version(*(argument + 1));
       }
     }
     Communicator::get().initialize(CommunicatorMode::Verbose);
@@ -139,15 +115,6 @@ private:
     }
   }
 
-  void initialize_game_version(const std::string game_version) {
-    const std::optional<GameVersion> found{type<GameVersion>(game_version)};
-    if (found.has_value()) {
-      game_version_ = found.value();
-    } else {
-      message_usage_information_and_error("Unknown game version: " + game_version);
-    }
-  }
-
   void initialize_aggression(const std::string aggression) {
     const std::optional<Aggression> found{type<Aggression>(aggression)};
     if (found.has_value()) {
@@ -157,17 +124,12 @@ private:
     }
   }
 
-  void initialize_maximum_number_of_attempts(const std::string maximum_number_of_attempts) {
-    maximum_number_of_attempts_ = static_cast<uint64_t>(std::stoull(maximum_number_of_attempts));
-    if (maximum_number_of_attempts_ == 0) {
-      message_usage_information_and_error("The number of attempts must be greater than zero.");
-    }
-  }
-
-  void initialize_maximum_number_of_iterations(const std::string maximum_number_of_iterations) {
-    maximum_number_of_iterations_ = static_cast<uint64_t>(std::stoull(maximum_number_of_iterations));
-    if (maximum_number_of_iterations_ == 0) {
-      message_usage_information_and_error("The number of iterations must be greater than zero.");
+  void initialize_game_version(const std::string game_version) {
+    const std::optional<GameVersion> found{type<GameVersion>(game_version)};
+    if (found.has_value()) {
+      game_version_ = found.value();
+    } else {
+      message_usage_information_and_error("Unknown game version: " + game_version);
     }
   }
 
@@ -198,22 +160,19 @@ private:
   void message_usage_information() const noexcept {
     const std::string space{"  "};
     verbose_message("Usage:");
-    verbose_message(space + executable_name_ + " " + Arguments::NumberOfPlayersPattern + " [" + Arguments::GameVersionPattern + "] [" + Arguments::LayoutPattern + "] [" + Arguments::AggressionPattern + "] [" + Arguments::MaximumNumberOfAttemptsPattern + "] [" + Arguments::MaximumNumberOfIterationsPattern + "] [" + Arguments::QuietMode + "]");
+    verbose_message(space + executable_name_ + space + Arguments::NumberOfPlayersPattern + space + Arguments::LayoutPattern + space + Arguments::AggressionPattern + space + Arguments::GameVersionPattern + space + Arguments::QuietMode);
     const uint_least64_t length{std::max({
       Arguments::UsageInformation.length(),
       Arguments::NumberOfPlayersPattern.length(),
-      Arguments::GameVersionPattern.length(),
       Arguments::LayoutPattern.length(),
       Arguments::AggressionPattern.length(),
-      Arguments::MaximumNumberOfAttemptsPattern.length(),
-      Arguments::MaximumNumberOfIterationsPattern.length(),
+      Arguments::GameVersionPattern.length(),
       Arguments::QuietMode.length()
     })};
     verbose_message("Arguments:");
     verbose_message(space + pad_to_length(Arguments::UsageInformation, length) + space + "Displays this information and exits.");
-    verbose_message(space + pad_to_length(Arguments::NumberOfPlayersPattern, length) + space + "Required. Choices are 2-8. Specifies the number of players.");
-    verbose_message(space + pad_to_length(Arguments::GameVersionPattern, length) + space + "Optional. Choices are base or expansion. The default is expansion. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Note that 7 and 8 player games require the expansion.");
-    verbose_message(space + pad_to_length(Arguments::LayoutPattern, length) + space + "Optional. Choices vary by number of players, but typically include regular, small, or large. The default is regular. Specifies the board layout.");
+    verbose_message(space + pad_to_length(Arguments::NumberOfPlayersPattern, length) + space + "Required. Specifies the number of players. Choices are 2-8.");
+    verbose_message(space + pad_to_length(Arguments::LayoutPattern, length) + space + "Optional. Specifies the board layout. Choices vary by number of players, but typically include regular, small, or large. The default is regular.");
     verbose_message(space + space + "2 players: regular");
     verbose_message(space + space + "3 players: regular, small, or large");
     verbose_message(space + space + "4 players: regular or large");
@@ -221,9 +180,8 @@ private:
     verbose_message(space + space + "6 players: regular");
     verbose_message(space + space + "7 players: regular or large");
     verbose_message(space + space + "8 players: regular or large");
-    verbose_message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Choices are low, moderate, or high. The default is moderate. Specifies the degree of expected aggression resulting from the placement of systems on the board. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
-    verbose_message(space + pad_to_length(Arguments::MaximumNumberOfAttemptsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfAttempts) + ". Specifies the maximum number of board generation attempts.");
-    verbose_message(space + pad_to_length(Arguments::MaximumNumberOfIterationsPattern, length) + space + "Optional. The default is " + std::to_string(DefaultMaximumNumberOfIterations) + ". Specifies the number of iterations for each board generation attempt.");
+    verbose_message(space + pad_to_length(Arguments::AggressionPattern, length) + space + "Optional. Specifies the degree of expected aggression resulting from the placement of systems on the board. Choices are low, moderate, or high. The default is moderate. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.");
+    verbose_message(space + pad_to_length(Arguments::GameVersionPattern, length) + space + "Optional. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Choices are base or expansion. The default is expansion. Note that 7 and 8 player games require the Prophecy of Kings expansion.");
     verbose_message(space + pad_to_length(Arguments::QuietMode, length) + space + "Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.");
     verbose_message("");
   }
@@ -238,10 +196,8 @@ private:
 
   void message_start_information() const noexcept {
     verbose_message("The number of players and board layout is: " + label(layout_));
-    verbose_message("The game version is: " + label(game_version_));
     verbose_message("The aggression is: " + label(aggression_));
-    verbose_message("The maximum number of attempts is: " + std::to_string(maximum_number_of_attempts_));
-    verbose_message("The maximum number of iterations per attempt is: " + std::to_string(maximum_number_of_iterations_));
+    verbose_message("The game version is: " + label(game_version_));
   }
 
 }; // class Instructions

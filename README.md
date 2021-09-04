@@ -48,16 +48,13 @@ This installs the programs to `/usr/local/bin/ti4cartographer` and `/usr/local/b
 Run `ti4cartographer` with no arguments or with the `--help` argument to obtain usage information. Otherwise, for regular use, run `ti4cartographer` with:
 
 ```
-ti4cartographer --players <number> [--version <type>] [--layout <type>] [--aggression <amount>] \
-  [--attempts <number>] [--iterations <number>] [--quiet]
+ti4cartographer  --players <number>  --layout <type>  --aggression <type>  --version <type>  --quiet
 ```
 
-- `--players <number>`: Required. Choices are `2`, `3`, `4`, `5`, `6`, `7`, or `8`. Specifies the number of players.
-- `--version <type>`: Optional. Choices are `base` or `expansion`. The default is `expansion`. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Note that 7 and 8 player games require the expansion.
-- `--layout <type>`: Optional. Choices vary by number of players, but typically include `regular`, `small`, or `large`; see the [Board Layouts](#board-layouts) section. The default is `regular`. Specifies the board layout.
-- `--aggression <amount>`: Optional. Choices are `low`, `moderate`, or `high`. The default is `moderate`. Specifies the degree of expected aggression resulting from the placement of systems on the board. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.
-- `--attempts <number>`: Optional. The default is `10`. Specifies the maximum number of board generation attempts.
-- `--iterations <number>`: Optional. The default is `1000`. Specifies the number of iterations for each board generation attempt.
+- `--players <number>`: Required. Specifies the number of players. Choices are `2`, `3`, `4`, `5`, `6`, `7`, or `8`.
+- `--layout <type>`: Optional. Specifies the board layout. Choices vary by number of players, but typically include `regular`, `small`, or `large`; see the [Board Layouts](#board-layouts) section. The default is `regular`.
+- `--aggression <type>`: Optional. Specifies the degree of expected aggression resulting from the placement of systems on the board. Choices are `low`, `moderate`, or `high`. The default is `moderate`. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.
+- `--version <type>`: Optional. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Choices are `base` or `expansion`. The default is `expansion`. Note that 7 and 8 player games require the Prophecy of Kings expansion.
 - `--quiet`: Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.
 
 The `ti4cartographer` program computes an optimal board given the arguments and outputs its Tabletop Simulator string as well as a link to visualize the board in Keegan Williams' TI4 Map Generator (<https://keeganw.github.io/ti4/>).
@@ -67,7 +64,7 @@ The `ti4atlas` utility takes no arguments and simply prints out a list of the va
 [^ Back to Top](#ti4-cartographer)
 
 ## Board Layouts
-- [2 Players](#board-layout-2-players)
+- [2 Players Regular](#board-layout-2-players-regular)
 - [3 Players Regular](#board-layout-3-players-regular)
 - [3 Players Small](#board-layout-3-players-small)
 - [3 Players Large](#board-layout-3-players-large)
@@ -76,7 +73,7 @@ The `ti4atlas` utility takes no arguments and simply prints out a list of the va
 - [5 Players Regular](#board-layout-5-players-regular)
 - [5 Players Small](#board-layout-5-players-small)
 - [5 Players Large](#board-layout-5-players-large)
-- [6 Players](#board-layout-6-players)
+- [6 Players Regular](#board-layout-6-players-regular)
 - [7 Players Regular](#board-layout-7-players-regular)
 - [7 Players Large](#board-layout-7-players-large)
 - [8 Players Regular](#board-layout-8-players-regular)
@@ -84,14 +81,14 @@ The `ti4atlas` utility takes no arguments and simply prints out a list of the va
 
 [^ Back to Top](#ti4-cartographer)
 
-### Board Layout: 2 Players
+### Board Layout: 2 Players Regular
 4 planetary systems and 4 anomaly/wormhole/empty systems per player.
 
 ```
-ti4cartographer --players 2
+ti4cartographer --players 2 --layout regular
 ```
 
-![2 Players](images/layouts/2_players.png)
+![2 Players](images/layouts/2_players_regular.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -183,14 +180,14 @@ ti4cartographer --players 5 --layout large
 
 [^ Back to Board Layouts](#board-layouts)
 
-### Board Layout: 6 Players
+### Board Layout: 6 Players Regular
 3 planetary systems and 2 anomaly/wormhole/empty systems per player.
 
 ```
-ti4cartographer --players 6
+ti4cartographer --players 6 --layout regular
 ```
 
-![6 Players](images/layouts/6_players.png)
+![6 Players](images/layouts/6_players_regular.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
