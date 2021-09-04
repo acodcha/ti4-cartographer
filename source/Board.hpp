@@ -69,6 +69,30 @@ private:
 
   void initialize_selected_system_ids(const GameVersion game_version, const Layout layout, const Aggression aggression) noexcept {
     selected_system_ids_ = {game_version, layout, aggression, static_cast<uint8_t>(equidistant_positions_.size())};
+    // Check that the number of selected systems matches the number of planetary/anomaly/wormhole/empty tiles.
+    uint8_t number_of_planetary_anomaly_wormhole_empty_tiles{0};
+    uint8_t number_of_equidistant_positions{0};
+    uint8_t number_of_in_slice_positions{0};
+    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+      if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()) {
+        ++number_of_planetary_anomaly_wormhole_empty_tiles;
+      }
+      if (in_slice_positions_to_players_.find(position_and_tile.first) != in_slice_positions_to_players_.cend()) {
+        ++number_of_in_slice_positions;
+      }
+      else if (equidistant_positions_.find(position_and_tile.first) != equidistant_positions_.cend()) {
+        ++number_of_equidistant_positions;
+      }
+    }
+    if (number_of_planetary_anomaly_wormhole_empty_tiles != static_cast<uint8_t>(selected_system_ids_.equidistant().size() + selected_system_ids_.in_slice().size())) {
+      error("There is a discrepancy between the number of selected systems and the number of tiles for this board layout.");
+    }
+    if (number_of_equidistant_positions != static_cast<uint8_t>(selected_system_ids_.equidistant().size())) {
+      error("There is a discrepancy between the number of selected equidistant systems and the number of equidistant tiles for this board layout.");
+    }
+    if (number_of_in_slice_positions != static_cast<uint8_t>(selected_system_ids_.in_slice().size())) {
+      error("There is a discrepancy between the number of selected in-slice systems and the number of in-slice tiles for this board layout.");
+    }
   }
 
   void iterate(const uint64_t maximum_number_of_iterations, const float score_imbalance_ratio_tolerance) {
@@ -153,6 +177,7 @@ private:
   };
 
   /// \brief Assigns system IDs in a smart manner, trying to avoid invalid boards. Returns true if the board is valid and false otherwise.
+  // TODO: This is a work in progress.
   bool assign_system_ids_to_tiles_smart() {
     std::unordered_set<uint8_t> equidistant_system_indices_used;
     std::unordered_set<uint8_t> in_slice_system_indices_used;

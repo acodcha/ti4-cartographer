@@ -100,20 +100,31 @@ private:
 
   void initialize_neighbors() noexcept {
     for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
-      std::set<Position> neighbors;
-      for (const Position& neighbor_position : position_and_tile.first.possible_neighbors()) {
-        const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_position)};
-        if (neighbor_position_and_tile != positions_to_tiles_.cend() && !neighbor_position_and_tile->second.is_hyperlane()) {
-          neighbors.insert(neighbor_position);
+      if (!position_and_tile.second.is_hyperlane()) {
+        std::set<Position> neighbors;
+        for (const Position& neighbor_position : position_and_tile.first.possible_neighbors()) {
+          const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_position)};
+          if (neighbor_position_and_tile != positions_to_tiles_.cend() && !neighbor_position_and_tile->second.is_hyperlane()) {
+            neighbors.insert(neighbor_position);
+          }
+        }
+        for (const Position& neighbor_position : position_and_tile.second.hyperlane_neighbors()) {
+          const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_position)};
+          if (neighbor_position_and_tile != positions_to_tiles_.cend() && !neighbor_position_and_tile->second.is_hyperlane()) {
+            neighbors.insert(neighbor_position);
+          }
+        }
+        neighbors_.insert({position_and_tile.first, neighbors});
+      }
+    }
+    // Check that all neighbors are symmetric.
+    for (const std::pair<Position, std::set<Position>>& position_and_neighbors : neighbors_) {
+      for (const Position& neighbor : position_and_neighbors.second) {
+        const std::unordered_map<Position, std::set<Position>>::const_iterator neighbor_and_neighbors{neighbors_.find(neighbor)};
+        if (neighbor_and_neighbors->second.find(position_and_neighbors.first) == neighbor_and_neighbors->second.cend()) {
+          error("The tiles of this board layout have asymmetric neighbors. There is likely a problem with the definition of hyperlane neighbors.");
         }
       }
-      for (const Position& neighbor_position : position_and_tile.second.hyperlane_neighbors()) {
-        const std::unordered_map<Position, Tile>::const_iterator neighbor_position_and_tile{positions_to_tiles_.find(neighbor_position)};
-        if (neighbor_position_and_tile != positions_to_tiles_.cend() && !neighbor_position_and_tile->second.is_hyperlane()) {
-          neighbors.insert(neighbor_position);
-        }
-      }
-      neighbors_.insert({position_and_tile.first, neighbors});
     }
   }
 
@@ -127,7 +138,18 @@ private:
   }
 
   void initialize_players(const Layout layout) noexcept {
-    players_ = players(number_of_players(layout));
+    const std::set<Player> players_from_layout{players(number_of_players(layout))};
+    // Check that the set of tiles contains all the player homes.
+    std::set<Player> players_from_tiles;
+    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+      if (position_and_tile.second.home_player().has_value()) {
+        players_from_tiles.insert(position_and_tile.second.home_player().value());
+      }
+    }
+    if (players_from_layout != players_from_tiles) {
+      error("Some player homes are missing from the tiles for this board layout.");
+    }
+    players_ = players_from_layout;
   }
 
   void initialize_players_home_positions() noexcept {
