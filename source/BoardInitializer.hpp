@@ -500,15 +500,34 @@ private:
       }
     }
     // Obtain all positions at the index that correspond to this maximum distance. These are the optimal positions.
-    std::set<Position> optimal_positions_;
+    std::map<Position, uint8_t> optimal_positions_and_number_of_equidistant_neighbors;
+    uint8_t maximum_number_of_equidistant_neighbors{0};
     for (const Pathway& pathway : player_and_pathway_to_mecatol_rex->second) {
       const Position position{pathway[index_along_pathway]};
       // Optimal positions cannot be equidistant positions.
+      // However, prefer optimal positions that have many equidistant neighbors.
       if (equidistant_positions_.find(position) == equidistant_positions_.cend()) {
         const Distance minimum_distance_from_other_players_homes_for_this_pathway{minimum_distance_from_other_players_homes(player, position)};
         if (minimum_distance_from_other_players_homes_for_this_pathway == maximum_distance_from_other_players_homes_) {
-          optimal_positions_.insert(position);
+          const std::unordered_map<Position, std::set<Position>>::const_iterator position_and_neighbors{neighbors_.find(position)};
+          uint8_t number_of_equidistant_neighbors{0};
+          for (const Position& neighbor : position_and_neighbors->second) {
+            if (equidistant_positions_.find(neighbor) != equidistant_positions_.cend()) {
+              ++number_of_equidistant_neighbors;
+            }
+          }
+          if (number_of_equidistant_neighbors > maximum_number_of_equidistant_neighbors) {
+            maximum_number_of_equidistant_neighbors = number_of_equidistant_neighbors;
+          }
+          optimal_positions_and_number_of_equidistant_neighbors.insert({position, number_of_equidistant_neighbors});
         }
+      }
+    }
+    // Keep only the optimal positions that have the most equidistant neighbors.
+    std::set<Position> optimal_positions_;
+    for (const std::pair<Position, uint8_t>& optimal_position_and_number_of_equidistant_neighbors : optimal_positions_and_number_of_equidistant_neighbors) {
+      if (optimal_position_and_number_of_equidistant_neighbors.second == maximum_number_of_equidistant_neighbors) {
+        optimal_positions_.insert(optimal_position_and_number_of_equidistant_neighbors.first);
       }
     }
     return optimal_positions_;

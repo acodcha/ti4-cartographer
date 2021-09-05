@@ -18,7 +18,7 @@ std::default_random_engine RandomEngine(RandomDevice());
 
 constexpr const uint8_t MaximumNumberOfAttempts{20};
 
-constexpr const uint64_t MaximumNumberOfIterations{1000000};
+constexpr const uint64_t MaximumNumberOfIterations{500000};
 
 constexpr const float InitialScoreImbalanceRatioTolerance{0.1};
 
