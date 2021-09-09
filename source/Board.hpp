@@ -295,6 +295,7 @@ private:
     add_preferred_position_scores();
     add_alternate_position_scores();
     add_number_of_planets_scores();
+    add_number_of_systems_containing_planets_adjacent_to_home_scores();
   }
 
   void reset_scores() noexcept {
@@ -360,24 +361,24 @@ private:
         const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
         if (system->contains(Anomaly::AsteroidField)) {
-          // An asteroid field in a lateral system is beneficial.
-          player_scores_[player_and_lateral_positions.first] += -2.0f * Score::AsteroidField;
+          // An asteroid field in a lateral system is more annoying than usual because it is more difficult to defend.
+          player_scores_[player_and_lateral_positions.first] += Score::AsteroidField;
         }
         if (system->contains(Anomaly::GravityRift)) {
           // A gravity rift in a lateral system is very dangerous.
           player_scores_[player_and_lateral_positions.first] += -3.0f;
         }
         if (system->contains(Anomaly::Nebula)) {
-          // A nebula in a lateral system is beneficial.
+          // A nebula in a lateral system is slightly beneficial because it helps protect the home system.
           player_scores_[player_and_lateral_positions.first] += -2.0f * Score::Nebula;
         }
         if (system->contains(Anomaly::Supernova)) {
-          // A supernova in a lateral system is beneficial.
-          player_scores_[player_and_lateral_positions.first] += -2.0f * Score::Supernova;
+          // A supernova in a lateral system is more annoying than usual because it reduces movement options.
+          player_scores_[player_and_lateral_positions.first] += Score::Supernova;
         }
         if (system->contains_one_or_more_wormholes()) {
           // A wormhole in a lateral system is somewhat dangerous and cancels out the benefit of the wormhole.
-          player_scores_[player_and_lateral_positions.first] += -1.0f * Score::Wormhole;
+          player_scores_[player_and_lateral_positions.first] += -Score::Wormhole;
         }
       }
     }
@@ -510,6 +511,35 @@ private:
         const float number_of_planets_minus_4{planet_trait_to_number_of_planets.second - 4.0f};
         player_scores_[player_and_planet_traits_to_number_of_planets.first] += 0.036f * std::pow(number_of_planets_minus_4, 3) + -0.285f * std::pow(number_of_planets_minus_4, 2) + 0.798f * number_of_planets_minus_4 + 2.02;
       }
+    }
+  }
+
+  void add_number_of_systems_containing_planets_adjacent_to_home_scores() noexcept {
+    // Check the forward systems and the lateral systems.
+    // Ideally, you want 2 systems that contain 1 or more planets adjacent to your home.
+    for (const Player& player : players_) {
+      uint8_t number_of_systems_containing_planets{0};
+      const std::map<Player, std::set<Position>>::const_iterator player_and_forward_positions{players_to_forward_positions_.find(player)};
+      if (player_and_forward_positions != players_to_forward_positions_.cend()) {
+        for (const Position& position : player_and_forward_positions->second) {
+          const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+          const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+          if (!system->planets().empty()) {
+            ++number_of_systems_containing_planets;
+          }
+        }
+      }
+      const std::map<Player, std::set<Position>>::const_iterator player_and_lateral_positions{players_to_lateral_positions_.find(player)};
+      if (player_and_lateral_positions != players_to_lateral_positions_.cend()) {
+        for (const Position& position : player_and_lateral_positions->second) {
+          const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+          const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+          if (!system->planets().empty()) {
+            ++number_of_systems_containing_planets;
+          }
+        }
+      }
+      player_scores_[player] += 2.0f * (static_cast<float>(number_of_systems_containing_planets) - 2.0f);
     }
   }
 
