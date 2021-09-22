@@ -365,12 +365,12 @@ private:
           player_scores_[player_and_lateral_positions.first] += Score::AsteroidField;
         }
         if (system->contains(Anomaly::GravityRift)) {
-          // A gravity rift in a lateral system is very dangerous.
-          player_scores_[player_and_lateral_positions.first] += -3.0f;
+          // A gravity rift in a lateral system is dangerous.
+          player_scores_[player_and_lateral_positions.first] += 4.0f * Score::GravityRift;
         }
         if (system->contains(Anomaly::Nebula)) {
-          // A nebula in a lateral system is slightly beneficial because it helps protect the home system.
-          player_scores_[player_and_lateral_positions.first] += -2.0f * Score::Nebula;
+          // A nebula in a lateral system is more annoying than usual because it reduces movement options.
+          player_scores_[player_and_lateral_positions.first] += Score::Nebula;
         }
         if (system->contains(Anomaly::Supernova)) {
           // A supernova in a lateral system is more annoying than usual because it reduces movement options.
