@@ -580,17 +580,15 @@ private:
           // Tabletop Simulator uses a space as separator.
           text += " ";
         }
-        if (tile.system_categories().empty()) {
-          // In this case, this is a skipped tile.
-          // Tabletop Simulator identifies skipped tiles with system ID 0 instead of -1.
-          // ID 0 is the same ID used to represent home systems, so carefully position home systems before loading the Tabletop Simulator string.
-          text += "0";
-        } else {
+        const std::unordered_set<System>::const_iterator system{Systems.find({tile.system_id()})};
+        if (system != Systems.cend() && system->category() == SystemCategory::Hyperlane) {
           // Tabletop Simulator and the visualizer use different naming conventions for the orientation of the hyperlane tiles.
           // In Tabletop Simulator, the orientation directly follows the base name, for example: 85A0.
           // In the visualizer, there is a hyphen between the base name and the orientation, for example: 85A-0.
           // A hyphen is included in the system IDs by default, so remove it when printing the Tabletop Simultor string.
           text += remove_character(tile.system_id(), '-');
+        } else {
+          text += tile.system_id();
         }
       }
     }
