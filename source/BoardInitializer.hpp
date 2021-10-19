@@ -324,22 +324,7 @@ private:
             shortest_pathways.push_back(pathway);
           }
         }
-        // Prefer pathways with few equidistant systems, ideally none.
-        // Keep only the pathways with the fewest equidistant systems.
-        uint8_t smallest_number_of_equidistant_systems{std::numeric_limits<uint8_t>::max()};
-        for (const Pathway& pathway : shortest_pathways) {
-          const uint8_t number_of_equidistant_systems_{number_of_equidistant_systems(pathway)};
-          if (number_of_equidistant_systems_ < smallest_number_of_equidistant_systems) {
-            smallest_number_of_equidistant_systems = number_of_equidistant_systems_;
-          }
-        }
-        std::vector<Pathway> optimal_pathways;
-        for (const Pathway& pathway : shortest_pathways) {
-          if (number_of_equidistant_systems(pathway) == smallest_number_of_equidistant_systems) {
-            optimal_pathways.push_back(pathway);
-          }
-        }
-        players_to_mecatol_rex_pathways_.insert({player, optimal_pathways});
+        players_to_mecatol_rex_pathways_.insert({player, shortest_pathways});
       }
     }
     verbose_message("Pathways to Mecatol Rex:");

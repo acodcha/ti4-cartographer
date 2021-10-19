@@ -360,21 +360,9 @@ private:
       for (const Position& position : player_and_lateral_positions.second) {
         const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-        if (system->contains(Anomaly::AsteroidField)) {
-          // An asteroid field in a lateral system is more annoying than usual because it is more difficult to defend.
-          player_scores_[player_and_lateral_positions.first] += Score::AsteroidField;
-        }
         if (system->contains(Anomaly::GravityRift)) {
-          // A gravity rift in a lateral system is dangerous.
-          player_scores_[player_and_lateral_positions.first] += 4.0f * Score::GravityRift;
-        }
-        if (system->contains(Anomaly::Nebula)) {
-          // A nebula in a lateral system is more annoying than usual because it reduces movement options.
-          player_scores_[player_and_lateral_positions.first] += Score::Nebula;
-        }
-        if (system->contains(Anomaly::Supernova)) {
-          // A supernova in a lateral system is more annoying than usual because it reduces movement options.
-          player_scores_[player_and_lateral_positions.first] += Score::Supernova;
+          // A gravity rift in a lateral system is more dangerous than usual.
+          player_scores_[player_and_lateral_positions.first] += 3.0f * Score::GravityRift;
         }
         if (system->contains_one_or_more_wormholes()) {
           // A wormhole in a lateral system is somewhat dangerous and cancels out the benefit of the wormhole.
@@ -388,43 +376,39 @@ private:
   void add_mecatol_rex_pathway_scores() noexcept {
     for (const std::pair<Player, std::vector<Pathway>>& player_and_mecatol_rex_pathways : players_to_mecatol_rex_pathways_) {
       if (!player_and_mecatol_rex_pathways.second.empty()) {
-        float average_pathway_score{0.0f};
+        float best_pathway_score{std::numeric_limits<float>::lowest()};
         for (const Pathway& pathway : player_and_mecatol_rex_pathways.second) {
           float pathway_score{0.0f};
           for (const Position& position : pathway) {
             const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
             const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
             if (system->contains(Anomaly::Supernova)) {
-              // A supernova anywhere along the pathway to Mecatol Rex is quite bad.
-              pathway_score += -8.0f;
+              // A supernova anywhere along the pathway to Mecatol Rex is bad.
+              pathway_score += -4.0f;
             }
             if (system->contains(Anomaly::AsteroidField)) {
-              // An asteroid field along the pathway to Mecatol Rex is annoying.
-              pathway_score += -2.0f;
+              // An asteroid field anywhere along the pathway to Mecatol Rex is bad.
+              pathway_score += -1.0f;
             }
             if (system->contains(Anomaly::Nebula)) {
               if (positions_to_distances_from_mecatol_rex_.find(position_and_tile->first)->second <= Distance{1}) {
-                // A nebula adjacent to Mecatol Rex is somewhat annoying.
-                pathway_score += -3.0f;
+                // A nebula adjacent to Mecatol Rex is bad.
+                pathway_score += -1.0f;
               } else {
-                // A nebula elsewhere along the pathway to Mecatol Rex is quite bad.
-                pathway_score += -6.0f;
+                // A nebula elsewhere along the pathway to Mecatol Rex is bad.
+                pathway_score += -2.0f;
               }
             }
             if (system->contains(Anomaly::GravityRift)) {
-              if (positions_to_distances_from_mecatol_rex_.find(position_and_tile->first)->second <= Distance{1}) {
-                // A gravity rift adjacent to Mecatol Rex is annoying.
-                pathway_score += -4.0f;
-              } else {
-                // A gravity rift elsewhere on the pathway to Mecatol Rex is quite bad.
-                pathway_score += -8.0f;
-              }
+              // A gravity rift anywhere along the pathway to Mecatol Rex is bad.
+              pathway_score += -3.0f;
             }
           }
-          average_pathway_score += pathway_score;
+          if (pathway_score > best_pathway_score) {
+            best_pathway_score = pathway_score;
+          }
         }
-        average_pathway_score /= static_cast<float>(player_and_mecatol_rex_pathways.second.size());
-        player_scores_[player_and_mecatol_rex_pathways.first] += average_pathway_score;
+        player_scores_[player_and_mecatol_rex_pathways.first] += best_pathway_score;
       }
     }
   }
