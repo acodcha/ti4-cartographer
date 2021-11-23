@@ -74,6 +74,7 @@ The `ti4atlas` utility takes no arguments and simply prints out a list of the va
 - [5 Players Small](#board-layout-5-players-small)
 - [5 Players Large](#board-layout-5-players-large)
 - [6 Players Regular](#board-layout-6-players-regular)
+- [6 Players Large](#board-layout-6-players-large)
 - [7 Players Regular](#board-layout-7-players-regular)
 - [7 Players Large](#board-layout-7-players-large)
 - [8 Players Regular](#board-layout-8-players-regular)
@@ -88,7 +89,7 @@ The `ti4atlas` utility takes no arguments and simply prints out a list of the va
 ti4cartographer --players 2 --layout regular
 ```
 
-![2 Players](images/layouts/2_players_regular.png)
+![2 Players Regular](images/layouts/2_players_regular.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -187,7 +188,18 @@ ti4cartographer --players 5 --layout large
 ti4cartographer --players 6 --layout regular
 ```
 
-![6 Players](images/layouts/6_players_regular.png)
+![6 Players Regular](images/layouts/6_players_regular.png)
+
+[^ Back to Board Layouts](#board-layouts)
+
+### Board Layout: 6 Players Large
+6 planetary systems and 3 anomaly/wormhole/empty systems per player.
+
+```
+ti4cartographer --players 6 --layout large
+```
+
+![6 Players Large](images/layouts/6_players_large.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
