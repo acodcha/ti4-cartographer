@@ -8,7 +8,6 @@ Generates randomized balanced boards for the Twilight Imperium 4th Edition board
 - [Board Layouts](#board-layouts)
 - [Documentation](#documentation)
 - [License](#license)
-- [Maintainer](#maintainer)
 
 ## Setup
 The following packages are required:
@@ -69,6 +68,7 @@ The `ti4atlas` utility takes no arguments and simply prints out a list of the va
 - [3 Players Small](#board-layout-3-players-small)
 - [3 Players Large](#board-layout-3-players-large)
 - [4 Players Regular](#board-layout-4-players-regular)
+- [4 Players Small](#board-layout-4-players-small)
 - [4 Players Large](#board-layout-4-players-large)
 - [5 Players Regular](#board-layout-5-players-regular)
 - [5 Players Small](#board-layout-5-players-small)
@@ -137,8 +137,19 @@ ti4cartographer --players 4 --layout regular
 
 [^ Back to Board Layouts](#board-layouts)
 
-### Board Layout: 4 Players Large
+### Board Layout: 4 Players Small
 3 planetary systems and 2 anomaly/wormhole/empty systems per player, with 2 additional anomaly/wormhole/empty systems.
+
+```
+ti4cartographer --players 4 --layout small
+```
+
+![4 Players Small](images/layouts/4_players_small.png)
+
+[^ Back to Board Layouts](#board-layouts)
+
+### Board Layout: 4 Players Large
+4 planetary systems and 4 anomaly/wormhole/empty systems per player.
 
 ```
 ti4cartographer --players 4 --layout large
@@ -265,11 +276,6 @@ This generates HTML documentation using Doxygen. The documentation is located in
 [^ Back to Top](#ti4-cartographer)
 
 ## License
-This work is licensed under the MIT License. For more details, see the [LICENSE](LICENSE) file or <https://mit-license.org/>.
-
-[^ Back to Top](#ti4-cartographer)
-
-## Maintainer
-- Alexandre Coderre-Chabot (<https://github.com/acodcha>)
+This work is maintained by Alexandre Coderre-Chabot (<https://github.com/acodcha>) and licensed under the MIT License. For more details, see the [LICENSE](LICENSE) file or <https://mit-license.org/>.
 
 [^ Back to Top](#ti4-cartographer)
