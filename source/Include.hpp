@@ -1,15 +1,11 @@
 #pragma once
 
 #include <algorithm>
-#include <array>
 #include <cctype>
 #include <chrono>
 #include <climits>
 #include <cmath>
 #include <cstdlib>
-#include <ctime>
-#include <experimental/filesystem>
-#include <fstream>
 #include <functional>
 #include <iomanip>
 #include <iostream>

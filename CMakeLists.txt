@@ -5,7 +5,7 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -ffast-math -O3 -Wall -Wno-return-type")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -O3 -Wall -Wno-return-type")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_BUILD_TYPE Release)
 
@@ -17,12 +17,12 @@ option(BUILD_TESTING "Build the tests." ON)
 # Build the Cartographer executable.
 set(CARTOGRAPHER_EXECUTABLE_NAME "ti4cartographer")
 add_executable(${CARTOGRAPHER_EXECUTABLE_NAME} source/Cartographer.cpp)
-target_link_libraries(${CARTOGRAPHER_EXECUTABLE_NAME} stdc++fs)
+target_link_libraries(${CARTOGRAPHER_EXECUTABLE_NAME})
 
 # Build the Atlas executable.
 set(ATLAS_EXECUTABLE_NAME "ti4atlas")
 add_executable(${ATLAS_EXECUTABLE_NAME} source/Atlas.cpp)
-target_link_libraries(${ATLAS_EXECUTABLE_NAME} stdc++fs)
+target_link_libraries(${ATLAS_EXECUTABLE_NAME})
 
 # Install the executables.
 install(TARGETS ${CARTOGRAPHER_EXECUTABLE_NAME} DESTINATION /usr/local/bin)
