@@ -50,17 +50,27 @@ private:
     const Aggression aggression
   ) noexcept {
     uint8_t number_of_attempts{0};
+    std::unordered_map<Position, Tile> best_positions_to_tiles{positions_to_tiles_};
+    std::map<Player, float> best_player_scores{player_scores_};
+    float best_score_imbalance_ratio{std::numeric_limits<float>::max()};
     for (uint8_t counter = 0; counter < MaximumNumberOfAttempts; ++counter) {
       ++number_of_attempts;
       const float score_imbalance_ratio_tolerance{InitialScoreImbalanceRatioTolerance * std::pow(1.2f, static_cast<float>(counter))};
       verbose_message("Start of board generation attempt #" + std::to_string(number_of_attempts) + ": target score imbalance: " + score_imbalance_ratio_to_string(score_imbalance_ratio_tolerance));
+      if (best_score_imbalance_ratio <= score_imbalance_ratio_tolerance) {
+        verbose_message("Using a previously-found optimal game board because its score imbalance is now below the target score imbalance.");
+        break;
+      }
       initialize_selected_system_ids(game_version, layout, aggression);
-      iterate(score_imbalance_ratio_tolerance);
+      iterate(score_imbalance_ratio_tolerance, best_positions_to_tiles, best_player_scores, best_score_imbalance_ratio);
       verbose_message("End of board generation attempt #" + std::to_string(number_of_attempts) + ".");
       if (score_imbalance_ratio_ <= score_imbalance_ratio_tolerance) {
         break;
       }
     }
+    positions_to_tiles_ = best_positions_to_tiles;
+    player_scores_ = best_player_scores;
+    score_imbalance_ratio_ = best_score_imbalance_ratio;
   }
 
   void initialize_selected_system_ids(const GameVersion game_version, const Layout layout, const Aggression aggression) noexcept {
@@ -91,10 +101,7 @@ private:
     }
   }
 
-  void iterate(const float score_imbalance_ratio_tolerance) {
-    std::unordered_map<Position, Tile> best_positions_to_tiles{positions_to_tiles_};
-    std::map<Player, float> best_player_scores{player_scores_};
-    float best_score_imbalance_ratio{std::numeric_limits<float>::max()};
+  void iterate(const float score_imbalance_ratio_tolerance, std::unordered_map<Position, Tile>& best_positions_to_tiles, std::map<Player, float>& best_player_scores, float& best_score_imbalance_ratio) {
     uint64_t number_of_iterations{0};
     uint64_t number_of_valid_boards{0};
     bool success{false};
@@ -119,13 +126,10 @@ private:
         }
       }
     }
-    positions_to_tiles_ = best_positions_to_tiles;
-    player_scores_ = best_player_scores;
-    score_imbalance_ratio_ = best_score_imbalance_ratio;
     if (success) {
       verbose_message("Found an optimal game board after " + std::to_string(number_of_iterations) + " iterations which generated " + std::to_string(number_of_valid_boards) + " valid game boards.");
     } else {
-      verbose_message("No optimal game board could be found after " + std::to_string(number_of_iterations) + " iterations which generated " + std::to_string(number_of_valid_boards) + " valid game boards.");
+      verbose_message("No optimal game board with a score imbalance of " + score_imbalance_ratio_to_string(score_imbalance_ratio_tolerance) + " or less could be found after " + std::to_string(number_of_iterations) + " iterations which generated " + std::to_string(number_of_valid_boards) + " valid game boards.");
     }
   }
 
