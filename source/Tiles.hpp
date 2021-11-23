@@ -194,6 +194,46 @@ template <> std::set<Tile> const Tiles<Layout::Players4Small>{
   {Position{3, 17}, Player::Player3}
 };
 
+template <> std::set<Tile> const Tiles<Layout::Players4Large>{
+  {Position{0, 0}},
+  {Position{1, 0}},
+  {Position{1, 1}},
+  {Position{1, 2}},
+  {Position{1, 3}},
+  {Position{1, 4}},
+  {Position{1, 5}},
+  {Position{2, 0}},
+  {Position{2, 1}},
+  {Position{2, 2}},
+  {Position{2, 3}},
+  {Position{2, 4}},
+  {Position{2, 5}},
+  {Position{2, 6}},
+  {Position{2, 7}},
+  {Position{2, 8}},
+  {Position{2, 9}},
+  {Position{2, 10}},
+  {Position{2, 11}},
+  {Position{3, 0}},
+  {Position{3, 1}},
+  {Position{3, 2}},
+  {Position{3, 3}},
+  {Position{3, 4}, Player::Player4},
+  {Position{3, 5}},
+  {Position{3, 6}},
+  {Position{3, 7}},
+  {Position{3, 8}, Player::Player1},
+  {Position{3, 9}},
+  {Position{3, 10}},
+  {Position{3, 11}},
+  {Position{3, 12}},
+  {Position{3, 13}, Player::Player2},
+  {Position{3, 14}},
+  {Position{3, 15}},
+  {Position{3, 16}},
+  {Position{3, 17}, Player::Player3}
+};
+
 template <> std::set<Tile> const Tiles<Layout::Players5Regular>{
   {Position{0, 0}},
   {Position{1, 0}},
@@ -659,6 +699,9 @@ const std::set<Tile>& tiles(const Layout layout) noexcept {
       break;
     case Layout::Players4Small:
       return Tiles<Layout::Players4Small>;
+      break;
+    case Layout::Players4Large:
+      return Tiles<Layout::Players4Large>;
       break;
     case Layout::Players5Regular:
       return Tiles<Layout::Players5Regular>;
