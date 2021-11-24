@@ -504,7 +504,7 @@ template <> std::set<Tile> const Tiles<Layout::Players7Regular>{
   {Position{4, 23}}
 };
 
-template <> std::set<Tile> const Tiles<Layout::Players7Large>{
+template <> std::set<Tile> const Tiles<Layout::Players7Small>{
   {Position{0, 0}},
   {Position{1, 0}},
   {Position{1, 1}},
@@ -620,7 +620,7 @@ template <> std::set<Tile> const Tiles<Layout::Players8Regular>{
   {Position{4, 23}}
 };
 
-template <> std::set<Tile> const Tiles<Layout::Players8Large>{
+template <> std::set<Tile> const Tiles<Layout::Players8Small>{
   {Position{0, 0}},
   {Position{1, 0}},
   {Position{1, 1}},
@@ -721,14 +721,14 @@ const std::set<Tile>& tiles(const Layout layout) noexcept {
     case Layout::Players7Regular:
       return Tiles<Layout::Players7Regular>;
       break;
-    case Layout::Players7Large:
-      return Tiles<Layout::Players7Large>;
+    case Layout::Players7Small:
+      return Tiles<Layout::Players7Small>;
       break;
     case Layout::Players8Regular:
       return Tiles<Layout::Players8Regular>;
       break;
-    case Layout::Players8Large:
-      return Tiles<Layout::Players8Large>;
+    case Layout::Players8Small:
+      return Tiles<Layout::Players8Small>;
       break;
   }
 }

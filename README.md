@@ -76,9 +76,9 @@ The `ti4atlas` utility takes no arguments and simply prints out a list of the va
 - [6 Players Regular](#board-layout-6-players-regular)
 - [6 Players Large](#board-layout-6-players-large)
 - [7 Players Regular](#board-layout-7-players-regular)
-- [7 Players Large](#board-layout-7-players-large)
+- [7 Players Small](#board-layout-7-players-small)
 - [8 Players Regular](#board-layout-8-players-regular)
-- [8 Players Large](#board-layout-8-players-large)
+- [8 Players Small](#board-layout-8-players-small)
 
 [^ Back to Top](#ti4-cartographer)
 
@@ -116,7 +116,7 @@ ti4cartographer --players 3 --layout small
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 3 Players Large
-4 planetary systems and 4 anomaly/wormhole/empty systems per player.
+5 planetary systems and 3 anomaly/wormhole/empty systems per player.
 
 ```
 ti4cartographer --players 3 --layout large
@@ -138,7 +138,7 @@ ti4cartographer --players 4 --layout regular
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 4 Players Small
-3 planetary systems and 2 anomaly/wormhole/empty systems per player, with 2 additional anomaly/wormhole/empty systems.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional planetary system and 1 additional anomaly/wormhole/empty system.
 
 ```
 ti4cartographer --players 4 --layout small
@@ -149,7 +149,7 @@ ti4cartographer --players 4 --layout small
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 4 Players Large
-4 planetary systems and 4 anomaly/wormhole/empty systems per player.
+5 planetary systems and 3 anomaly/wormhole/empty systems per player.
 
 ```
 ti4cartographer --players 4 --layout large
@@ -182,7 +182,7 @@ ti4cartographer --players 5 --layout small
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 5 Players Large
-3 planetary systems and 3 anomaly/wormhole/empty systems per player, with 1 additional planetary system.
+4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional anomaly/wormhole/empty system.
 
 ```
 ti4cartographer --players 5 --layout large
@@ -225,14 +225,14 @@ ti4cartographer --players 7 --layout regular
 
 [^ Back to Board Layouts](#board-layouts)
 
-### Board Layout: 7 Players Large
+### Board Layout: 7 Players Small
 4 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes.
 
 ```
-ti4cartographer --players 7 --layout large
+ti4cartographer --players 7 --layout small
 ```
 
-![7 Players Large](images/layouts/7_players_large.png)
+![7 Players Small](images/layouts/7_players_small.png)
 
 [^ Back to Board Layouts](#board-layouts)
 
@@ -247,14 +247,14 @@ ti4cartographer --players 8 --layout regular
 
 [^ Back to Board Layouts](#board-layouts)
 
-### Board Layout: 8 Players Large
+### Board Layout: 8 Players Small
 4 planetary systems and 2 anomaly/wormhole/empty systems per player.
 
 ```
-ti4cartographer --players 8 --layout large
+ti4cartographer --players 8 --layout small
 ```
 
-![8 Players Large](images/layouts/8_players_large.png)
+![8 Players Small](images/layouts/8_players_small.png)
 
 [^ Back to Board Layouts](#board-layouts)
 

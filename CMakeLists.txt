@@ -46,9 +46,9 @@ if(BUILD_TESTING)
   add_test(NAME cartographer_6_players_regular_moderate COMMAND ../test/6_players_regular_moderate.sh)
   add_test(NAME cartographer_6_players_large_moderate COMMAND ../test/6_players_large_moderate.sh)
   add_test(NAME cartographer_7_players_regular_moderate COMMAND ../test/7_players_regular_moderate.sh)
-  add_test(NAME cartographer_7_players_large_high COMMAND ../test/7_players_large_high.sh)
+  add_test(NAME cartographer_7_players_small_high COMMAND ../test/7_players_small_high.sh)
   add_test(NAME cartographer_8_players_regular_moderate COMMAND ../test/8_players_regular_moderate.sh)
-  add_test(NAME cartographer_8_players_large_high COMMAND ../test/8_players_large_high.sh)
+  add_test(NAME cartographer_8_players_small_high COMMAND ../test/8_players_small_high.sh)
 endif()
 
 # Build the documentation.
