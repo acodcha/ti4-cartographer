@@ -85,7 +85,7 @@ The `ti4atlas` utility takes no arguments and simply prints out a list of the va
 [^ Back to Top](#ti4-cartographer)
 
 ### Board Layout: 2 Players Regular
-4 planetary systems and 4 anomaly/wormhole/empty systems per player.
+5 planetary systems and 3 anomaly/wormhole/empty systems per player.
 
 ```
 ti4cartographer --players 2 --layout regular

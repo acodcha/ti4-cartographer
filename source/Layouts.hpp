@@ -111,7 +111,7 @@ std::unordered_multimap<uint8_t, Layout> number_of_players_to_layouts{
 
 std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const system_categories_to_layouts_to_number_of_systems_per_player{
   {SystemCategory::Planetary, {
-    {Layout::Players2Regular, 4},
+    {Layout::Players2Regular, 5},
     {Layout::Players3Regular, 3},
     {Layout::Players3Small, 3},
     {Layout::Players3Large, 5},
@@ -131,7 +131,7 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
     {Layout::Players8Large, 4}
   }},
   {SystemCategory::AnomalyWormholeEmpty, {
-    {Layout::Players2Regular, 4},
+    {Layout::Players2Regular, 3},
     {Layout::Players3Regular, 2},
     {Layout::Players3Small, 2},
     {Layout::Players3Large, 3},
