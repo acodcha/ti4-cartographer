@@ -115,21 +115,21 @@ public:
     int8_t counter{0};
     for (const Planet& planet : planets_) {
       if (counter > 0) {
-        text += "  +  ";
+        text += " + ";
       }
       text += planet.name();
       ++counter;
     }
     for (const Anomaly& anomaly : anomalies_) {
       if (counter > 0) {
-        text += "  +  ";
+        text += " + ";
       }
       text += label(anomaly);
       ++counter;
     }
     for (const Wormhole& wormhole : wormholes_) {
       if (counter > 0) {
-        text += "  +  ";
+        text += " + ";
       }
       text += label(wormhole);
       ++counter;
