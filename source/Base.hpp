@@ -41,7 +41,7 @@ constexpr const float Nebula{-0.5};
 constexpr const float Supernova{-1.0};
 
 // Wormholes are generally beneficial because they provide additional movement options and lead to the Wormhole Nexus.
-constexpr const float Wormhole{0.5};
+constexpr const float Wormhole{1.0};
 
 }
 
