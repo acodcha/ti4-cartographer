@@ -77,8 +77,10 @@ The `ti4atlas` utility takes no arguments and simply prints out a list of the va
 - [6 Players Large](#board-layout-6-players-large)
 - [7 Players Regular](#board-layout-7-players-regular)
 - [7 Players Small](#board-layout-7-players-small)
+- [7 Players Large](#board-layout-7-players-large)
 - [8 Players Regular](#board-layout-8-players-regular)
 - [8 Players Small](#board-layout-8-players-small)
+- [8 Players Large](#board-layout-8-players-large)
 
 [^ Back to Top](#ti4-cartographer)
 
@@ -236,6 +238,17 @@ ti4cartographer --players 7 --layout small
 
 [^ Back to Board Layouts](#board-layouts)
 
+### Board Layout: 7 Players Large
+4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 3 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Uses hyperlanes.
+
+```
+ti4cartographer --players 7 --layout large
+```
+
+![7 Players Large](images/layouts/7_players_large.png)
+
+[^ Back to Board Layouts](#board-layouts)
+
 ### Board Layout: 8 Players Regular
 3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes.
 
@@ -255,6 +268,17 @@ ti4cartographer --players 8 --layout small
 ```
 
 ![8 Players Small](images/layouts/8_players_small.png)
+
+[^ Back to Board Layouts](#board-layouts)
+
+### Board Layout: 8 Players Large
+4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 2 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Uses hyperlanes.
+
+```
+ti4cartographer --players 8 --layout large
+```
+
+![8 Players Large](images/layouts/8_players_large.png)
 
 [^ Back to Board Layouts](#board-layouts)
 

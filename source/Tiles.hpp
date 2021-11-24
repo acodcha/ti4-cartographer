@@ -562,6 +562,70 @@ template <> std::set<Tile> const Tiles<Layout::Players7Small>{
   {Position{4, 23}, "83A-3"}
 };
 
+template <> std::set<Tile> const Tiles<Layout::Players7Large>{
+  {Position{0, 0}},
+  {Position{1, 0}},
+  {Position{1, 1}},
+  {Position{1, 2}},
+  {Position{1, 3}},
+  {Position{1, 4}},
+  {Position{1, 5}},
+  {Position{2, 0}, "85A-3"},
+  {Position{2, 1}, {Position{2, 11}, Position{3, 0}}},
+  {Position{2, 2}},
+  {Position{2, 3}},
+  {Position{2, 4}},
+  {Position{2, 5}},
+  {Position{2, 6}},
+  {Position{2, 7}},
+  {Position{2, 8}},
+  {Position{2, 9}},
+  {Position{2, 10}},
+  {Position{2, 11}, {Position{2, 1}, Position{3, 0}}},
+  {Position{3, 0}, {Position{2, 1}, Position{2, 11}, Position{3, 2}, Position{3, 16}, Position{4, 2}, Position{4, 22}}},
+  {Position{3, 1}, "87A-3"},
+  {Position{3, 2}, {Position{3, 0}}},
+  {Position{3, 3}},
+  {Position{3, 4}},
+  {Position{3, 5}},
+  {Position{3, 6}},
+  {Position{3, 7}},
+  {Position{3, 8}},
+  {Position{3, 9}},
+  {Position{3, 10}},
+  {Position{3, 11}},
+  {Position{3, 12}},
+  {Position{3, 13}},
+  {Position{3, 14}},
+  {Position{3, 15}},
+  {Position{3, 16}, {Position{3, 0}}},
+  {Position{3, 17}, "88A-3"},
+  {Position{4, 0}, "86A-3"},
+  {Position{4, 1}, "84A-3"},
+  {Position{4, 2}, {Position{3, 0}, Position{4, 22}}},
+  {Position{4, 3}, Player::Player6},
+  {Position{4, 4}},
+  {Position{4, 5}},
+  {Position{4, 6}, Player::Player7},
+  {Position{4, 7}},
+  {Position{4, 8}},
+  {Position{4, 9}, Player::Player1},
+  {Position{4, 10}},
+  {Position{4, 11}},
+  {Position{4, 12}, Player::Player2},
+  {Position{4, 13}},
+  {Position{4, 14}},
+  {Position{4, 15}, Player::Player3},
+  {Position{4, 16}},
+  {Position{4, 17}},
+  {Position{4, 18}, Player::Player4},
+  {Position{4, 19}},
+  {Position{4, 20}},
+  {Position{4, 21}, Player::Player5},
+  {Position{4, 22}, {Position{3, 0}, Position{4, 2}}},
+  {Position{4, 23}, "83A-3"}
+};
+
 template <> std::set<Tile> const Tiles<Layout::Players8Regular>{
   {Position{0, 0}, {Position{2, 0}, Position{2, 1}, Position{2, 5}, Position{2, 6}, Position{2, 7}, Position{2, 11}}},
   {Position{1, 0}, "87A-1"},
@@ -680,6 +744,70 @@ template <> std::set<Tile> const Tiles<Layout::Players8Small>{
   {Position{4, 23}}
 };
 
+template <> std::set<Tile> const Tiles<Layout::Players8Large>{
+  {Position{0, 0}},
+  {Position{1, 0}},
+  {Position{1, 1}},
+  {Position{1, 2}},
+  {Position{1, 3}},
+  {Position{1, 4}},
+  {Position{1, 5}},
+  {Position{2, 0}},
+  {Position{2, 1}},
+  {Position{2, 2}},
+  {Position{2, 3}},
+  {Position{2, 4}},
+  {Position{2, 5}},
+  {Position{2, 6}},
+  {Position{2, 7}},
+  {Position{2, 8}},
+  {Position{2, 9}},
+  {Position{2, 10}},
+  {Position{2, 11}},
+  {Position{3, 0}},
+  {Position{3, 1}},
+  {Position{3, 2}},
+  {Position{3, 3}},
+  {Position{3, 4}},
+  {Position{3, 5}},
+  {Position{3, 6}},
+  {Position{3, 7}},
+  {Position{3, 8}},
+  {Position{3, 9}},
+  {Position{3, 10}},
+  {Position{3, 11}},
+  {Position{3, 12}},
+  {Position{3, 13}},
+  {Position{3, 14}},
+  {Position{3, 15}},
+  {Position{3, 16}},
+  {Position{3, 17}},
+  {Position{4, 0}, Player::Player7},
+  {Position{4, 1}},
+  {Position{4, 2}},
+  {Position{4, 3}, Player::Player8},
+  {Position{4, 4}},
+  {Position{4, 5}},
+  {Position{4, 6}, Player::Player1},
+  {Position{4, 7}},
+  {Position{4, 8}},
+  {Position{4, 9}, Player::Player2},
+  {Position{4, 10}},
+  {Position{4, 11}},
+  {Position{4, 12}, Player::Player3},
+  {Position{4, 13}},
+  {Position{4, 14}},
+  {Position{4, 15}, Player::Player4},
+  {Position{4, 16}},
+  {Position{4, 17}},
+  {Position{4, 18}, Player::Player5},
+  {Position{4, 19}},
+  {Position{4, 20}},
+  {Position{4, 21}, Player::Player6},
+  {Position{4, 22}},
+  {Position{4, 23}}
+};
+
 const std::set<Tile>& tiles(const Layout layout) noexcept {
   switch (layout) {
     case Layout::Players2Regular:
@@ -724,11 +852,17 @@ const std::set<Tile>& tiles(const Layout layout) noexcept {
     case Layout::Players7Small:
       return Tiles<Layout::Players7Small>;
       break;
+    case Layout::Players7Large:
+      return Tiles<Layout::Players7Large>;
+      break;
     case Layout::Players8Regular:
       return Tiles<Layout::Players8Regular>;
       break;
     case Layout::Players8Small:
       return Tiles<Layout::Players8Small>;
+      break;
+    case Layout::Players8Large:
+      return Tiles<Layout::Players8Large>;
       break;
   }
 }
