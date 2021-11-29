@@ -41,6 +41,7 @@ public:
     initialize();
     message_header_information();
     message_start_information();
+    check_layout_and_game_version();
   }
 
   Layout layout() const noexcept {
@@ -198,6 +199,12 @@ private:
     verbose_message("The number of players and board layout is: " + label(layout_));
     verbose_message("The aggression is: " + label(aggression_));
     verbose_message("The game version is: " + label(game_version_));
+  }
+
+  void check_layout_and_game_version() const {
+    if (!layout_and_game_version_are_compatible(layout_, game_version_)) {
+      error("The board layout and the game version are incompatible. The " + label(layout_) + " board layout requires the " + label(GameVersion::ProphecyOfKingsExpansion) + ".");
+    }
   }
 
 }; // class Instructions
