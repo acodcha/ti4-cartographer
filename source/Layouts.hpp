@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameVersions.hpp"
 #include "SystemCategories.hpp"
 
 namespace TI4Cartographer {
@@ -195,6 +196,27 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
   }}
 };
 
+std::unordered_map<Layout, std::set<GameVersion>> layouts_to_game_versions{
+  {Layout::Players2Regular, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players3Regular, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players3Small, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players3Large, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players4Regular, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players4Small, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players4Large, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players5Regular, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players5Small, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players5Large, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players6Regular, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players6Large, {GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players7Regular, {GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players7Small, {GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players7Large, {GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players8Regular, {GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players8Small, {GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players8Large, {GameVersion::ProphecyOfKingsExpansion}}
+};
+
 uint8_t number_of_players(const Layout layout) noexcept {
   const std::unordered_map<Layout, uint8_t>::const_iterator found{layouts_to_number_of_players.find(layout)};
   if (found != layouts_to_number_of_players.cend()) {
@@ -242,6 +264,22 @@ uint8_t additional_systems(const SystemCategory system_category, const Layout la
 
 uint8_t number_of_systems(const SystemCategory system_category, const Layout layout) noexcept {
   return number_of_players(layout) * number_of_systems_per_player(system_category, layout) + additional_systems(system_category, layout);
+}
+
+std::set<GameVersion> game_versions(const Layout layout) noexcept {
+  const std::unordered_map<Layout, std::set<GameVersion>>::const_iterator found{layouts_to_game_versions.find(layout)};
+  if (found != layouts_to_game_versions.cend()) {
+    return found->second;
+  }
+  return {};
+}
+
+bool layout_and_game_version_are_compatible(const Layout layout, const GameVersion game_version) noexcept {
+  const std::unordered_map<Layout, std::set<GameVersion>>::const_iterator found{layouts_to_game_versions.find(layout)};
+  if (found != layouts_to_game_versions.cend()) {
+    return found->second.find(game_version) != found->second.cend();
+  }
+  return false;
 }
 
 } // namespace TI4Cartographer

@@ -206,7 +206,7 @@ ti4cartographer --players 6 --layout regular
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 6 Players Large
-6 planetary systems and 3 anomaly/wormhole/empty systems per player.
+6 planetary systems and 3 anomaly/wormhole/empty systems per player. Requires the Prophecy of Kings Expansion.
 
 ```
 ti4cartographer --players 6 --layout large
@@ -217,7 +217,7 @@ ti4cartographer --players 6 --layout large
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 7 Players Regular
-3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
 
 ```
 ti4cartographer --players 7 --layout regular
@@ -228,7 +228,7 @@ ti4cartographer --players 7 --layout regular
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 7 Players Small
-4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional planetary system and 1 additional anomaly/wormhole/empty system.
+4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional planetary system and 1 additional anomaly/wormhole/empty system. Requires the Prophecy of Kings Expansion.
 
 ```
 ti4cartographer --players 7 --layout small
@@ -239,7 +239,7 @@ ti4cartographer --players 7 --layout small
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 7 Players Large
-4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 3 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Uses hyperlanes.
+4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 3 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
 
 ```
 ti4cartographer --players 7 --layout large
@@ -250,7 +250,7 @@ ti4cartographer --players 7 --layout large
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 8 Players Regular
-3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
 
 ```
 ti4cartographer --players 8 --layout regular
@@ -261,7 +261,7 @@ ti4cartographer --players 8 --layout regular
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 8 Players Small
-4 planetary systems and 2 anomaly/wormhole/empty systems per player.
+4 planetary systems and 2 anomaly/wormhole/empty systems per player. Requires the Prophecy of Kings Expansion.
 
 ```
 ti4cartographer --players 8 --layout small
@@ -272,7 +272,7 @@ ti4cartographer --players 8 --layout small
 [^ Back to Board Layouts](#board-layouts)
 
 ### Board Layout: 8 Players Large
-4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 2 additional planetary systems and 2 additional anomaly/wormhole/empty systems.
+4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 2 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Requires the Prophecy of Kings Expansion.
 
 ```
 ti4cartographer --players 8 --layout large
