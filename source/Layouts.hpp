@@ -198,13 +198,13 @@ std::unordered_map<SystemCategory, std::unordered_map<Layout, uint8_t>> const sy
 
 std::unordered_map<Layout, std::set<GameVersion>> layouts_to_game_versions{
   {Layout::Players2Regular, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
-  {Layout::Players3Regular, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players3Regular, {GameVersion::ProphecyOfKingsExpansion}},
   {Layout::Players3Small, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
   {Layout::Players3Large, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
-  {Layout::Players4Regular, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players4Regular, {GameVersion::ProphecyOfKingsExpansion}},
   {Layout::Players4Small, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
   {Layout::Players4Large, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
-  {Layout::Players5Regular, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
+  {Layout::Players5Regular, {GameVersion::ProphecyOfKingsExpansion}},
   {Layout::Players5Small, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
   {Layout::Players5Large, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
   {Layout::Players6Regular, {GameVersion::BaseGame, GameVersion::ProphecyOfKingsExpansion}},
