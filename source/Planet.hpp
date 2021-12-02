@@ -157,7 +157,7 @@ private:
   /// \brief Legendary planets are relevant to scoring objectives.
   float legendary_objective_score() const noexcept {
     if (is_legendary()) {
-      return 2.0;
+      return 3.0;
     }
     return 0.0;
   }
@@ -167,7 +167,7 @@ private:
     if (legendary_.has_value()) {
       switch (legendary_.value()) {
         case LegendaryPlanet::HopesEnd:
-          return 3.0;
+          return 2.5;
           break;
         case LegendaryPlanet::Mallice:
           return 2.5;
