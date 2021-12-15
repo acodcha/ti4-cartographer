@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 # Define the C++ and build settings.
-set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -49,7 +48,6 @@ if(BUILD_TESTING)
   add_test(NAME cartographer_7_players_small_high COMMAND ../test/7_players_small_high.sh)
   add_test(NAME cartographer_7_players_large_high COMMAND ../test/7_players_large_high.sh)
   add_test(NAME cartographer_8_players_regular_moderate COMMAND ../test/8_players_regular_moderate.sh)
-  add_test(NAME cartographer_8_players_small_high COMMAND ../test/8_players_small_high.sh)
   add_test(NAME cartographer_8_players_large_high COMMAND ../test/8_players_large_high.sh)
 endif()
 

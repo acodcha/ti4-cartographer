@@ -23,7 +23,6 @@
 - [7 Players Small](#board-layout-7-players-small)
 - [7 Players Large](#board-layout-7-players-large)
 - [8 Players Regular](#board-layout-8-players-regular)
-- [8 Players Small](#board-layout-8-players-small)
 - [8 Players Large](#board-layout-8-players-large)
 
 [(Back to Top)](#)
@@ -201,17 +200,6 @@ ti4cartographer --players 8 --layout regular
 ```
 
 ![8 Players Regular](images/layouts/8_players_regular.png)
-
-[(Back to Board Layouts)](#board-layouts)
-
-## Board Layout: 8 Players Small
-4 planetary systems and 2 anomaly/wormhole/empty systems per player. Requires the Prophecy of Kings Expansion.
-
-```
-ti4cartographer --players 8 --layout small
-```
-
-![8 Players Small](images/layouts/8_players_small.png)
 
 [(Back to Board Layouts)](#board-layouts)
 
