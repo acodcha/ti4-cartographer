@@ -1,63 +1,10 @@
+- [Board Layouts](#board-layouts)
 - [Setup](#setup)
 - [Usage](#usage)
-- [Board Layouts](#board-layouts)
 - [Documentation](#documentation)
 - [License](#license)
 
 ![build and test](https://github.com/acodcha/ti4cartographer/workflows/build%20and%20test/badge.svg?branch=main)
-
-# Setup
-The following packages are required:
-- **C++17 Compiler:** Any C++17 compiler will do, such as GCC or Clang. On Ubuntu, install GCC with `sudo apt install g++` or Clang with `sudo apt install clang`.
-- **CMake:** On Ubuntu, install with `sudo apt install cmake`.
-
-Build the programs with:
-
-```
-mkdir build
-cd build
-cmake ..
-make -j
-```
-
-This builds the main program, `build/bin/ti4cartographer`, as well as the `build/bin/ti4atlas` utility.
-- `ti4cartographer` is the main program used to generate a randomized balanced board.
-- `ti4atlas` is a small utility program that prints the various systems ranked from best to worst.
-
-You can optionally run tests from the `build` directory with:
-
-```
-make test
-```
-
-You can optionally install the programs from the `build` directory with:
-
-```
-sudo make install
-```
-
-This installs the programs to `/usr/local/bin/ti4cartographer` and `/usr/local/bin/ti4atlas`. To uninstall a program, simply delete it.
-
-[(Back to Top)](#)
-
-# Usage
-Run `ti4cartographer` with no arguments or with the `--help` argument to obtain usage information. Otherwise, for regular use, run `ti4cartographer` with:
-
-```
-ti4cartographer  --players <number>  --layout <type>  --aggression <type>  --version <type>  --quiet
-```
-
-- `--players <number>`: Required. Specifies the number of players. Choices are `2`, `3`, `4`, `5`, `6`, `7`, or `8`.
-- `--layout <type>`: Optional. Specifies the board layout. Choices vary by number of players, but typically include `regular`, `small`, or `large`; see the [Board Layouts](#board-layouts) section. The default is `regular`.
-- `--aggression <type>`: Optional. Specifies the degree of expected aggression resulting from the placement of systems on the board. Choices are `low`, `moderate`, or `high`. The default is `moderate`. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.
-- `--version <type>`: Optional. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Choices are `base` or `expansion`. The default is `expansion`. Note that 7 and 8 player games require the Prophecy of Kings expansion.
-- `--quiet`: Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.
-
-The `ti4cartographer` program computes an optimal board given the arguments and outputs its Tabletop Simulator string as well as a link to visualize the board in Keegan Williams' TI4 Map Generator (<https://keeganw.github.io/ti4/>).
-
-The `ti4atlas` utility takes no arguments and simply prints out a list of the various systems ranked from best to worst. This ranking only takes into account the individual systems by themselves, and does not account for position on the game board, suitability as a forward outpost, or other interactions; such considerations are handled by the `ti4cartographer` program.
-
-[(Back to Top)](#)
 
 # Board Layouts
 - [2 Players Regular](#board-layout-2-players-regular)
@@ -278,6 +225,59 @@ ti4cartographer --players 8 --layout large
 ![8 Players Large](images/layouts/8_players_large.png)
 
 [(Back to Board Layouts)](#board-layouts)
+
+# Setup
+The following packages are required:
+- **C++17 Compiler:** Any C++17 compiler will do, such as GCC or Clang. On Ubuntu, install GCC with `sudo apt install g++` or Clang with `sudo apt install clang`.
+- **CMake:** On Ubuntu, install with `sudo apt install cmake`.
+
+Build the programs with:
+
+```
+mkdir build
+cd build
+cmake ..
+make -j
+```
+
+This builds the main program, `build/bin/ti4cartographer`, as well as the `build/bin/ti4atlas` utility.
+- `ti4cartographer` is the main program used to generate a randomized balanced board.
+- `ti4atlas` is a small utility program that prints the various systems ranked from best to worst.
+
+You can optionally run tests from the `build` directory with:
+
+```
+make test
+```
+
+You can optionally install the programs from the `build` directory with:
+
+```
+sudo make install
+```
+
+This installs the programs to `/usr/local/bin/ti4cartographer` and `/usr/local/bin/ti4atlas`. To uninstall a program, simply delete it.
+
+[(Back to Top)](#)
+
+# Usage
+Run `ti4cartographer` with no arguments or with the `--help` argument to obtain usage information. Otherwise, for regular use, run `ti4cartographer` with:
+
+```
+ti4cartographer  --players <number>  --layout <type>  --aggression <type>  --version <type>  --quiet
+```
+
+- `--players <number>`: Required. Specifies the number of players. Choices are `2`, `3`, `4`, `5`, `6`, `7`, or `8`.
+- `--layout <type>`: Optional. Specifies the board layout. Choices vary by number of players, but typically include `regular`, `small`, or `large`; see the [Board Layouts](#board-layouts) section. The default is `regular`.
+- `--aggression <type>`: Optional. Specifies the degree of expected aggression resulting from the placement of systems on the board. Choices are `low`, `moderate`, or `high`. The default is `moderate`. Higher aggression places better systems at equidistant positions compared to the systems in each player's slice, whereas lower aggression does the opposite.
+- `--version <type>`: Optional. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Choices are `base` or `expansion`. The default is `expansion`. Note that 7 and 8 player games require the Prophecy of Kings expansion.
+- `--quiet`: Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.
+
+The `ti4cartographer` program computes an optimal board given the arguments and outputs its Tabletop Simulator string as well as a link to visualize the board in Keegan Williams' TI4 Map Generator (<https://keeganw.github.io/ti4/>).
+
+The `ti4atlas` utility takes no arguments and simply prints out a list of the various systems ranked from best to worst. This ranking only takes into account the individual systems by themselves, and does not account for position on the game board, suitability as a forward outpost, or other interactions; such considerations are handled by the `ti4cartographer` program.
+
+[(Back to Top)](#)
 
 # Documentation
 Building the documentation is optional and requires additional packages:
