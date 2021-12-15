@@ -1,4 +1,8 @@
-[Setup](#setup) · [Usage](#usage) · [Board Layouts](#board-layouts) · [Documentation](#documentation) · [License](#license)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Board Layouts](#board-layouts)
+- [Documentation](#documentation)
+- [License](#license)
 
 ![build and test](https://github.com/acodcha/ti4cartographer/workflows/build%20and%20test/badge.svg?branch=main)
 
