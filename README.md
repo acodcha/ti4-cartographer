@@ -1,15 +1,8 @@
-# TI4 Cartographer
+[Setup](#setup) · [Usage](#usage) · [Board Layouts](#board-layouts) · [Documentation](#documentation) · [License](#license)
+
 ![build and test](https://github.com/acodcha/ti4cartographer/workflows/build%20and%20test/badge.svg?branch=main)
 
-Generates randomized balanced boards for the Twilight Imperium 4th Edition board game.
-
-- [Setup](#setup)
-- [Usage](#usage)
-- [Board Layouts](#board-layouts)
-- [Documentation](#documentation)
-- [License](#license)
-
-## Setup
+# Setup
 The following packages are required:
 - **C++17 Compiler:** Any C++17 compiler will do, such as GCC or Clang. On Ubuntu, install GCC with `sudo apt install g++` or Clang with `sudo apt install clang`.
 - **CMake:** On Ubuntu, install with `sudo apt install cmake`.
@@ -41,9 +34,9 @@ sudo make install
 
 This installs the programs to `/usr/local/bin/ti4cartographer` and `/usr/local/bin/ti4atlas`. To uninstall a program, simply delete it.
 
-[^ Back to Top](#ti4-cartographer)
+[(Back to Top)](#)
 
-## Usage
+# Usage
 Run `ti4cartographer` with no arguments or with the `--help` argument to obtain usage information. Otherwise, for regular use, run `ti4cartographer` with:
 
 ```
@@ -60,9 +53,9 @@ The `ti4cartographer` program computes an optimal board given the arguments and 
 
 The `ti4atlas` utility takes no arguments and simply prints out a list of the various systems ranked from best to worst. This ranking only takes into account the individual systems by themselves, and does not account for position on the game board, suitability as a forward outpost, or other interactions; such considerations are handled by the `ti4cartographer` program.
 
-[^ Back to Top](#ti4-cartographer)
+[(Back to Top)](#)
 
-## Board Layouts
+# Board Layouts
 - [2 Players Regular](#board-layout-2-players-regular)
 - [3 Players Regular](#board-layout-3-players-regular)
 - [3 Players Small](#board-layout-3-players-small)
@@ -82,9 +75,9 @@ The `ti4atlas` utility takes no arguments and simply prints out a list of the va
 - [8 Players Small](#board-layout-8-players-small)
 - [8 Players Large](#board-layout-8-players-large)
 
-[^ Back to Top](#ti4-cartographer)
+[(Back to Top)](#)
 
-### Board Layout: 2 Players Regular
+## Board Layout: 2 Players Regular
 5 planetary systems and 3 anomaly/wormhole/empty systems per player.
 
 ```
@@ -93,9 +86,9 @@ ti4cartographer --players 2 --layout regular
 
 ![2 Players Regular](images/layouts/2_players_regular.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 3 Players Regular
+## Board Layout: 3 Players Regular
 3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
 
 ```
@@ -104,9 +97,9 @@ ti4cartographer --players 3 --layout regular
 
 ![3 Players Regular](images/layouts/3_players_regular.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 3 Players Small
+## Board Layout: 3 Players Small
 3 planetary systems and 2 anomaly/wormhole/empty systems per player.
 
 ```
@@ -115,9 +108,9 @@ ti4cartographer --players 3 --layout small
 
 ![3 Players Small](images/layouts/3_players_small.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 3 Players Large
+## Board Layout: 3 Players Large
 5 planetary systems and 3 anomaly/wormhole/empty systems per player.
 
 ```
@@ -126,9 +119,9 @@ ti4cartographer --players 3 --layout large
 
 ![3 Players Large](images/layouts/3_players_large.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 4 Players Regular
+## Board Layout: 4 Players Regular
 3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
 
 ```
@@ -137,9 +130,9 @@ ti4cartographer --players 4 --layout regular
 
 ![4 Players Regular](images/layouts/4_players_regular.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 4 Players Small
+## Board Layout: 4 Players Small
 3 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional planetary system and 1 additional anomaly/wormhole/empty system.
 
 ```
@@ -148,9 +141,9 @@ ti4cartographer --players 4 --layout small
 
 ![4 Players Small](images/layouts/4_players_small.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 4 Players Large
+## Board Layout: 4 Players Large
 5 planetary systems and 3 anomaly/wormhole/empty systems per player.
 
 ```
@@ -159,9 +152,9 @@ ti4cartographer --players 4 --layout large
 
 ![4 Players Large](images/layouts/4_players_large.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 5 Players Regular
+## Board Layout: 5 Players Regular
 3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
 
 ```
@@ -170,9 +163,9 @@ ti4cartographer --players 5 --layout regular
 
 ![5 Players Regular](images/layouts/5_players_regular.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 5 Players Small
+## Board Layout: 5 Players Small
 3 planetary systems and 2 anomaly/wormhole/empty systems per player.
 
 ```
@@ -181,9 +174,9 @@ ti4cartographer --players 5 --layout small
 
 ![5 Players Small](images/layouts/5_players_small.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 5 Players Large
+## Board Layout: 5 Players Large
 4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional anomaly/wormhole/empty system.
 
 ```
@@ -192,9 +185,9 @@ ti4cartographer --players 5 --layout large
 
 ![5 Players Large](images/layouts/5_players_large.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 6 Players Regular
+## Board Layout: 6 Players Regular
 3 planetary systems and 2 anomaly/wormhole/empty systems per player.
 
 ```
@@ -203,9 +196,9 @@ ti4cartographer --players 6 --layout regular
 
 ![6 Players Regular](images/layouts/6_players_regular.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 6 Players Large
+## Board Layout: 6 Players Large
 6 planetary systems and 3 anomaly/wormhole/empty systems per player. Requires the Prophecy of Kings Expansion.
 
 ```
@@ -214,9 +207,9 @@ ti4cartographer --players 6 --layout large
 
 ![6 Players Large](images/layouts/6_players_large.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 7 Players Regular
+## Board Layout: 7 Players Regular
 3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
 
 ```
@@ -225,9 +218,9 @@ ti4cartographer --players 7 --layout regular
 
 ![7 Players Regular](images/layouts/7_players_regular.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 7 Players Small
+## Board Layout: 7 Players Small
 4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional planetary system and 1 additional anomaly/wormhole/empty system. Requires the Prophecy of Kings Expansion.
 
 ```
@@ -236,9 +229,9 @@ ti4cartographer --players 7 --layout small
 
 ![7 Players Small](images/layouts/7_players_small.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 7 Players Large
+## Board Layout: 7 Players Large
 4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 3 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
 
 ```
@@ -247,9 +240,9 @@ ti4cartographer --players 7 --layout large
 
 ![7 Players Large](images/layouts/7_players_large.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 8 Players Regular
+## Board Layout: 8 Players Regular
 3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
 
 ```
@@ -258,9 +251,9 @@ ti4cartographer --players 8 --layout regular
 
 ![8 Players Regular](images/layouts/8_players_regular.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 8 Players Small
+## Board Layout: 8 Players Small
 4 planetary systems and 2 anomaly/wormhole/empty systems per player. Requires the Prophecy of Kings Expansion.
 
 ```
@@ -269,9 +262,9 @@ ti4cartographer --players 8 --layout small
 
 ![8 Players Small](images/layouts/8_players_small.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-### Board Layout: 8 Players Large
+## Board Layout: 8 Players Large
 4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 2 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Requires the Prophecy of Kings Expansion.
 
 ```
@@ -280,9 +273,9 @@ ti4cartographer --players 8 --layout large
 
 ![8 Players Large](images/layouts/8_players_large.png)
 
-[^ Back to Board Layouts](#board-layouts)
+[(Back to Board Layouts)](#board-layouts)
 
-## Documentation
+# Documentation
 Building the documentation is optional and requires additional packages:
 - **Doxygen:** On Ubuntu, install with `sudo apt install doxygen`.
 - **Graphviz:** On Ubuntu, install with `sudo apt install graphviz`.
@@ -297,9 +290,9 @@ make docs
 
 This generates HTML documentation using Doxygen. The documentation is located in `docs/html`. Open the `docs/html/index.html` file in any web browser to view the documentation.
 
-[^ Back to Top](#ti4-cartographer)
+[(Back to Top)](#)
 
-## License
+# License
 This work is maintained by Alexandre Coderre-Chabot (<https://github.com/acodcha>) and licensed under the MIT License. For more details, see the [LICENSE](LICENSE) file or <https://mit-license.org/>. This work is based on the Twilight Imperium 4th Edition board game by Fantasy Flight Games. The contents, copyrights, and trademarks of everything involving Twilight Imperium 4th Edition are exclusively held by Fantasy Flight Games; I make no claim to any of these in any way.
 
-[^ Back to Top](#ti4-cartographer)
+[(Back to Top)](#)
