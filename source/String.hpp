@@ -73,6 +73,13 @@ std::string snake_case(const std::string& text) noexcept {
   return {lowercase(replace_character(text, ' ', '_'))};
 }
 
+/// \brief Print a real number to a given precision.
+std::string real_number_to_string(const float value, const int8_t precision = 2) noexcept {
+  std::ostringstream stream;
+  stream << std::fixed << std::setprecision(precision) << value;
+  return stream.str();
+}
+
 /// \brief Print a score.
 std::string score_to_string(const float value) noexcept {
   std::ostringstream stream;
