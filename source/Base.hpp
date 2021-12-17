@@ -20,7 +20,9 @@ constexpr const uint8_t MaximumNumberOfAttempts{20};
 
 constexpr const uint64_t MaximumNumberOfIterations{500000};
 
-constexpr const float InitialScoreImbalanceRatioTolerance{0.1};
+constexpr const float InitialScoreImbalanceRatioTolerance{0.05};
+
+constexpr const float ScoreImbalanceRatioToleranceGrowthFactor{1.3};
 
 namespace Score {
 
