@@ -490,24 +490,24 @@ private:
     }
     // On average, a slice contains 5.05 planets. Adjust the score if a slice contains more or fewer planets.
     for (const std::pair<Player, float>& player_and_number_of_planets : players_to_number_of_planets) {
-      player_scores_[player_and_number_of_planets.first] += 1.0f * (player_and_number_of_planets.second - 5.05f);
+      player_scores_[player_and_number_of_planets.first] += 2.0f * (player_and_number_of_planets.second - 5.05f);
     }
     // On average, a slice contains 5.15 useful resources. Adjust the score if a slice contains more or fewer useful resources.
     for (const std::pair<Player, float>& player_and_useful_resources : players_to_useful_resources) {
-      player_scores_[player_and_useful_resources.first] += 0.5f * (player_and_useful_resources.second - 5.15f);
+      player_scores_[player_and_useful_resources.first] += 1.0f * (player_and_useful_resources.second - 5.15f);
     }
     // On average, a slice contains 5.76 useful influence. Adjust the score if a slice contains more or fewer useful influence.
     for (const std::pair<Player, float>& player_and_useful_influence : players_to_useful_influence) {
-      player_scores_[player_and_useful_influence.first] += 0.5f * (player_and_useful_influence.second - 5.76f);
+      player_scores_[player_and_useful_influence.first] += 1.5f * (player_and_useful_influence.second - 5.76f);
     }
     // On average, a slice contains 1.32 technology specialties. Adjust the score if a slice contains more or fewer technology specialties.
     for (const std::pair<Player, float>& player_and_number_of_technology_specialties : players_to_number_of_technology_specialties) {
-      player_scores_[player_and_number_of_technology_specialties.first] += 1.5f * (player_and_number_of_technology_specialties.second - 1.32f);
+      player_scores_[player_and_number_of_technology_specialties.first] += 2.0f * (player_and_number_of_technology_specialties.second - 1.32f);
     }
     // Several objectives require 4 planets with the same trait. On average, a slice contains 2 planets with the same trait. Adjust the score if a slice contains more or fewer planets with the same trait.
     for (const std::pair<Player, std::map<PlanetTrait, float>>& player_and_planet_traits_to_number_of_planets : players_to_planet_traits_to_number_of_planets) {
       for (const std::pair<PlanetTrait, float>& planet_trait_to_number_of_planets : player_and_planet_traits_to_number_of_planets.second) {
-        player_scores_[player_and_planet_traits_to_number_of_planets.first] += 0.5f * (planet_trait_to_number_of_planets.second - 2.0f);
+        player_scores_[player_and_planet_traits_to_number_of_planets.first] += 1.0f * (planet_trait_to_number_of_planets.second - 2.0f);
       }
     }
   }
