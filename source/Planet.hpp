@@ -62,6 +62,22 @@ public:
     return legendary_.has_value();
   }
 
+  int8_t useful_resources() const noexcept {
+    if (resources_ > influence_) {
+      return resources_;
+    } else {
+      return 0;
+    }
+  }
+
+  int8_t useful_influence() const noexcept {
+    if (influence_ >= resources_) {
+      return influence_;
+    } else {
+      return 0;
+    }
+  }
+
   std::string print() const noexcept {
     std::string text{name_};
     text += " (" + std::to_string(resources_) + "/" + std::to_string(influence_);
