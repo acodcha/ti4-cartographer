@@ -55,7 +55,7 @@ private:
     float best_score_imbalance_ratio{std::numeric_limits<float>::max()};
     for (uint8_t counter = 0; counter < MaximumNumberOfAttempts; ++counter) {
       ++number_of_attempts;
-      const float score_imbalance_ratio_tolerance{InitialScoreImbalanceRatioTolerance * std::pow(1.2f, static_cast<float>(counter))};
+      const float score_imbalance_ratio_tolerance{InitialScoreImbalanceRatioTolerance * std::pow(ScoreImbalanceRatioToleranceGrowthFactor, static_cast<float>(counter))};
       verbose_message("Start of board generation attempt #" + std::to_string(number_of_attempts) + ": target score imbalance: " + score_imbalance_ratio_to_string(score_imbalance_ratio_tolerance));
       if (best_score_imbalance_ratio <= score_imbalance_ratio_tolerance) {
         verbose_message("Using a previously-found optimal game board because its score imbalance is now below the target score imbalance.");
