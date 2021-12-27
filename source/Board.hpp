@@ -44,11 +44,7 @@ private:
     }
   }
 
-  void attempt(
-    const GameVersion game_version,
-    const Layout layout,
-    const Aggression aggression
-  ) noexcept {
+  void attempt(const GameVersion game_version, const Layout layout, const Aggression aggression) noexcept {
     uint8_t number_of_attempts{0};
     std::unordered_map<Position, Tile> best_positions_to_tiles{positions_to_tiles_};
     std::map<Player, float> best_player_scores{player_scores_};
@@ -101,35 +97,68 @@ private:
     }
   }
 
-  void iterate(const float score_imbalance_ratio_tolerance, std::unordered_map<Position, Tile>& best_positions_to_tiles, std::map<Player, float>& best_player_scores, float& best_score_imbalance_ratio) {
+  void iterate(
+    const float score_imbalance_ratio_tolerance,
+    std::unordered_map<Position, Tile>& best_positions_to_tiles,
+    std::map<Player, float>& best_player_scores,
+    float& best_score_imbalance_ratio
+  ) {
     uint64_t number_of_iterations{0};
     uint64_t number_of_valid_boards{0};
     bool success{false};
-    for (uint64_t counter = 0; counter < MaximumNumberOfIterations; ++counter) {
+    // The first iteration of the first attempt is always recorded as a "best" iteration.
+    if (best_score_imbalance_ratio == std::numeric_limits<float>::max()) {
       ++number_of_iterations;
-      selected_system_ids_.shuffle();
       const bool board_is_valid = assign_system_ids_to_tiles_simple();
-      //const bool board_is_valid = assign_system_ids_to_tiles_smart();
       if (board_is_valid) {
         ++number_of_valid_boards;
-        calculate_player_scores();
-        score_imbalance_ratio_ = score_imbalance_ratio();
-        if (score_imbalance_ratio_ < best_score_imbalance_ratio) {
-          best_positions_to_tiles = positions_to_tiles_;
-          best_player_scores = player_scores_;
-          best_score_imbalance_ratio = score_imbalance_ratio_;
-          verbose_message("Iteration " + std::to_string(number_of_iterations) + ": Score imbalance: " + score_imbalance_ratio_to_string(score_imbalance_ratio_));
-          if (score_imbalance_ratio_ <= score_imbalance_ratio_tolerance) {
-            success = true;
-            break;
+      }
+      calculate_player_scores();
+      score_imbalance_ratio_ = score_imbalance_ratio();
+      success = update_best_board_and_return_success(score_imbalance_ratio_tolerance, best_positions_to_tiles, best_player_scores, best_score_imbalance_ratio, number_of_iterations);
+    }
+    // Iterate.
+    if (!success) {
+      for (uint64_t counter = number_of_iterations; counter < MaximumNumberOfIterations; ++counter) {
+        ++number_of_iterations;
+        selected_system_ids_.shuffle();
+        const bool board_is_valid = assign_system_ids_to_tiles_simple();
+        if (board_is_valid) {
+          ++number_of_valid_boards;
+          calculate_player_scores();
+          score_imbalance_ratio_ = score_imbalance_ratio();
+          if (score_imbalance_ratio_ < best_score_imbalance_ratio) {
+            success = update_best_board_and_return_success(score_imbalance_ratio_tolerance, best_positions_to_tiles, best_player_scores, best_score_imbalance_ratio, number_of_iterations);
+            if (success) {
+              break;
+            }
           }
         }
       }
     }
+    // Message after iterations are complete.
     if (success) {
       verbose_message("Found an optimal game board after " + std::to_string(number_of_iterations) + " iterations which generated " + std::to_string(number_of_valid_boards) + " valid game boards.");
     } else {
       verbose_message("No optimal game board with a score imbalance of " + score_imbalance_ratio_to_string(score_imbalance_ratio_tolerance) + " or less could be found after " + std::to_string(number_of_iterations) + " iterations which generated " + std::to_string(number_of_valid_boards) + " valid game boards.");
+    }
+  }
+
+  bool update_best_board_and_return_success(
+    const float score_imbalance_ratio_tolerance,
+    std::unordered_map<Position, Tile>& best_positions_to_tiles,
+    std::map<Player, float>& best_player_scores,
+    float& best_score_imbalance_ratio,
+    const uint64_t number_of_iterations
+  ) noexcept {
+    best_positions_to_tiles = positions_to_tiles_;
+    best_player_scores = player_scores_;
+    best_score_imbalance_ratio = score_imbalance_ratio_;
+    verbose_message("Iteration " + std::to_string(number_of_iterations) + ": Score imbalance: " + score_imbalance_ratio_to_string(score_imbalance_ratio_));
+    if (score_imbalance_ratio_ <= score_imbalance_ratio_tolerance) {
+      return true;
+    } else {
+      return false;
     }
   }
 
