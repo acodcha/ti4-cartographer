@@ -1,7 +1,7 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "TI4 Cartographer"
 PROJECT_NUMBER         =
-PROJECT_BRIEF          = "Generates randomized balanced boards for the Twilight Imperium 4th Edition board game."
+PROJECT_BRIEF          = "Randomized balanced board generator for the Twilight Imperium 4th Edition board game by Fantasy Flight Games."
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       =
 CREATE_SUBDIRS         = NO
@@ -237,7 +237,7 @@ SEARCHENGINE_URL       =
 SEARCHDATA_FILE        = searchdata.xml
 EXTERNAL_SEARCH_ID     =
 EXTRA_SEARCH_MAPPINGS  =
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 LATEX_OUTPUT           = latex
 LATEX_CMD_NAME         =
 MAKEINDEX_CMD_NAME     = makeindex
