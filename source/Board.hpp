@@ -353,7 +353,8 @@ private:
         if (position_to_relevant_players != positions_to_relevant_players_.cend()) {
           const float score{Systems.find({position_and_tile.second.system_id()})->score()};
           const uint8_t number_of_relevant_players{static_cast<uint8_t>(position_to_relevant_players->second.size())};
-          const float score_per_player{score / number_of_relevant_players};
+          // Give a bit less than a fair share to each relevant player to account for the difficulty of conquering and holding an equidistant system.
+          const float score_per_player{score * 0.8f / static_cast<float>(number_of_relevant_players)};
           for (const Player& player : position_to_relevant_players->second) {
             const std::map<Player, Distance>::const_iterator player_and_distance{position_and_players_home_distances->second.find(player)};
             if (player_and_distance != position_and_players_home_distances->second.cend()) {
@@ -364,9 +365,9 @@ private:
               } else if (player_and_distance->second == Distance{1}) {
                 factor = 1.0f;
               } else if (player_and_distance->second == Distance{2}) {
-                factor = 0.8f;
+                factor = 0.9f;
               } else {
-                factor = 0.6f;
+                factor = 0.8f;
               }
               player_scores_[player] += factor * score_per_player;
             }
