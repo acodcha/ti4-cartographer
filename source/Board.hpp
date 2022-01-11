@@ -33,7 +33,7 @@ private:
 
   static constexpr const uint8_t maximum_number_of_attempts_{20};
 
-  static constexpr const uint64_t maximum_number_of_iterations_per_attempt_{500000};
+  static constexpr const uint64_t maximum_number_of_iterations_per_attempt_{1000000};
 
   static constexpr const float initial_score_imbalance_ratio_tolerance_{0.05};
 
@@ -184,7 +184,7 @@ private:
         }
       }
     }
-    return !contains_adjacent_anomalies_or_wormholes();
+    return iteration_is_valid();
   }
 
   struct NeighborsContents {
@@ -287,6 +287,11 @@ private:
     return true;
   }
 
+  bool iteration_is_valid() const noexcept {
+    return !contains_adjacent_anomalies_or_wormholes() && pathways_to_mecatol_rex_are_clear() && players_have_enough_planets();
+  }
+
+  /// \brief As per the game rules, adjacent systems cannot contain anomalies or wormholes of the same type.
   bool contains_adjacent_anomalies_or_wormholes() const noexcept {
     std::unordered_set<Position> checked;
     for (std::unordered_map<Position, Tile>::const_iterator position_and_tile = positions_to_tiles_.cbegin(); position_and_tile != positions_to_tiles_.cend(); ++position_and_tile) {
@@ -326,6 +331,63 @@ private:
     return false;
   }
 
+  /// \brief Require that each player have at least one pathway to Mecatol Rex that is devoid of supernovas and nebulas. A supernova or a nebula along the pathway to Mecatol Rex lengthens the pathway, making it unusable.
+  bool pathways_to_mecatol_rex_are_clear() const noexcept {
+    bool each_player_has_at_least_one_usable_pathway{true};
+    for (const std::pair<Player, std::vector<Pathway>>& player_and_mecatol_rex_pathways : players_to_mecatol_rex_pathways_) {
+      if (!player_and_mecatol_rex_pathways.second.empty()) {
+        bool player_has_no_usable_pathways{true};
+        for (const Pathway& pathway : player_and_mecatol_rex_pathways.second) {
+          bool pathway_is_usable{true};
+          for (const Position& position : pathway) {
+            const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+            const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+            if (system->contains(Anomaly::Supernova) || system->contains(Anomaly::Nebula)) {
+              pathway_is_usable = false;
+              break;
+            }
+          }
+          if (pathway_is_usable) {
+            player_has_no_usable_pathways = false;
+            break;
+          }
+        }
+        if (player_has_no_usable_pathways) {
+          each_player_has_at_least_one_usable_pathway = false;
+          break;
+        }
+      }
+    }
+    return each_player_has_at_least_one_usable_pathway;
+  }
+
+  /// \brief Each player must have at least 0.75 effective planets per position, including in-slice and equidistant positions. On a standard board, this corresponds to at least 4 planets.
+  bool players_have_enough_planets() const noexcept {
+    std::map<Player, float> players_to_effective_number_of_planets;
+    std::map<Player, float> players_to_effective_number_of_positions;
+    for (const Player player : players_) {
+      players_to_effective_number_of_planets.emplace(player, 0.0f);
+      players_to_effective_number_of_positions.emplace(player, 0.0f);
+    }
+    for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
+      const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position_and_relevant_players.first)};
+      const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+      const float effective_planets_per_player{static_cast<float>(system->planets().size()) / static_cast<float>(position_and_relevant_players.second.size()) * equidistant_score_adjustment_factor(static_cast<uint8_t>(position_and_relevant_players.second.size()))};
+      const float effective_positions_per_player{1.0f / static_cast<float>(position_and_relevant_players.second.size()) * equidistant_score_adjustment_factor(static_cast<uint8_t>(position_and_relevant_players.second.size()))};
+      for (const Player player : position_and_relevant_players.second) {
+        players_to_effective_number_of_planets[player] += effective_planets_per_player;
+        players_to_effective_number_of_positions[player] += effective_positions_per_player;
+      }
+    }
+    for (const Player player : players_) {
+      const float effective_planets_to_positions_ratio{players_to_effective_number_of_planets[player] / players_to_effective_number_of_positions[player]};
+      if (effective_planets_to_positions_ratio < 0.75) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   void calculate_player_scores() noexcept {
     reset_scores();
     add_base_system_scores();
@@ -353,8 +415,7 @@ private:
         if (position_to_relevant_players != positions_to_relevant_players_.cend()) {
           const float score{Systems.find({position_and_tile.second.system_id()})->score()};
           const uint8_t number_of_relevant_players{static_cast<uint8_t>(position_to_relevant_players->second.size())};
-          // Give a bit less than a fair share to each relevant player to account for the difficulty of conquering and holding an equidistant system.
-          const float score_per_player{score * 0.8f / static_cast<float>(number_of_relevant_players)};
+          const float score_per_player{score / static_cast<float>(number_of_relevant_players) * equidistant_score_adjustment_factor(number_of_relevant_players)};
           for (const Player& player : position_to_relevant_players->second) {
             const std::map<Player, Distance>::const_iterator player_and_distance{position_and_players_home_distances->second.find(player)};
             if (player_and_distance != position_and_players_home_distances->second.cend()) {
@@ -377,6 +438,17 @@ private:
     }
   }
 
+  /// \brief Equidistant systems are less valuable due to the greater difficulty of holding them.
+  float equidistant_score_adjustment_factor(const uint8_t number_of_relevant_players) const noexcept {
+    if (number_of_relevant_players == 1) {
+      return 1.0f;
+    } else if (number_of_relevant_players == 2) {
+      return 0.9f;
+    } else {
+      return 0.8f;
+    }
+  }
+
   /// \brief If a player does not have at least one good forward system, the score is penalized.
   void add_forward_system_scores() noexcept {
     for (const std::pair<Player, std::set<Position>>& player_and_forward_positions : players_to_forward_positions_) {
@@ -390,7 +462,7 @@ private:
         }
       }
       if (!at_least_one_good_forward_system)  {
-        player_scores_[player_and_forward_positions.first] += -6.0f;
+        player_scores_[player_and_forward_positions.first] += -5.0f;
       }
     }
   }
@@ -402,12 +474,8 @@ private:
         const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
         if (system->contains(Anomaly::GravityRift)) {
-          // A gravity rift in a lateral system is more dangerous than usual.
-          player_scores_[player_and_lateral_positions.first] += 3.0f * score(Anomaly::GravityRift);
-        }
-        if (system->contains_one_or_more_wormholes()) {
-          // A wormhole in a lateral system is somewhat dangerous and cancels out the benefit of the wormhole.
-          player_scores_[player_and_lateral_positions.first] += -WormholeScore;
+          // A gravity rift in a lateral system is undesirable.
+          player_scores_[player_and_lateral_positions.first] += -1.0f;
         }
       }
     }
@@ -423,26 +491,9 @@ private:
           for (const Position& position : pathway) {
             const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
             const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-            if (system->contains(Anomaly::Supernova)) {
-              // A supernova anywhere along the pathway to Mecatol Rex is bad.
-              pathway_score += -4.0f;
-            }
-            if (system->contains(Anomaly::AsteroidField)) {
-              // An asteroid field anywhere along the pathway to Mecatol Rex is bad.
-              pathway_score += -1.0f;
-            }
-            if (system->contains(Anomaly::Nebula)) {
-              if (positions_to_distances_from_mecatol_rex_.find(position_and_tile->first)->second <= Distance{1}) {
-                // A nebula adjacent to Mecatol Rex is bad.
-                pathway_score += -1.0f;
-              } else {
-                // A nebula elsewhere along the pathway to Mecatol Rex is bad.
-                pathway_score += -2.0f;
-              }
-            }
             if (system->contains(Anomaly::GravityRift)) {
-              // A gravity rift anywhere along the pathway to Mecatol Rex is bad.
-              pathway_score += -3.0f;
+              // A gravity rift along the pathway to Mecatol Rex is undesirable.
+              pathway_score += -2.0f;
             }
           }
           if (pathway_score > best_pathway_score) {
@@ -496,29 +547,32 @@ private:
     std::map<Player, float> players_to_number_of_technology_specialties;
     std::map<Player, std::map<PlanetTrait, float>> players_to_planet_traits_to_number_of_planets;
     for (const Player& player : players_) {
-      players_to_number_of_planets.insert({player, 0.0f});
-      players_to_number_of_technology_specialties.insert({player, 0.0f});
+      players_to_number_of_planets.emplace(player, 0.0f);
+      players_to_useful_resources.emplace(player, 0.0f);
+      players_to_useful_influence.emplace(player, 0.0f);
+      players_to_number_of_technology_specialties.emplace(player, 0.0f);
       players_to_planet_traits_to_number_of_planets.insert({player, {{PlanetTrait::Cultural, 0.0f}, {PlanetTrait::Hazardous, 0.0f}, {PlanetTrait::Industrial, 0.0f}}});
     }
     for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
+      const float equidistant_score_adjustment_factor_{equidistant_score_adjustment_factor(static_cast<uint8_t>(position_and_relevant_players.second.size()))};
       const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position_and_relevant_players.first)};
       if (position_and_tile->second.is_planetary_anomaly_wormhole_or_empty()) {
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
         if (!system->planets().empty()) {
           const float number_of_planets_per_relevant_player{static_cast<float>(system->planets().size()) / static_cast<float>(position_and_relevant_players.second.size())};
           for (const Player& player : position_and_relevant_players.second) {
-            players_to_number_of_planets[player] += number_of_planets_per_relevant_player;
+            players_to_number_of_planets[player] += number_of_planets_per_relevant_player * equidistant_score_adjustment_factor_;
           }
           const float one_over_relevant_players{1.0f / static_cast<float>(position_and_relevant_players.second.size())};
           for (const Planet& planet : system->planets()) {
             for (const Player& player : position_and_relevant_players.second) {
-              players_to_useful_resources[player] += planet.useful_resources() * one_over_relevant_players;
-              players_to_useful_influence[player] += planet.useful_influence() * one_over_relevant_players;
+              players_to_useful_resources[player] += planet.useful_resources() * one_over_relevant_players * equidistant_score_adjustment_factor_;
+              players_to_useful_influence[player] += planet.useful_influence() * one_over_relevant_players * equidistant_score_adjustment_factor_;
               if (planet.technology_specialty().has_value()) {
                 players_to_number_of_technology_specialties[player] += one_over_relevant_players;
               }
               if (planet.trait().has_value()) {
-                players_to_planet_traits_to_number_of_planets[player][planet.trait().value()] += one_over_relevant_players;
+                players_to_planet_traits_to_number_of_planets[player][planet.trait().value()] += one_over_relevant_players * equidistant_score_adjustment_factor_;
               }
             }
           }
