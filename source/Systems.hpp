@@ -4,6 +4,8 @@
 
 namespace TI4Cartographer {
 
+const std::string MecatolRexSystemId{"18"};
+
 const std::unordered_set<System> Systems{
   { "1", GameVersion::BaseGame, SystemCategory::Home,
     {{"Jord", 4, 2, {}, {}, {}}}, {}, {}, {Faction::FederationOfSol}

@@ -31,6 +31,14 @@ public:
 
 private:
 
+  static constexpr const uint8_t maximum_number_of_attempts_{20};
+
+  static constexpr const uint64_t maximum_number_of_iterations_per_attempt_{500000};
+
+  static constexpr const float initial_score_imbalance_ratio_tolerance_{0.05};
+
+  static constexpr const float score_imbalance_ratio_tolerance_growth_factor_{1.3};
+
   SelectedSystemIds selected_system_ids_;
 
   std::map<Player, float> player_scores_;
@@ -48,9 +56,9 @@ private:
     std::unordered_map<Position, Tile> best_positions_to_tiles{positions_to_tiles_};
     std::map<Player, float> best_player_scores{player_scores_};
     float best_score_imbalance_ratio{std::numeric_limits<float>::max()};
-    for (uint8_t counter = 0; counter < MaximumNumberOfAttempts; ++counter) {
+    for (uint8_t counter = 0; counter < maximum_number_of_attempts_; ++counter) {
       ++number_of_attempts;
-      const float score_imbalance_ratio_tolerance{InitialScoreImbalanceRatioTolerance * std::pow(ScoreImbalanceRatioToleranceGrowthFactor, static_cast<float>(counter))};
+      const float score_imbalance_ratio_tolerance{initial_score_imbalance_ratio_tolerance_ * std::pow(score_imbalance_ratio_tolerance_growth_factor_, static_cast<float>(counter))};
       verbose_message("Start of board generation attempt #" + std::to_string(number_of_attempts) + ": target score imbalance: " + score_imbalance_ratio_to_string(score_imbalance_ratio_tolerance));
       if (best_score_imbalance_ratio <= score_imbalance_ratio_tolerance) {
         verbose_message("Using a previously-found optimal game board because its score imbalance is now below the target score imbalance.");
@@ -118,7 +126,7 @@ private:
     }
     // Iterate.
     if (!success) {
-      for (uint64_t counter = number_of_iterations; counter < MaximumNumberOfIterations; ++counter) {
+      for (uint64_t counter = number_of_iterations; counter < maximum_number_of_iterations_per_attempt_; ++counter) {
         ++number_of_iterations;
         selected_system_ids_.shuffle();
         const bool board_is_valid = assign_system_ids_to_tiles_simple();
@@ -394,11 +402,11 @@ private:
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
         if (system->contains(Anomaly::GravityRift)) {
           // A gravity rift in a lateral system is more dangerous than usual.
-          player_scores_[player_and_lateral_positions.first] += 3.0f * Score::GravityRift;
+          player_scores_[player_and_lateral_positions.first] += 3.0f * score(Anomaly::GravityRift);
         }
         if (system->contains_one_or_more_wormholes()) {
           // A wormhole in a lateral system is somewhat dangerous and cancels out the benefit of the wormhole.
-          player_scores_[player_and_lateral_positions.first] += -Score::Wormhole;
+          player_scores_[player_and_lateral_positions.first] += -WormholeScore;
         }
       }
     }
