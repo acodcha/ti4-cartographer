@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Aggressions.hpp"
-#include "Layouts.hpp"
+#include "Aggression.hpp"
+#include "Layout.hpp"
 #include "SelectedEquidistantSystemIds.hpp"
 #include "SelectedInSliceSystemIds.hpp"
 #include "Systems.hpp"

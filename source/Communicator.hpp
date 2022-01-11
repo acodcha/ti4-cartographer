@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Enumerations.hpp"
+#include "Enumeration.hpp"
 
 namespace TI4Cartographer {
 

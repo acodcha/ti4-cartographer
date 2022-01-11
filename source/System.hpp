@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Anomalies.hpp"
-#include "Factions.hpp"
-#include "GameVersions.hpp"
+#include "Anomaly.hpp"
+#include "Faction.hpp"
+#include "GameVersion.hpp"
 #include "Planet.hpp"
-#include "SystemCategories.hpp"
+#include "SystemCategory.hpp"
 #include "SystemIdAndScore.hpp"
-#include "Wormholes.hpp"
+#include "Wormhole.hpp"
 
 namespace TI4Cartographer {
 

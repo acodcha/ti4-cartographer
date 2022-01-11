@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Aggressions.hpp"
-#include "GameVersions.hpp"
-#include "Layouts.hpp"
+#include "Aggression.hpp"
+#include "GameVersion.hpp"
+#include "Layout.hpp"
 
 namespace TI4Cartographer {
 

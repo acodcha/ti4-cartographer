@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Aggressions.hpp"
 #include "BoardInitializer.hpp"
 #include "Chronometre.hpp"
 #include "SelectedSystemIds.hpp"
