@@ -64,6 +64,9 @@ protected:
   /// \brief Each player's slice.
   std::map<Player, std::set<Position>> players_to_in_slice_positions_;
 
+  /// \brief Each player's equidistant positions.
+  std::map<Player, std::set<Position>> players_to_equidistant_positions_;
+
   /// \brief Group of forward positions for each player, i.e. home-adjacent positions that are nearer to Mecatol Rex than each player's home.
   std::map<Player, std::set<Position>> players_to_forward_positions_;
 
@@ -114,7 +117,7 @@ private:
             neighbors.insert(neighbor_position);
           }
         }
-        neighbors_.insert({position_and_tile.first, neighbors});
+        neighbors_.emplace(position_and_tile.first, neighbors);
       }
     }
     // Check that all neighbors are symmetric.
@@ -155,7 +158,7 @@ private:
   void initialize_players_home_positions() noexcept {
     for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
       if (position_and_tile.second.home_player().has_value()) {
-        players_to_home_positions_.insert({position_and_tile.second.home_player().value(), position_and_tile.first});
+        players_to_home_positions_.emplace(position_and_tile.second.home_player().value(), position_and_tile.first);
       }
     }
     verbose_message("Home positions:");
@@ -183,9 +186,10 @@ private:
         std::pair<Player, Distance> player_and_distance{player, distance};
         const std::unordered_multimap<Position, std::map<Player, Distance>>::iterator position_to_players_home_distances{positions_to_players_home_distances_.find(position)};
         if (position_to_players_home_distances != positions_to_players_home_distances_.end()) {
-          position_to_players_home_distances->second.insert({player, distance});
+          position_to_players_home_distances->second.emplace(player, distance);
         } else {
-          positions_to_players_home_distances_.insert({position, {{player, distance}}});
+          const std::map<Player, Distance> player_and_distance_map{player_and_distance};
+          positions_to_players_home_distances_.emplace(position, player_and_distance_map);
         }
       }
     }
@@ -210,19 +214,28 @@ private:
           }
         }
         // Initialize the relevant players.
-          positions_to_relevant_players_.insert({position_and_tile.first, relevant_players});
+        positions_to_relevant_players_.emplace(position_and_tile.first, relevant_players);
         // Initialize the equidistant positions.
         if (relevant_players.size() > 1) {
           // This is an equidistant position.
           equidistant_positions_.insert(position_and_tile.first);
+          for (const Player player : relevant_players) {
+            const std::map<Player, std::set<Position>>::iterator found{players_to_equidistant_positions_.find(player)};
+            if (found != players_to_equidistant_positions_.end()) {
+              found->second.insert(position_and_tile.first);
+            } else {
+              players_to_equidistant_positions_.insert({player, {position_and_tile.first}});
+            }
+          }
         } else if (relevant_players.size() == 1) {
           // This is an in-slice position.
-          in_slice_positions_to_players_.insert({position_and_tile.first, *(relevant_players.begin())});
-          const std::map<Player, std::set<Position>>::iterator player_and_in_slice_positions{players_to_in_slice_positions_.find(*(relevant_players.begin()))};
+          const Player first_relevant_player{*(relevant_players.begin())};
+          in_slice_positions_to_players_.emplace(position_and_tile.first, first_relevant_player);
+          const std::map<Player, std::set<Position>>::iterator player_and_in_slice_positions{players_to_in_slice_positions_.find(first_relevant_player)};
           if (player_and_in_slice_positions != players_to_in_slice_positions_.cend()) {
             player_and_in_slice_positions->second.insert(position_and_tile.first);
           } else {
-            players_to_in_slice_positions_.insert({*(relevant_players.begin()), {position_and_tile.first}});
+            players_to_in_slice_positions_.insert({first_relevant_player, {position_and_tile.first}});
           }
         }
       }
@@ -265,8 +278,8 @@ private:
             }
           }
         }
-        players_to_forward_positions_.insert({player_and_home_position.first, forward_positions});
-        players_to_lateral_positions_.insert({player_and_home_position.first, lateral_positions});
+        players_to_forward_positions_.emplace(player_and_home_position.first, forward_positions);
+        players_to_lateral_positions_.emplace(player_and_home_position.first, lateral_positions);
       }
     }
     verbose_message("Forward positions:");
@@ -324,7 +337,7 @@ private:
             shortest_pathways.push_back(pathway);
           }
         }
-        players_to_mecatol_rex_pathways_.insert({player, shortest_pathways});
+        players_to_mecatol_rex_pathways_.emplace(player, shortest_pathways);
       }
     }
     verbose_message("Pathways to Mecatol Rex:");
@@ -348,28 +361,28 @@ private:
           // If the pathways to Mecatol Rex have length 2, there is only a preferred position per pathway, and no alternate position.
           // This distance is relevant to the 3-player small board layout.
           const std::set<Position> preferred_positions{optimal_positions(player, 0)};
-          players_to_preferred_positions_.insert({player, preferred_positions});
+          players_to_preferred_positions_.emplace(player, preferred_positions);
         } else if (pathway_distance == 3) {
           // If the pathways to Mecatol Rex have length 3, the preferred position is the first one, and the alternate is the second one.
           // This distance is relevant to most board layouts up to 6 players, as well as the 7- and 8-player regular board layouts.
           const std::set<Position> preferred_positions{optimal_positions(player, 0)};
-          players_to_preferred_positions_.insert({player, preferred_positions});
+          players_to_preferred_positions_.emplace(player, preferred_positions);
           const std::set<Position> alternate_positions{optimal_positions(player, 1)};
-          players_to_alternate_positions_.insert({player, alternate_positions});
+          players_to_alternate_positions_.emplace(player, alternate_positions);
         } else if (pathway_distance == 4) {
           // If the pathways to Mecatol Rex have length 4, the preferred position is the second (middle) one, and the alternate is the first one.
           // This distance is relevant to the 7- and 8-player large board layouts.
           const std::set<Position> preferred_positions{optimal_positions(player, 1)};
-          players_to_preferred_positions_.insert({player, preferred_positions});
+          players_to_preferred_positions_.emplace(player, preferred_positions);
           const std::set<Position> alternate_positions{optimal_positions(player, 0)};
-          players_to_alternate_positions_.insert({player, alternate_positions});
+          players_to_alternate_positions_.emplace(player, alternate_positions);
         } else if (pathway_distance == 5) {
           // If the pathways to Mecatol Rex have length 5, the preferred position is the second one, and the alternate is the third one.
           // This distance does not exist on any of the board layouts but is included for completeness.
           const std::set<Position> preferred_positions{optimal_positions(player, 1)};
-          players_to_preferred_positions_.insert({player, preferred_positions});
+          players_to_preferred_positions_.emplace(player, preferred_positions);
           const std::set<Position> alternate_positions{optimal_positions(player, 2)};
-          players_to_alternate_positions_.insert({player, alternate_positions});
+          players_to_alternate_positions_.emplace(player, alternate_positions);
         }
         // Do not bother with cases where the pathways to Mecatol Rex are longer.
       }
@@ -401,7 +414,7 @@ private:
         ) {
           // The current position exists, is of the correct system category, and has not yet been visited.
           visited.insert(current_position);
-          position_to_distance_from_target.insert({current_position, distance_from_target_position});
+          position_to_distance_from_target.emplace(current_position, distance_from_target_position);
           const std::unordered_map<Position, std::set<Position>>::const_iterator position_and_neighbors{neighbors_.find(current_position_and_tile->first)};
           if (position_and_neighbors != neighbors_.cend()) {
             for (const Position& next_position : position_and_neighbors->second) {
@@ -504,7 +517,7 @@ private:
           if (number_of_equidistant_neighbors > maximum_number_of_equidistant_neighbors) {
             maximum_number_of_equidistant_neighbors = number_of_equidistant_neighbors;
           }
-          optimal_positions_and_number_of_equidistant_neighbors.insert({position, number_of_equidistant_neighbors});
+          optimal_positions_and_number_of_equidistant_neighbors.emplace(position, number_of_equidistant_neighbors);
         }
       }
     }

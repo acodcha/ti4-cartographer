@@ -29,4 +29,7 @@ template <> const std::unordered_map<std::string, Wormhole> spellings<Wormhole>{
   {"deltawormhole", Wormhole::Delta}
 };
 
+// Wormholes are generally beneficial because they provide additional movement options and lead to the Wormhole Nexus.
+constexpr const float WormholeScore{1.0f};
+
 } // namespace TI4Cartographer

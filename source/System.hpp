@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Anomalies.hpp"
-#include "Factions.hpp"
-#include "GameVersions.hpp"
+#include "Anomaly.hpp"
+#include "Faction.hpp"
+#include "GameVersion.hpp"
 #include "Planet.hpp"
-#include "SystemCategories.hpp"
+#include "SystemCategory.hpp"
 #include "SystemIdAndScore.hpp"
-#include "Wormholes.hpp"
+#include "Wormhole.hpp"
 
 namespace TI4Cartographer {
 
@@ -120,14 +120,14 @@ public:
       text += planet.name();
       ++counter;
     }
-    for (const Anomaly& anomaly : anomalies_) {
+    for (const Anomaly anomaly : anomalies_) {
       if (counter > 0) {
         text += " + ";
       }
       text += label(anomaly);
       ++counter;
     }
-    for (const Wormhole& wormhole : wormholes_) {
+    for (const Wormhole wormhole : wormholes_) {
       if (counter > 0) {
         text += " + ";
       }
@@ -225,26 +225,14 @@ private:
   /// \brief Some anomalies are generally beneficial or harmful, whereas others depend heavily on their positioning.
   float anomalies_score() const noexcept {
     float total{0.0f};
-    if (contains(Anomaly::AsteroidField)) {
-      total += Score::AsteroidField;
-    }
-    if (contains(Anomaly::GravityRift)) {
-      total += Score::GravityRift;
-    }
-    if (contains(Anomaly::Nebula)) {
-      total += Score::Nebula;
-    }
-    if (contains(Anomaly::Supernova)) {
-      total += Score::Supernova;
+    for (const Anomaly anomaly : anomalies_) {
+      total += TI4Cartographer::score(anomaly);
     }
     return total;
   }
 
   float wormholes_score() const noexcept {
-    if (contains_one_or_more_wormholes()) {
-      return Score::Wormhole;
-    }
-    return 0.0f;
+    return wormholes_.size() * WormholeScore;
   }
 
 }; // class System

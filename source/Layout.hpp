@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GameVersions.hpp"
-#include "SystemCategories.hpp"
+#include "GameVersion.hpp"
+#include "SystemCategory.hpp"
 
 namespace TI4Cartographer {
 
