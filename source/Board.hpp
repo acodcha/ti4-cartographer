@@ -288,7 +288,7 @@ private:
   }
 
   bool iteration_is_valid() const noexcept {
-    return !contains_adjacent_anomalies_or_wormholes() && pathways_to_mecatol_rex_are_clear() && players_have_enough_planets();
+    return !contains_adjacent_anomalies_or_wormholes() && pathways_to_mecatol_rex_are_clear() && players_have_enough_planets() && players_have_enough_useful_resources_and_useful_influence();
   }
 
   /// \brief As per the game rules, adjacent systems cannot contain anomalies or wormholes of the same type.
@@ -331,7 +331,7 @@ private:
     return false;
   }
 
-  /// \brief Require that each player have at least one pathway to Mecatol Rex that is devoid of supernovas and nebulas. A supernova or a nebula along the pathway to Mecatol Rex lengthens the pathway, making it unusable.
+  /// \brief Require that each player have at least one pathway to Mecatol Rex that is devoid of supernovas. A supernova along the pathway to Mecatol Rex lengthens the pathway, making it undesirable.
   bool pathways_to_mecatol_rex_are_clear() const noexcept {
     bool each_player_has_at_least_one_usable_pathway{true};
     for (const std::pair<Player, std::vector<Pathway>>& player_and_mecatol_rex_pathways : players_to_mecatol_rex_pathways_) {
@@ -342,7 +342,7 @@ private:
           for (const Position& position : pathway) {
             const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
             const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-            if (system->contains(Anomaly::Supernova) || system->contains(Anomaly::Nebula)) {
+            if (system->contains(Anomaly::Supernova)) {
               pathway_is_usable = false;
               break;
             }
@@ -361,27 +361,72 @@ private:
     return each_player_has_at_least_one_usable_pathway;
   }
 
-  /// \brief Each player must have at least 0.75 effective planets per position, including in-slice and equidistant positions. On a standard board, this corresponds to at least 4 planets.
+  /// \brief Equidistant systems are less valuable due to the greater difficulty of holding them.
+  float number_of_relevant_players_factor(const std::size_t number_of_relevant_players) const noexcept {
+    if (number_of_relevant_players == 1) {
+      return 1.0f;
+    } else if (number_of_relevant_players == 2) {
+      return 0.9f / static_cast<float>(number_of_relevant_players);
+    } else {
+      return 0.8f / static_cast<float>(number_of_relevant_players);
+    }
+  }
+
+  /// \brief On a regular board, there is an average of 1.01 planets per system. Each player must have a minimum number of planets per system, including in-slice and equidistant positions.
   bool players_have_enough_planets() const noexcept {
+    std::map<Player, float> players_to_effective_number_of_systems;
     std::map<Player, float> players_to_effective_number_of_planets;
-    std::map<Player, float> players_to_effective_number_of_positions;
     for (const Player player : players_) {
+      players_to_effective_number_of_systems.emplace(player, 0.0f);
       players_to_effective_number_of_planets.emplace(player, 0.0f);
-      players_to_effective_number_of_positions.emplace(player, 0.0f);
     }
     for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
       const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position_and_relevant_players.first)};
       const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-      const float effective_planets_per_player{static_cast<float>(system->planets().size()) / static_cast<float>(position_and_relevant_players.second.size()) * equidistant_score_adjustment_factor(static_cast<uint8_t>(position_and_relevant_players.second.size()))};
-      const float effective_positions_per_player{1.0f / static_cast<float>(position_and_relevant_players.second.size()) * equidistant_score_adjustment_factor(static_cast<uint8_t>(position_and_relevant_players.second.size()))};
+      const float factor{number_of_relevant_players_factor(position_and_relevant_players.second.size())};
       for (const Player player : position_and_relevant_players.second) {
-        players_to_effective_number_of_planets[player] += effective_planets_per_player;
-        players_to_effective_number_of_positions[player] += effective_positions_per_player;
+        players_to_effective_number_of_systems[player] += factor;
+        players_to_effective_number_of_planets[player] += static_cast<float>(system->planets().size()) * factor;
       }
     }
     for (const Player player : players_) {
-      const float effective_planets_to_positions_ratio{players_to_effective_number_of_planets[player] / players_to_effective_number_of_positions[player]};
-      if (effective_planets_to_positions_ratio < 0.75) {
+      const float effective_planets_to_positions_ratio{players_to_effective_number_of_planets[player] / players_to_effective_number_of_systems[player]};
+      if (effective_planets_to_positions_ratio < 0.76) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /// \brief On a regular board, there is an average of 1.03 useful resources per system and 1.15 useful influence per system. Each player must have a minimum amount of useful resources per system and useful influence per system, including in-slice and equidistant positions.
+  bool players_have_enough_useful_resources_and_useful_influence() const noexcept {
+    std::map<Player, float> players_to_number_of_systems;
+    std::map<Player, float> players_to_useful_resources;
+    std::map<Player, float> players_to_useful_influence;
+    for (const Player& player : players_) {
+      players_to_number_of_systems.emplace(player, 0.0f);
+      players_to_useful_resources.emplace(player, 0.0f);
+      players_to_useful_influence.emplace(player, 0.0f);
+    }
+    for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
+      const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position_and_relevant_players.first)};
+      const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+      const float factor{number_of_relevant_players_factor(position_and_relevant_players.second.size())};
+      for (const Player& player : position_and_relevant_players.second) {
+        players_to_number_of_systems[player] += factor;
+        for (const Planet& planet : system->planets()) {
+          players_to_useful_resources[player] += planet.useful_resources() * factor;
+          players_to_useful_influence[player] += planet.useful_influence() * factor;
+        }
+      }
+    }
+    for (const Player player : players_) {
+      const float useful_resources_per_system{players_to_useful_resources[player] / players_to_number_of_systems[player]};
+      if (useful_resources_per_system < 0.52) {
+        return false;
+      }
+      const float useful_influence_per_system{players_to_useful_influence[player] / players_to_number_of_systems[player]};
+      if (useful_influence_per_system < 0.58) {
         return false;
       }
     }
@@ -391,12 +436,9 @@ private:
   void calculate_player_scores() noexcept {
     reset_scores();
     add_base_system_scores();
-    add_forward_system_scores();
-    add_lateral_system_scores();
+    add_preferred_expansion_position_scores();
+    add_alternate_expansion_position_scores();
     add_mecatol_rex_pathway_scores();
-    add_preferred_position_scores();
-    add_alternate_position_scores();
-    add_number_of_planets_scores();
     add_number_of_systems_containing_planets_adjacent_to_home_scores();
   }
 
@@ -406,31 +448,31 @@ private:
     }
   }
 
-  /// \brief If a system is in a player's slice, that player gains its score. If a system is equidistant, each relevant player gets an equal fraction of its score.
+  /// \brief Systems that are further away from your home system are worth less.
+  float distance_factor(const Distance& distance) const noexcept {
+    if (distance <= Distance{1}) {
+      return 1.0f;
+    } else if (distance == Distance{2}) {
+      return 0.9f;
+    } else if (distance == Distance{3}) {
+      return 0.8f;
+    } else {
+      return 0.7f;
+    }
+  }
+
+  /// \brief If a system is in a player's slice, that player gains its score. If a system is equidistant, each relevant player gets a fraction of its score.
   void add_base_system_scores() noexcept {
     for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
       const std::unordered_map<Position, std::map<Player, Distance>>::const_iterator position_and_players_home_distances{positions_to_players_home_distances_.find(position_and_tile.first)};
       if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty() && position_and_players_home_distances != positions_to_players_home_distances_.cend()) {
         const std::unordered_map<Position, std::set<Player>>::const_iterator position_to_relevant_players{positions_to_relevant_players_.find(position_and_tile.first)};
         if (position_to_relevant_players != positions_to_relevant_players_.cend()) {
-          const float score{Systems.find({position_and_tile.second.system_id()})->score()};
-          const uint8_t number_of_relevant_players{static_cast<uint8_t>(position_to_relevant_players->second.size())};
-          const float score_per_player{score / static_cast<float>(number_of_relevant_players) * equidistant_score_adjustment_factor(number_of_relevant_players)};
+          const float score_per_player{Systems.find({position_and_tile.second.system_id()})->score() * number_of_relevant_players_factor(position_to_relevant_players->second.size())};
           for (const Player& player : position_to_relevant_players->second) {
             const std::map<Player, Distance>::const_iterator player_and_distance{position_and_players_home_distances->second.find(player)};
             if (player_and_distance != position_and_players_home_distances->second.cend()) {
-              // Further systems are worth less: 100% if adjacent to home (at distance 1), 80% if at distance 2, and 60% if at distance 3+.
-              float factor{1.0f};
-              if (player_and_distance->second == Distance{0}) {
-                factor = 1.0f;
-              } else if (player_and_distance->second == Distance{1}) {
-                factor = 1.0f;
-              } else if (player_and_distance->second == Distance{2}) {
-                factor = 0.9f;
-              } else {
-                factor = 0.8f;
-              }
-              player_scores_[player] += factor * score_per_player;
+              player_scores_[player] += score_per_player * distance_factor(player_and_distance->second);
             }
           }
         }
@@ -438,45 +480,67 @@ private:
     }
   }
 
-  /// \brief Equidistant systems are less valuable due to the greater difficulty of holding them.
-  float equidistant_score_adjustment_factor(const uint8_t number_of_relevant_players) const noexcept {
-    if (number_of_relevant_players == 1) {
-      return 1.0f;
-    } else if (number_of_relevant_players == 2) {
-      return 0.9f;
-    } else {
-      return 0.8f;
+  /// \brief If a player can construct a space dock on either their preferred or laternate expansion positions, the score is increased.
+  void add_expansion_position_scores() noexcept {
+    std::map<Player, float> players_and_best_expansion_scores;
+    for (const Player& player : players_) {
+      players_and_best_expansion_scores.emplace(player, 0.0f);
+    }
+    for (const std::pair<Player, std::set<Position>>& player_and_preferred_expansion_positions : players_to_preferred_expansion_positions_) {
+      for (const Position& position : player_and_preferred_expansion_positions.second) {
+        const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+        const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+        const float preferred_expansion_position_score{system->expansion_score()};
+        if (preferred_expansion_position_score > players_and_best_expansion_scores[player_and_preferred_expansion_positions.first]) {
+          players_and_best_expansion_scores[player_and_preferred_expansion_positions.first] = preferred_expansion_position_score;
+        }
+      }
+    }
+    for (const std::pair<Player, std::set<Position>>& player_and_alternate_expansion_positions : players_to_alternate_expansion_positions_) {
+      for (const Position& position : player_and_alternate_expansion_positions.second) {
+        const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+        const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+        const float alternate_expansion_position_score{0.5f * system->expansion_score()};
+        if (alternate_expansion_position_score > players_and_best_expansion_scores[player_and_alternate_expansion_positions.first]) {
+          players_and_best_expansion_scores[player_and_alternate_expansion_positions.first] = alternate_expansion_position_score;
+        }
+      }
+    }
+    for (const std::pair<Player, float>& player_and_best_expansion_score : players_and_best_expansion_scores) {
+      player_scores_[player_and_best_expansion_score.first] += player_and_best_expansion_score.second;
     }
   }
 
-  /// \brief If a player does not have at least one good forward system, the score is penalized.
-  void add_forward_system_scores() noexcept {
-    for (const std::pair<Player, std::set<Position>>& player_and_forward_positions : players_to_forward_positions_) {
-      bool at_least_one_good_forward_system{false};
-      for (const Position& position : player_and_forward_positions.second) {
-        const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
-        const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-        if (!system->planets().empty() && !system->contains_one_or_more_anomalies()) {
-          at_least_one_good_forward_system = true;
-          break;
+  /// \brief If a player can construct a space dock on their preferred expansion positions, the score is increased.
+  void add_preferred_expansion_position_scores() noexcept {
+    for (const std::pair<Player, std::set<Position>>& player_and_preferred_expansion_positions : players_to_preferred_expansion_positions_) {
+      if (!player_and_preferred_expansion_positions.second.empty()) {
+        float average_preferred_expansion_position_score{0.0f};
+        for (const Position& position : player_and_preferred_expansion_positions.second) {
+          const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+          const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+          const float preferred_expansion_position_score{system->expansion_score()};
+          average_preferred_expansion_position_score += preferred_expansion_position_score;
         }
-      }
-      if (!at_least_one_good_forward_system)  {
-        player_scores_[player_and_forward_positions.first] += -5.0f;
+        average_preferred_expansion_position_score /= static_cast<float>(player_and_preferred_expansion_positions.second.size());
+        player_scores_[player_and_preferred_expansion_positions.first] += average_preferred_expansion_position_score;
       }
     }
   }
 
-  /// \brief If a player's lateral systems protect or endanger their home system, the score is adjusted accordingly.
-  void add_lateral_system_scores() noexcept {
-    for (const std::pair<Player, std::set<Position>>& player_and_lateral_positions : players_to_lateral_positions_) {
-      for (const Position& position : player_and_lateral_positions.second) {
-        const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
-        const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-        if (system->contains(Anomaly::GravityRift)) {
-          // A gravity rift in a lateral system is undesirable.
-          player_scores_[player_and_lateral_positions.first] += -1.0f;
+  /// \brief If a player can construct a space dock on their alternate expansion positions, the score is increased.
+  void add_alternate_expansion_position_scores() noexcept {
+    for (const std::pair<Player, std::set<Position>>& player_and_alternate_expansion_positions : players_to_alternate_expansion_positions_) {
+      if (!player_and_alternate_expansion_positions.second.empty()) {
+        float average_alternate_expansion_position_score{0.0f};
+        for (const Position& position : player_and_alternate_expansion_positions.second) {
+          const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+          const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+          const float alternate_expansion_position_score{0.5f * system->expansion_score()};
+          average_alternate_expansion_position_score += alternate_expansion_position_score;
         }
+        average_alternate_expansion_position_score /= static_cast<float>(player_and_alternate_expansion_positions.second.size());
+        player_scores_[player_and_alternate_expansion_positions.first] += average_alternate_expansion_position_score;
       }
     }
   }
@@ -493,7 +557,11 @@ private:
             const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
             if (system->contains(Anomaly::GravityRift)) {
               // A gravity rift along the pathway to Mecatol Rex is undesirable.
-              pathway_score += -2.0f;
+              pathway_score += -0.1f * player_scores_[player_and_mecatol_rex_pathways.first];
+            }
+            if (system->contains(Anomaly::Nebula)) {
+              // A nebula along the pathway to Mecatol Rex is undesirable.
+              pathway_score += -0.1f * player_scores_[player_and_mecatol_rex_pathways.first];
             }
           }
           if (pathway_score > best_pathway_score) {
@@ -505,107 +573,9 @@ private:
     }
   }
 
-  /// \brief If a player can construct a space dock on their preferred positions, the score is increased.
-  void add_preferred_position_scores() noexcept {
-    for (const std::pair<Player, std::set<Position>>& player_and_preferred_positions : players_to_preferred_positions_) {
-      if (!player_and_preferred_positions.second.empty()) {
-        float average_preferred_position_score{0.0f};
-        for (const Position& position : player_and_preferred_positions.second) {
-          const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
-          const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-          const float preferred_position_score{system->preferred_and_alternate_position_score()};
-          average_preferred_position_score += preferred_position_score;
-        }
-        average_preferred_position_score /= static_cast<float>(player_and_preferred_positions.second.size());
-        player_scores_[player_and_preferred_positions.first] += average_preferred_position_score;
-      }
-    }
-  }
-
-  /// \brief If a player can construct a space dock on their alternate positions, the score is increased.
-  void add_alternate_position_scores() noexcept {
-    for (const std::pair<Player, std::set<Position>>& player_and_alternate_positions : players_to_alternate_positions_) {
-      if (!player_and_alternate_positions.second.empty()) {
-        float average_alternate_position_score{0.0f};
-        for (const Position& position : player_and_alternate_positions.second) {
-          const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
-          const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-          const float alternate_position_score{0.5f * system->preferred_and_alternate_position_score()};
-          average_alternate_position_score += alternate_position_score;
-        }
-        average_alternate_position_score /= static_cast<float>(player_and_alternate_positions.second.size());
-        player_scores_[player_and_alternate_positions.first] += average_alternate_position_score;
-      }
-    }
-  }
-
-  /// \brief Each player ideally wants 5+ planets, 2+ technology specialties, and 4+ planets of the same trait in their slice. Adjust the score accordingly.
-  void add_number_of_planets_scores() noexcept {
-    std::map<Player, float> players_to_number_of_planets;
-    std::map<Player, float> players_to_useful_resources;
-    std::map<Player, float> players_to_useful_influence;
-    std::map<Player, float> players_to_number_of_technology_specialties;
-    std::map<Player, std::map<PlanetTrait, float>> players_to_planet_traits_to_number_of_planets;
-    for (const Player& player : players_) {
-      players_to_number_of_planets.emplace(player, 0.0f);
-      players_to_useful_resources.emplace(player, 0.0f);
-      players_to_useful_influence.emplace(player, 0.0f);
-      players_to_number_of_technology_specialties.emplace(player, 0.0f);
-      players_to_planet_traits_to_number_of_planets.insert({player, {{PlanetTrait::Cultural, 0.0f}, {PlanetTrait::Hazardous, 0.0f}, {PlanetTrait::Industrial, 0.0f}}});
-    }
-    for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
-      const float equidistant_score_adjustment_factor_{equidistant_score_adjustment_factor(static_cast<uint8_t>(position_and_relevant_players.second.size()))};
-      const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position_and_relevant_players.first)};
-      if (position_and_tile->second.is_planetary_anomaly_wormhole_or_empty()) {
-        const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-        if (!system->planets().empty()) {
-          const float number_of_planets_per_relevant_player{static_cast<float>(system->planets().size()) / static_cast<float>(position_and_relevant_players.second.size())};
-          for (const Player& player : position_and_relevant_players.second) {
-            players_to_number_of_planets[player] += number_of_planets_per_relevant_player * equidistant_score_adjustment_factor_;
-          }
-          const float one_over_relevant_players{1.0f / static_cast<float>(position_and_relevant_players.second.size())};
-          for (const Planet& planet : system->planets()) {
-            for (const Player& player : position_and_relevant_players.second) {
-              players_to_useful_resources[player] += planet.useful_resources() * one_over_relevant_players * equidistant_score_adjustment_factor_;
-              players_to_useful_influence[player] += planet.useful_influence() * one_over_relevant_players * equidistant_score_adjustment_factor_;
-              if (planet.technology_specialty().has_value()) {
-                players_to_number_of_technology_specialties[player] += one_over_relevant_players;
-              }
-              if (planet.trait().has_value()) {
-                players_to_planet_traits_to_number_of_planets[player][planet.trait().value()] += one_over_relevant_players * equidistant_score_adjustment_factor_;
-              }
-            }
-          }
-        }
-      }
-    }
-    // On average, a slice contains 5.05 planets. Adjust the score if a slice contains more or fewer planets.
-    for (const std::pair<Player, float>& player_and_number_of_planets : players_to_number_of_planets) {
-      player_scores_[player_and_number_of_planets.first] += 2.0f * (player_and_number_of_planets.second - 5.05f);
-    }
-    // On average, a slice contains 5.15 useful resources. Adjust the score if a slice contains more or fewer useful resources.
-    for (const std::pair<Player, float>& player_and_useful_resources : players_to_useful_resources) {
-      player_scores_[player_and_useful_resources.first] += 1.0f * (player_and_useful_resources.second - 5.15f);
-    }
-    // On average, a slice contains 5.76 useful influence. Adjust the score if a slice contains more or fewer useful influence.
-    for (const std::pair<Player, float>& player_and_useful_influence : players_to_useful_influence) {
-      player_scores_[player_and_useful_influence.first] += 1.5f * (player_and_useful_influence.second - 5.76f);
-    }
-    // On average, a slice contains 1.32 technology specialties. Adjust the score if a slice contains more or fewer technology specialties.
-    for (const std::pair<Player, float>& player_and_number_of_technology_specialties : players_to_number_of_technology_specialties) {
-      player_scores_[player_and_number_of_technology_specialties.first] += 2.0f * (player_and_number_of_technology_specialties.second - 1.32f);
-    }
-    // Several objectives require 4 planets with the same trait. On average, a slice contains 2 planets with the same trait. Adjust the score if a slice contains more or fewer planets with the same trait.
-    for (const std::pair<Player, std::map<PlanetTrait, float>>& player_and_planet_traits_to_number_of_planets : players_to_planet_traits_to_number_of_planets) {
-      for (const std::pair<PlanetTrait, float>& planet_trait_to_number_of_planets : player_and_planet_traits_to_number_of_planets.second) {
-        player_scores_[player_and_planet_traits_to_number_of_planets.first] += 1.0f * (planet_trait_to_number_of_planets.second - 2.0f);
-      }
-    }
-  }
-
   void add_number_of_systems_containing_planets_adjacent_to_home_scores() noexcept {
     // Check the forward systems and the lateral systems.
-    // Ideally, you want 2 systems that contain 1 or more planets adjacent to your home.
+    // Ideally, a player wants two systems that each contain one or more planets adjacent to their home.
     for (const Player& player : players_) {
       uint8_t number_of_systems_containing_planets{0};
       const std::map<Player, std::set<Position>>::const_iterator player_and_forward_positions{players_to_forward_positions_.find(player)};
@@ -628,7 +598,7 @@ private:
           }
         }
       }
-      player_scores_[player] += 2.0f * (static_cast<float>(number_of_systems_containing_planets) - 2.0f);
+      player_scores_[player] += 0.1f * (static_cast<float>(number_of_systems_containing_planets) - 2.0f) * player_scores_[player];
     }
   }
 

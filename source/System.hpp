@@ -81,12 +81,12 @@ public:
     return highest_planet_resources_;
   }
 
-  float preferred_and_alternate_position_score() const noexcept {
-    if (planets_.empty() || contains(Anomaly::GravityRift)) {
+  float expansion_score() const noexcept {
+    if (planets_.empty()) {
       return 0.0f;
     } else {
-      const float score{std::pow(static_cast<float>(2 + highest_planet_resources()), std::sqrt(1.618034f))};
-      if (contains(Anomaly::Nebula)) {
+      const float score{static_cast<float>(2 + highest_planet_resources())};
+      if (contains(Anomaly::GravityRift) || contains(Anomaly::Nebula)) {
         return 0.25f * score;
       } else {
         return score;
@@ -191,7 +191,7 @@ private:
   }
 
   void initialize_score() noexcept {
-    score_ = individual_planet_scores() + number_of_planets_score() + space_dock_score() + anomalies_score() + wormholes_score();
+    score_ = individual_planet_scores() + number_of_planets_score() + anomalies_score() + wormholes_score();
   }
 
   /// \brief The base system score is the sum of the individual planet scores.
@@ -203,23 +203,15 @@ private:
     return score;
   }
 
-  /// \brief It is preferable to have multiple planets in one system due to scoring objectives, command token efficiency, and ease of defending the space area.
+  /// \brief It is preferable to have multiple planets in one system than to have the same number of one-planet systems.
   float number_of_planets_score() const noexcept {
-    const std::size_t number_of_planets_{planets_.size()};
-    if (number_of_planets_ == 1) {
-      return 1.0f * number_of_planets_;
-    } else if (number_of_planets_ == 2) {
-      return 2.0f * number_of_planets_;
-    } else if (number_of_planets_ == 3) {
-      return 3.0f * number_of_planets_;
+    if (planets_.size() == 2) {
+      return 0.5f;
+    } else if (planets_.size() == 3) {
+      return 1.5f;
+    } else {
+      return 0.0f;
     }
-    return 0.0f;
-  }
-
-  /// \brief If this system contains a planet that would be good for a space dock, the score is increased slightly.
-  /// \details Space docks are taken into account in greater detail with preferred and alternate positions, so this is a very small adjustment.
-  float space_dock_score() const noexcept {
-    return preferred_and_alternate_position_score() / 7.0f;
   }
 
   /// \brief Some anomalies are generally beneficial or harmful, whereas others depend heavily on their positioning.
