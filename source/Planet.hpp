@@ -173,7 +173,7 @@ private:
   /// \brief Legendary planets are relevant to scoring objectives.
   float legendary_objective_score() const noexcept {
     if (is_legendary()) {
-      return 3.0;
+      return 2.0;
     }
     return 0.0;
   }

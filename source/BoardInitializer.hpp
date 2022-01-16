@@ -21,7 +21,7 @@ public:
     initialize_relevant_players_and_equidistant_and_in_slice_positions();
     initialize_forward_and_lateral_positions();
     initialize_mecatol_rex_pathways();
-    initialize_preferred_and_alternate_positions();
+    initialize_preferred_expansion_and_alternate_expansion_positions();
   }
 
 protected:
@@ -76,11 +76,11 @@ protected:
   /// \brief Pathways to Mecatol Rex may include equidistant positions and always end with the Mecatol Rex position itself.
   std::map<Player, std::vector<Pathway>> players_to_mecatol_rex_pathways_;
 
-  /// \brief Preferred positions are positions where a player would ideally want to construct their second space dock and use as a forward base.
-  std::map<Player, std::set<Position>> players_to_preferred_positions_;
+  /// \brief Preferred expansion positions are positions where a player would ideally want to construct their second space dock and use as a forward base.
+  std::map<Player, std::set<Position>> players_to_preferred_expansion_positions_;
 
-  /// \brief Alternate positions are positiosn where a player would ideally want to construct their third space dock and use as a forward base.
-  std::map<Player, std::set<Position>> players_to_alternate_positions_;
+  /// \brief Alternate expansion positions are positiosn where a player would ideally want to construct their third space dock and use as a forward base.
+  std::map<Player, std::set<Position>> players_to_alternate_expansion_positions_;
 
   bool is_equidistant(const Position& position) const noexcept {
     return equidistant_positions_.find(position) != equidistant_positions_.cend();
@@ -346,12 +346,12 @@ private:
     }
   }
 
-  void initialize_preferred_and_alternate_positions() noexcept {
-    // The preferred and alternate space dock positions are selected from the pathways to Mecatol Rex.
-    // However, the preferred and alternate space dock positions must be in-slice positions rather than equidistant positions.
+  void initialize_preferred_expansion_and_alternate_expansion_positions() noexcept {
+    // The preferred and alternate expansions positions are selected from the pathways to Mecatol Rex.
+    // However, the preferred and alternate expansion positions must be in-slice positions rather than equidistant positions.
     // By definitions, for a given player, the pathways to Mecatol Rex all have the same length.
     // Remember that the last position in the pathway is the Mecatol Rex position itself.
-    // If 2 or more positions are tied for preferred space dock position, choose the one with the largest distance from other players' homes. The same applies to the alternate positions.
+    // If 2 or more positions are tied for preferred expansion position, choose the one with the largest distance from other players' homes. The same applies to the alternate positions.
     for (const Player player : players_) {
       const std::map<Player, std::vector<Pathway>>::const_iterator player_and_pathways_to_mecatol_rex{players_to_mecatol_rex_pathways_.find(player)};
       if (player_and_pathways_to_mecatol_rex != players_to_mecatol_rex_pathways_.cend() && !player_and_pathways_to_mecatol_rex->second.empty()) {
@@ -360,40 +360,40 @@ private:
         if (pathway_distance == 2) {
           // If the pathways to Mecatol Rex have length 2, there is only a preferred position per pathway, and no alternate position.
           // This distance is relevant to the 3-player small board layout.
-          const std::set<Position> preferred_positions{optimal_positions(player, 0)};
-          players_to_preferred_positions_.emplace(player, preferred_positions);
+          const std::set<Position> preferred_expansion_positions{optimal_positions(player, 0)};
+          players_to_preferred_expansion_positions_.emplace(player, preferred_expansion_positions);
         } else if (pathway_distance == 3) {
           // If the pathways to Mecatol Rex have length 3, the preferred position is the first one, and the alternate is the second one.
           // This distance is relevant to most board layouts up to 6 players, as well as the 7- and 8-player regular board layouts.
-          const std::set<Position> preferred_positions{optimal_positions(player, 0)};
-          players_to_preferred_positions_.emplace(player, preferred_positions);
-          const std::set<Position> alternate_positions{optimal_positions(player, 1)};
-          players_to_alternate_positions_.emplace(player, alternate_positions);
+          const std::set<Position> preferred_expansion_positions{optimal_positions(player, 0)};
+          players_to_preferred_expansion_positions_.emplace(player, preferred_expansion_positions);
+          const std::set<Position> alternate_expansion_positions{optimal_positions(player, 1)};
+          players_to_alternate_expansion_positions_.emplace(player, alternate_expansion_positions);
         } else if (pathway_distance == 4) {
           // If the pathways to Mecatol Rex have length 4, the preferred position is the second (middle) one, and the alternate is the first one.
           // This distance is relevant to the 7- and 8-player large board layouts.
-          const std::set<Position> preferred_positions{optimal_positions(player, 1)};
-          players_to_preferred_positions_.emplace(player, preferred_positions);
-          const std::set<Position> alternate_positions{optimal_positions(player, 0)};
-          players_to_alternate_positions_.emplace(player, alternate_positions);
+          const std::set<Position> preferred_expansion_positions{optimal_positions(player, 1)};
+          players_to_preferred_expansion_positions_.emplace(player, preferred_expansion_positions);
+          const std::set<Position> alternate_expansion_positions{optimal_positions(player, 0)};
+          players_to_alternate_expansion_positions_.emplace(player, alternate_expansion_positions);
         } else if (pathway_distance == 5) {
           // If the pathways to Mecatol Rex have length 5, the preferred position is the second one, and the alternate is the third one.
           // This distance does not exist on any of the board layouts but is included for completeness.
-          const std::set<Position> preferred_positions{optimal_positions(player, 1)};
-          players_to_preferred_positions_.emplace(player, preferred_positions);
-          const std::set<Position> alternate_positions{optimal_positions(player, 2)};
-          players_to_alternate_positions_.emplace(player, alternate_positions);
+          const std::set<Position> preferred_expansion_positions{optimal_positions(player, 1)};
+          players_to_preferred_expansion_positions_.emplace(player, preferred_expansion_positions);
+          const std::set<Position> alternate_expansion_positions{optimal_positions(player, 2)};
+          players_to_alternate_expansion_positions_.emplace(player, alternate_expansion_positions);
         }
         // Do not bother with cases where the pathways to Mecatol Rex are longer.
       }
     }
     verbose_message("Preferred positions:");
-    for (const std::pair<Player, std::set<Position>>& player_and_preferred_positions : players_to_preferred_positions_) {
-      verbose_message("- " + label(player_and_preferred_positions.first) + ": " + print_set(player_and_preferred_positions.second));
+    for (const std::pair<Player, std::set<Position>>& player_and_preferred_expansion_positions : players_to_preferred_expansion_positions_) {
+      verbose_message("- " + label(player_and_preferred_expansion_positions.first) + ": " + print_set(player_and_preferred_expansion_positions.second));
     }
     verbose_message("Alternate positions:");
-    for (const std::pair<Player, std::set<Position>>& player_and_alternate_positions : players_to_alternate_positions_) {
-      verbose_message("- " + label(player_and_alternate_positions.first) + ": " + print_set(player_and_alternate_positions.second));
+    for (const std::pair<Player, std::set<Position>>& player_and_alternate_expansion_positions : players_to_alternate_expansion_positions_) {
+      verbose_message("- " + label(player_and_alternate_expansion_positions.first) + ": " + print_set(player_and_alternate_expansion_positions.second));
     }
   }
 
