@@ -117,7 +117,7 @@ public:
       if (counter > 0) {
         text += " + ";
       }
-      text += planet.name();
+      text += planet.print();
       ++counter;
     }
     for (const Anomaly anomaly : anomalies_) {
@@ -191,7 +191,7 @@ private:
   }
 
   void initialize_score() noexcept {
-    score_ = individual_planet_scores() + number_of_planets_score() + anomalies_score() + wormholes_score();
+    score_ = individual_planet_scores() + number_of_planets_score() + anomalies_score() + wormholes_score() + potential_expansion_score();
   }
 
   /// \brief The base system score is the sum of the individual planet scores.
@@ -208,7 +208,7 @@ private:
     if (planets_.size() == 2) {
       return 0.5f;
     } else if (planets_.size() == 3) {
-      return 1.5f;
+      return 1.0f;
     } else {
       return 0.0f;
     }
@@ -223,8 +223,14 @@ private:
     return total;
   }
 
+  /// \brief If the system contains one or more wormholes, adjust the score accordingly.
   float wormholes_score() const noexcept {
     return wormholes_.size() * WormholeScore;
+  }
+
+  /// \brief If the system is a good candidate for an expansion, increase the score slightly.
+  float potential_expansion_score() const noexcept {
+    return 0.05f * expansion_score();
   }
 
 }; // class System
