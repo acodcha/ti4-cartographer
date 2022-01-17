@@ -17,9 +17,9 @@ template <> const std::unordered_map<PlanetTrait, std::string> labels<PlanetTrai
 };
 
 template <> const std::unordered_map<PlanetTrait, std::string> abbreviations<PlanetTrait>{
-  {PlanetTrait::Cultural, "Cul"},
-  {PlanetTrait::Hazardous, "Haz"},
-  {PlanetTrait::Industrial, "Ind"}
+  {PlanetTrait::Cultural, "C"},
+  {PlanetTrait::Hazardous, "H"},
+  {PlanetTrait::Industrial, "I"}
 };
 
 template <> const std::unordered_map<std::string, PlanetTrait> spellings<PlanetTrait>{

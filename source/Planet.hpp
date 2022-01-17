@@ -128,7 +128,7 @@ private:
 
   /// \brief High influence planets are useful for voting during the Agenda phase.
   float voting_score() const noexcept {
-    return 0.25 * influence_;
+    return 0.25f * influence_;
   }
 
   /// \brief Planets with a propulsion technology specialty are preferable over other technology specialties, which are in turn preferable to no technology specialty.
@@ -136,20 +136,20 @@ private:
     if (technology_specialty_.has_value()) {
       switch (technology_specialty_.value()) {
         case TechnologyType::Propulsion:
-          return 2.0;
+          return 2.0f;
           break;
         case TechnologyType::Biotic:
-          return 1.0;
+          return 1.0f;
           break;
         case TechnologyType::Cybernetic:
-          return 1.0;
+          return 1.0f;
           break;
         case TechnologyType::Warfare:
-          return 1.0;
+          return 1.0f;
           break;
       }
     }
-    return 0.0;
+    return 0.0f;
   }
 
   /// \brief Cultural planets are slightly preferable to hazardous planets, which are in turn preferable to industrial planets.
@@ -157,25 +157,25 @@ private:
     if (trait_.has_value()) {
       switch (trait_.value()) {
         case PlanetTrait::Cultural:
-          return 0.5;
+          return 0.15f;
           break;
         case PlanetTrait::Hazardous:
-          return 0.3;
+          return 0.1f;
           break;
         case PlanetTrait::Industrial:
-          return 0.1;
+          return 0.05f;
           break;
       }
     }
-    return 0.0;
+    return 0.0f;
   }
 
   /// \brief Legendary planets are relevant to scoring objectives.
   float legendary_objective_score() const noexcept {
     if (is_legendary()) {
-      return 2.0;
+      return 2.0f;
     }
-    return 0.0;
+    return 0.0f;
   }
 
   /// \brief Legendary planets grant bonus component actions. Some are preferable to others.
@@ -183,20 +183,20 @@ private:
     if (legendary_.has_value()) {
       switch (legendary_.value()) {
         case LegendaryPlanet::HopesEnd:
-          return 2.5;
+          return 2.5f;
           break;
         case LegendaryPlanet::Mallice:
-          return 2.5;
+          return 2.0f;
           break;
         case LegendaryPlanet::Mirage:
-          return 1.5;
+          return 1.0f;
           break;
         case LegendaryPlanet::Primor:
-          return 2.0;
+          return 1.5f;
           break;
       }
     }
-    return 0.0;
+    return 0.0f;
   }
 
 }; // class Planet

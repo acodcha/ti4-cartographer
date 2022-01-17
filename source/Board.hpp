@@ -383,15 +383,18 @@ private:
     for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
       const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position_and_relevant_players.first)};
       const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-      const float factor{number_of_relevant_players_factor(position_and_relevant_players.second.size())};
-      for (const Player player : position_and_relevant_players.second) {
-        players_to_effective_number_of_systems[player] += factor;
-        players_to_effective_number_of_planets[player] += static_cast<float>(system->planets().size()) * factor;
+      // Exclude the Mecatol Rex system, hyperlanes, and other irrelevant system categories.
+      if (system->category() == SystemCategory::Planetary || system->category() == SystemCategory::AnomalyWormholeEmpty) {
+        const float factor{number_of_relevant_players_factor(position_and_relevant_players.second.size())};
+        for (const Player player : position_and_relevant_players.second) {
+          players_to_effective_number_of_systems[player] += factor;
+          players_to_effective_number_of_planets[player] += static_cast<float>(system->planets().size()) * factor;
+        }
       }
     }
     for (const Player player : players_) {
       const float effective_planets_to_positions_ratio{players_to_effective_number_of_planets[player] / players_to_effective_number_of_systems[player]};
-      if (effective_planets_to_positions_ratio < 0.76) {
+      if (effective_planets_to_positions_ratio < 0.76f) {
         return false;
       }
     }
@@ -411,22 +414,25 @@ private:
     for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
       const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position_and_relevant_players.first)};
       const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
-      const float factor{number_of_relevant_players_factor(position_and_relevant_players.second.size())};
-      for (const Player& player : position_and_relevant_players.second) {
-        players_to_number_of_systems[player] += factor;
-        for (const Planet& planet : system->planets()) {
-          players_to_useful_resources[player] += planet.useful_resources() * factor;
-          players_to_useful_influence[player] += planet.useful_influence() * factor;
+      // Exclude the Mecatol Rex system, hyperlanes, and other irrelevant system categories.
+      if (system->category() == SystemCategory::Planetary || system->category() == SystemCategory::AnomalyWormholeEmpty) {
+        const float factor{number_of_relevant_players_factor(position_and_relevant_players.second.size())};
+        for (const Player& player : position_and_relevant_players.second) {
+          players_to_number_of_systems[player] += factor;
+          for (const Planet& planet : system->planets()) {
+            players_to_useful_resources[player] += planet.useful_resources() * factor;
+            players_to_useful_influence[player] += planet.useful_influence() * factor;
+          }
         }
       }
     }
     for (const Player player : players_) {
       const float useful_resources_per_system{players_to_useful_resources[player] / players_to_number_of_systems[player]};
-      if (useful_resources_per_system < 0.52) {
+      if (useful_resources_per_system < 0.52f) {
         return false;
       }
       const float useful_influence_per_system{players_to_useful_influence[player] / players_to_number_of_systems[player]};
-      if (useful_influence_per_system < 0.58) {
+      if (useful_influence_per_system < 0.58f) {
         return false;
       }
     }
@@ -557,11 +563,11 @@ private:
             const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
             if (system->contains(Anomaly::GravityRift)) {
               // A gravity rift along the pathway to Mecatol Rex is undesirable.
-              pathway_score += -0.1f * player_scores_[player_and_mecatol_rex_pathways.first];
+              pathway_score += -3.0f;
             }
             if (system->contains(Anomaly::Nebula)) {
               // A nebula along the pathway to Mecatol Rex is undesirable.
-              pathway_score += -0.1f * player_scores_[player_and_mecatol_rex_pathways.first];
+              pathway_score += -3.0f;
             }
           }
           if (pathway_score > best_pathway_score) {
@@ -598,7 +604,7 @@ private:
           }
         }
       }
-      player_scores_[player] += 0.1f * (static_cast<float>(number_of_systems_containing_planets) - 2.0f) * player_scores_[player];
+      player_scores_[player] += 2.0f * (static_cast<float>(number_of_systems_containing_planets) - 2.0f);
     }
   }
 
