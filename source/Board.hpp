@@ -288,7 +288,7 @@ private:
   }
 
   bool iteration_is_valid() const noexcept {
-    return !contains_adjacent_anomalies_or_wormholes() && pathways_to_mecatol_rex_are_clear() && players_have_enough_planets() && players_have_enough_useful_resources_and_useful_influence();
+    return !contains_adjacent_anomalies_or_wormholes() && pathways_to_mecatol_rex_are_clear() && players_do_not_have_too_many_wormholes_adjacent_to_their_homes() && players_have_enough_planets() && players_have_enough_useful_resources_and_useful_influence();
   }
 
   /// \brief As per the game rules, adjacent systems cannot contain anomalies or wormholes of the same type.
@@ -360,6 +360,37 @@ private:
     }
     return each_player_has_at_least_one_usable_pathway;
   }
+
+ bool players_do_not_have_too_many_wormholes_adjacent_to_their_homes() const noexcept {
+    std::map<Player, int8_t> players_to_number_of_wormholes_adjacent_to_home;
+    for (const Player& player : players_) {
+      players_to_number_of_wormholes_adjacent_to_home.emplace(player, 0);
+    }
+    for (const std::pair<Player, std::set<Position>>& player_and_forward_positions : players_to_forward_positions_) {
+      for (const Position& position : player_and_forward_positions.second) {
+        const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+        const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+        if (system->contains_one_or_more_wormholes()) {
+          ++(players_to_number_of_wormholes_adjacent_to_home[player_and_forward_positions.first]);
+        }
+      }
+    }
+    for (const std::pair<Player, std::set<Position>>& player_and_lateral_positions : players_to_lateral_positions_) {
+      for (const Position& position : player_and_lateral_positions.second) {
+        const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
+        const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
+        if (system->contains_one_or_more_wormholes()) {
+          ++(players_to_number_of_wormholes_adjacent_to_home[player_and_lateral_positions.first]);
+        }
+      }
+    }
+    for (const std::pair<Player, int8_t>& player_and_number_of_wormholes_adjacent_to_home : players_to_number_of_wormholes_adjacent_to_home) {
+      if (player_and_number_of_wormholes_adjacent_to_home.second > 1) {
+        return false;
+      }
+    }
+    return true;
+ }
 
   /// \brief Equidistant systems are less valuable due to the greater difficulty of holding them.
   float number_of_relevant_players_factor(const std::size_t number_of_relevant_players) const noexcept {
