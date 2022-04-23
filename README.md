@@ -16,7 +16,7 @@
 
 ## Board Layout: 2 Players Regular
 
-5 planetary systems and 3 anomaly/wormhole/empty systems per player. This board layout has 60% more planets per player than normal, so `--aggression high` and playing to 14 victory points are recommended.
+5 planetary systems and 3 anomaly/wormhole/empty systems per player. This board layout has 67% more planets per player than normal, so `--aggression high` and playing to 14 victory points are recommended.
 
 ```
 ti4cartographer --players 2 --layout regular
@@ -52,7 +52,7 @@ ti4cartographer --players 3 --layout small
 
 ## Board Layout: 3 Players Large
 
-5 planetary systems and 3 anomaly/wormhole/empty systems per player. This board layout has 60% more planets per player than normal and has home systems much further away from each other than normal, so `--aggression high` and playing to 14 victory points are recommended.
+5 planetary systems and 3 anomaly/wormhole/empty systems per player. This board layout has 67% more planets per player than normal and has home systems much further away from each other than normal, so `--aggression high` and playing to 14 victory points are recommended.
 
 ```
 ti4cartographer --players 3 --layout large
@@ -88,7 +88,7 @@ ti4cartographer --players 4 --layout small
 
 ## Board Layout: 4 Players Large
 
-5 planetary systems and 3 anomaly/wormhole/empty systems per player. This board layout has 60% more planets per player than normal and has home systems further away from each other than normal, so `--aggression high` and playing to 14 victory points are recommended.
+5 planetary systems and 3 anomaly/wormhole/empty systems per player. This board layout has 67% more planets per player than normal and has home systems further away from each other than normal, so `--aggression high` and playing to 14 victory points are recommended.
 
 ```
 ti4cartographer --players 4 --layout large
