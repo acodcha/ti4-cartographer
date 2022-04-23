@@ -4,29 +4,19 @@
 
 # Board Layouts
 
-- [2 Players Regular](#board-layout-2-players-regular)
-- [3 Players Regular](#board-layout-3-players-regular)
-- [3 Players Small](#board-layout-3-players-small)
-- [3 Players Large](#board-layout-3-players-large)
-- [4 Players Regular](#board-layout-4-players-regular)
-- [4 Players Small](#board-layout-4-players-small)
-- [4 Players Large](#board-layout-4-players-large)
-- [5 Players Regular](#board-layout-5-players-regular)
-- [5 Players Small](#board-layout-5-players-small)
-- [5 Players Large](#board-layout-5-players-large)
-- [6 Players Regular](#board-layout-6-players-regular)
-- [6 Players Large](#board-layout-6-players-large)
-- [7 Players Regular](#board-layout-7-players-regular)
-- [7 Players Small](#board-layout-7-players-small)
-- [7 Players Large](#board-layout-7-players-large)
-- [8 Players Regular](#board-layout-8-players-regular)
-- [8 Players Large](#board-layout-8-players-large)
+- 2 Players: [Regular](#board-layout-2-players-regular)
+- 3 Players: [Regular](#board-layout-3-players-regular), [Small](#board-layout-3-players-small), [Large](#board-layout-3-players-large)
+- 4 Players: [Regular](#board-layout-4-players-regular), [Small](#board-layout-4-players-small), [Large](#board-layout-4-players-large)
+- 5 Players: [Regular](#board-layout-5-players-regular), [Small](#board-layout-5-players-small), [Large](#board-layout-5-players-large)
+- 6 Players: [Regular](#board-layout-6-players-regular), [Large](#board-layout-6-players-large)
+- 7 Players: [Regular](#board-layout-7-players-regular), [Small](#board-layout-7-players-small), [Large](#board-layout-7-players-large)
+- 8 Players: [Regular](#board-layout-8-players-regular), [Large](#board-layout-8-players-large)
 
 [(Back to Top)](#)
 
 ## Board Layout: 2 Players Regular
 
-5 planetary systems and 3 anomaly/wormhole/empty systems per player.
+5 planetary systems and 3 anomaly/wormhole/empty systems per player. This board layout has 60% more planets per player than normal, so `--aggression high` and playing to 14 victory points are recommended.
 
 ```
 ti4cartographer --players 2 --layout regular
@@ -38,7 +28,7 @@ ti4cartographer --players 2 --layout regular
 
 ## Board Layout: 3 Players Regular
 
-3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion. This board layout is well balanced, so `--aggression moderate` and playing to 10 victory points are recommended.
 
 ```
 ti4cartographer --players 3 --layout regular
@@ -50,7 +40,7 @@ ti4cartographer --players 3 --layout regular
 
 ## Board Layout: 3 Players Small
 
-3 planetary systems and 2 anomaly/wormhole/empty systems per player.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. This board layout has home systems closer to Mecatol Rex than normal but further away from each other than normal, so `--aggression moderate` and playing to 10 victory points are recommended.
 
 ```
 ti4cartographer --players 3 --layout small
@@ -62,7 +52,7 @@ ti4cartographer --players 3 --layout small
 
 ## Board Layout: 3 Players Large
 
-5 planetary systems and 3 anomaly/wormhole/empty systems per player.
+5 planetary systems and 3 anomaly/wormhole/empty systems per player. This board layout has 60% more planets per player than normal and has home systems much further away from each other than normal, so `--aggression high` and playing to 14 victory points are recommended.
 
 ```
 ti4cartographer --players 3 --layout large
@@ -74,7 +64,7 @@ ti4cartographer --players 3 --layout large
 
 ## Board Layout: 4 Players Regular
 
-3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion. This board layout is well balanced, so `--aggression moderate` and playing to 10 victory points are recommended.
 
 ```
 ti4cartographer --players 4 --layout regular
@@ -86,7 +76,7 @@ ti4cartographer --players 4 --layout regular
 
 ## Board Layout: 4 Players Small
 
-3 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional planetary system and 1 additional anomaly/wormhole/empty system.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional planetary system and 1 additional anomaly/wormhole/empty system. This board layout has home systems further away from each other than normal, so `--aggression high` and playing to 10 victory points are recommended.
 
 ```
 ti4cartographer --players 4 --layout small
@@ -98,7 +88,7 @@ ti4cartographer --players 4 --layout small
 
 ## Board Layout: 4 Players Large
 
-5 planetary systems and 3 anomaly/wormhole/empty systems per player.
+5 planetary systems and 3 anomaly/wormhole/empty systems per player. This board layout has 60% more planets per player than normal and has home systems further away from each other than normal, so `--aggression high` and playing to 14 victory points are recommended.
 
 ```
 ti4cartographer --players 4 --layout large
@@ -110,7 +100,7 @@ ti4cartographer --players 4 --layout large
 
 ## Board Layout: 5 Players Regular
 
-3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion. This board layout is well balanced, so `--aggression moderate` and playing to 10 victory points are recommended.
 
 ```
 ti4cartographer --players 5 --layout regular
@@ -122,7 +112,7 @@ ti4cartographer --players 5 --layout regular
 
 ## Board Layout: 5 Players Small
 
-3 planetary systems and 2 anomaly/wormhole/empty systems per player.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. This board layout is well balanced, so `--aggression moderate` and playing to 10 victory points are recommended.
 
 ```
 ti4cartographer --players 5 --layout small
@@ -134,7 +124,7 @@ ti4cartographer --players 5 --layout small
 
 ## Board Layout: 5 Players Large
 
-4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional anomaly/wormhole/empty system.
+4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional anomaly/wormhole/empty system. This board layout has 33% more planets per player than normal, so `--aggression high` and playing to 12–14 victory points are recommended.
 
 ```
 ti4cartographer --players 5 --layout large
@@ -146,7 +136,7 @@ ti4cartographer --players 5 --layout large
 
 ## Board Layout: 6 Players Regular
 
-3 planetary systems and 2 anomaly/wormhole/empty systems per player.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. This board layout is well balanced, so `--aggression moderate` and playing to 10 victory points are recommended.
 
 ```
 ti4cartographer --players 6 --layout regular
@@ -158,7 +148,7 @@ ti4cartographer --players 6 --layout regular
 
 ## Board Layout: 6 Players Large
 
-6 planetary systems and 3 anomaly/wormhole/empty systems per player. Requires the Prophecy of Kings Expansion.
+6 planetary systems and 3 anomaly/wormhole/empty systems per player. Requires the Prophecy of Kings Expansion. This board layout has twice as many planets per player than normal and has home systems further away from Mecatol Rex than normal, so `--aggression high` and playing to 14 victory points are recommended.
 
 ```
 ti4cartographer --players 6 --layout large
@@ -170,7 +160,7 @@ ti4cartographer --players 6 --layout large
 
 ## Board Layout: 7 Players Regular
 
-3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion. This board layout is well balanced, so `--aggression moderate` and playing to 10 victory points are recommended.
 
 ```
 ti4cartographer --players 7 --layout regular
@@ -182,7 +172,7 @@ ti4cartographer --players 7 --layout regular
 
 ## Board Layout: 7 Players Small
 
-4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional planetary system and 1 additional anomaly/wormhole/empty system. Requires the Prophecy of Kings Expansion.
+4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 1 additional planetary system and 1 additional anomaly/wormhole/empty system. Requires the Prophecy of Kings Expansion. This board layout has 38% more planets per player than normal and has home systems further away from Mecatol Rex than normal, so `--aggression high` and playing to 12–14 victory points are recommended.
 
 ```
 ti4cartographer --players 7 --layout small
@@ -194,7 +184,7 @@ ti4cartographer --players 7 --layout small
 
 ## Board Layout: 7 Players Large
 
-4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 3 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
+4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 3 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Uses hyperlanes. Requires the Prophecy of Kings Expansion. This board layout has 48% more planets per player than normal and has home systems further away from Mecatol Rex than normal, so `--aggression high` and playing to 14 victory points are recommended.
 
 ```
 ti4cartographer --players 7 --layout large
@@ -206,7 +196,7 @@ ti4cartographer --players 7 --layout large
 
 ## Board Layout: 8 Players Regular
 
-3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion.
+3 planetary systems and 2 anomaly/wormhole/empty systems per player. Uses hyperlanes. Requires the Prophecy of Kings Expansion. This board layout is well balanced, so `--aggression moderate` and playing to 10 victory points are recommended.
 
 ```
 ti4cartographer --players 8 --layout regular
@@ -218,7 +208,7 @@ ti4cartographer --players 8 --layout regular
 
 ## Board Layout: 8 Players Large
 
-4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 2 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Requires the Prophecy of Kings Expansion.
+4 planetary systems and 2 anomaly/wormhole/empty systems per player, with 2 additional planetary systems and 2 additional anomaly/wormhole/empty systems. Requires the Prophecy of Kings Expansion. This board layout has 42% more planets per player than normal and has home systems further away from Mecatol Rex than normal, so `--aggression high` and playing to 14 victory points are recommended.
 
 ```
 ti4cartographer --players 8 --layout large
@@ -267,7 +257,7 @@ This installs the programs to `/usr/local/bin/ti4cartographer` and `/usr/local/b
 
 # Usage
 
-Run `ti4cartographer` with no arguments or with the `--help` argument to obtain usage information. Otherwise, for regular use, run `ti4cartographer` with:
+The `ti4cartographer` program computes an optimal board and outputs its Tabletop Simulator string. Run `ti4cartographer` with no arguments or with the `--help` argument to obtain usage information. Otherwise, for regular use, run `ti4cartographer` with:
 
 ```
 ti4cartographer  --players <number>  --layout <type>  --aggression <type>  --version <type>  --quiet
@@ -279,9 +269,7 @@ ti4cartographer  --players <number>  --layout <type>  --aggression <type>  --ver
 - `--version <type>`: Optional. Determines whether the system tiles from the Prophecy of Kings expansion can be used. Choices are `base` or `expansion`. The default is `expansion`. Note that 7 and 8 player games require the Prophecy of Kings expansion.
 - `--quiet`: Optional. Activates quiet mode, where the only console output is the generated board's Tabletop Simulator string.
 
-The `ti4cartographer` program computes an optimal board given the arguments and outputs its Tabletop Simulator string as well as a link to visualize the board in Keegan Williams' TI4 Map Generator (<https://keeganw.github.io/ti4/>).
-
-The `ti4atlas` utility takes no arguments and simply prints out a list of the various systems ranked from best to worst. This ranking only takes into account the individual systems by themselves, and does not account for position on the game board, suitability as a forward outpost, or other interactions; such considerations are handled by the `ti4cartographer` program.
+The `ti4atlas` utility takes no arguments and simply prints out a list of the various systems ranked from best to worst. This ranking only takes into account the individual systems by themselves, and does not account for position on the game board, balance of planets, resources, and influence, suitability as a forward outpost, or other interactions; such considerations are handled by the `ti4cartographer` program.
 
 [(Back to Top)](#)
 
