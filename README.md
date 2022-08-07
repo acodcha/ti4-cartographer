@@ -1,3 +1,5 @@
+[View on GitHub.io](https://acodcha.github.io/ti4-cartographer) · [View on GitHub.com](https://github.com/acodcha/ti4-cartographer)
+
 [Board Layouts](#board-layouts) · [Setup](#setup) · [Usage](#usage) · [Documentation](#documentation) · [License](#license)
 
 ![build and test](https://github.com/acodcha/ti4cartographer/workflows/build%20and%20test/badge.svg?branch=main)
