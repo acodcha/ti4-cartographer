@@ -102,7 +102,7 @@ private:
   }
 
   void initialize_neighbors() noexcept {
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+    for (const std::pair<const Position, Tile>& position_and_tile : positions_to_tiles_) {
       if (!position_and_tile.second.is_hyperlane()) {
         std::set<Position> neighbors;
         for (const Position& neighbor_position : position_and_tile.first.possible_neighbors()) {
@@ -121,7 +121,7 @@ private:
       }
     }
     // Check that all neighbors are symmetric.
-    for (const std::pair<Position, std::set<Position>>& position_and_neighbors : neighbors_) {
+    for (const std::pair<const Position, std::set<Position>>& position_and_neighbors : neighbors_) {
       for (const Position& neighbor : position_and_neighbors.second) {
         const std::unordered_map<Position, std::set<Position>>::const_iterator neighbor_and_neighbors{neighbors_.find(neighbor)};
         if (neighbor_and_neighbors->second.find(position_and_neighbors.first) == neighbor_and_neighbors->second.cend()) {
@@ -132,7 +132,7 @@ private:
   }
 
   void initialize_mecatol_rex_position() noexcept {
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+    for (const std::pair<const Position, Tile>& position_and_tile : positions_to_tiles_) {
       if (position_and_tile.second.system_id() == MecatolRexSystemId) {
         mecatol_rex_position_ = position_and_tile.first;
       }
@@ -144,7 +144,7 @@ private:
     const std::set<Player> players_from_layout{players(number_of_players(layout))};
     // Check that the set of tiles contains all the player homes.
     std::set<Player> players_from_tiles;
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+    for (const std::pair<const Position, Tile>& position_and_tile : positions_to_tiles_) {
       if (position_and_tile.second.home_player().has_value()) {
         players_from_tiles.insert(position_and_tile.second.home_player().value());
       }
@@ -156,20 +156,20 @@ private:
   }
 
   void initialize_players_home_positions() noexcept {
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+    for (const std::pair<const Position, Tile>& position_and_tile : positions_to_tiles_) {
       if (position_and_tile.second.home_player().has_value()) {
         players_to_home_positions_.emplace(position_and_tile.second.home_player().value(), position_and_tile.first);
       }
     }
     verbose_message("Home positions:");
-    for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
+    for (const std::pair<const Player, Position>& player_and_home_position : players_to_home_positions_) {
       verbose_message("- " + label(player_and_home_position.first) + ": " + player_and_home_position.second.print());
     }
   }
 
   void initialize_distances_from_mecatol_rex() noexcept {
     positions_to_distances_from_mecatol_rex_ = positions_and_distances_from_target(mecatol_rex_position_);
-    for (const std::pair<Position, Distance>& position_and_distance_from_mecatol_rex : positions_to_distances_from_mecatol_rex_) {
+    for (const std::pair<const Position, Distance>& position_and_distance_from_mecatol_rex : positions_to_distances_from_mecatol_rex_) {
       if (position_and_distance_from_mecatol_rex.second > maximum_distance_from_mecatol_rex_) {
         maximum_distance_from_mecatol_rex_ = position_and_distance_from_mecatol_rex.second;
       }
@@ -177,13 +177,13 @@ private:
   }
 
   void initialize_distances_from_players_homes() noexcept {
-    for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
+    for (const std::pair<const Player, Position>& player_and_home_position : players_to_home_positions_) {
       const Player player{player_and_home_position.first};
       const Position home_position{player_and_home_position.second};
-      for (const std::pair<Position, Distance>& position_and_distance_from_target : positions_and_distances_from_target(home_position)) {
+      for (const std::pair<const Position, Distance>& position_and_distance_from_target : positions_and_distances_from_target(home_position)) {
         const Position position{position_and_distance_from_target.first};
         const Distance distance{position_and_distance_from_target.second};
-        std::pair<Player, Distance> player_and_distance{player, distance};
+        const std::pair<const Player, const Distance> player_and_distance{player, distance};
         const std::unordered_multimap<Position, std::map<Player, Distance>>::iterator position_to_players_home_distances{positions_to_players_home_distances_.find(position)};
         if (position_to_players_home_distances != positions_to_players_home_distances_.end()) {
           position_to_players_home_distances->second.emplace(player, distance);
@@ -196,19 +196,19 @@ private:
   }
 
   void initialize_relevant_players_and_equidistant_and_in_slice_positions() noexcept {
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+    for (const std::pair<const Position, Tile>& position_and_tile : positions_to_tiles_) {
       if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()) {
         const std::unordered_map<Position, std::map<Player, Distance>>::const_iterator position_and_players_home_distances{positions_to_players_home_distances_.find(position_and_tile.first)};
         // Compute the minimum distance.
         Distance minimum_distance{std::numeric_limits<Distance>::max()};
-        for (const std::pair<Player, Distance>& player_and_distance : position_and_players_home_distances->second) {
+        for (const std::pair<const Player, Distance>& player_and_distance : position_and_players_home_distances->second) {
           if (player_and_distance.second < minimum_distance) {
             minimum_distance = player_and_distance.second;
           }
         }
         // Find the relevant players.
         std::set<Player> relevant_players;
-        for (const std::pair<Player, Distance>& player_and_distance : position_and_players_home_distances->second) {
+        for (const std::pair<const Player, Distance>& player_and_distance : position_and_players_home_distances->second) {
           if (player_and_distance.second == minimum_distance) {
             relevant_players.insert(player_and_distance.first);
           }
@@ -245,13 +245,13 @@ private:
       verbose_message("- " + position.print());
     }
     verbose_message("In-slice positions:");
-    for (const std::pair<Player, std::set<Position>>& player_and_positions : players_to_in_slice_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_positions : players_to_in_slice_positions_) {
       verbose_message("- " + label(player_and_positions.first) + ": " + print_set(player_and_positions.second));
     }
   }
 
   void initialize_forward_and_lateral_positions() noexcept {
-    for (const std::pair<Player, Position>& player_and_home_position : players_to_home_positions_) {
+    for (const std::pair<const Player, Position>& player_and_home_position : players_to_home_positions_) {
       const std::unordered_map<Position, Distance>::const_iterator home_and_distance_to_mecatol_rex{positions_to_distances_from_mecatol_rex_.find(player_and_home_position.second)};
       const std::unordered_map<Position, std::set<Position>>::const_iterator home_position_and_neighbors{neighbors_.find(player_and_home_position.second)};
       if (home_and_distance_to_mecatol_rex != positions_to_distances_from_mecatol_rex_.cend() && home_position_and_neighbors != neighbors_.cend()) {
@@ -283,11 +283,11 @@ private:
       }
     }
     verbose_message("Forward positions:");
-    for (const std::pair<Player, std::set<Position>>& player_and_positions : players_to_forward_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_positions : players_to_forward_positions_) {
       verbose_message("- " + label(player_and_positions.first) + ": " + print_set(player_and_positions.second));
     }
     verbose_message("Lateral positions:");
-    for (const std::pair<Player, std::set<Position>>& player_and_positions : players_to_lateral_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_positions : players_to_lateral_positions_) {
       verbose_message("- " + label(player_and_positions.first) + ": " + print_set(player_and_positions.second));
     }
   }
@@ -341,7 +341,7 @@ private:
       }
     }
     verbose_message("Pathways to Mecatol Rex:");
-    for (const std::pair<Player, std::vector<Pathway>>& player_and_pathways : players_to_mecatol_rex_pathways_) {
+    for (const std::pair<const Player, std::vector<Pathway>>& player_and_pathways : players_to_mecatol_rex_pathways_) {
       verbose_message("- " + label(player_and_pathways.first) + ": " + print_vector(player_and_pathways.second));
     }
   }
@@ -388,11 +388,11 @@ private:
       }
     }
     verbose_message("Preferred positions:");
-    for (const std::pair<Player, std::set<Position>>& player_and_preferred_expansion_positions : players_to_preferred_expansion_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_preferred_expansion_positions : players_to_preferred_expansion_positions_) {
       verbose_message("- " + label(player_and_preferred_expansion_positions.first) + ": " + print_set(player_and_preferred_expansion_positions.second));
     }
     verbose_message("Alternate positions:");
-    for (const std::pair<Player, std::set<Position>>& player_and_alternate_expansion_positions : players_to_alternate_expansion_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_alternate_expansion_positions : players_to_alternate_expansion_positions_) {
       verbose_message("- " + label(player_and_alternate_expansion_positions.first) + ": " + print_set(player_and_alternate_expansion_positions.second));
     }
   }
@@ -523,7 +523,7 @@ private:
     }
     // Keep only the optimal positions that have the most equidistant neighbors.
     std::set<Position> optimal_positions_;
-    for (const std::pair<Position, uint8_t>& optimal_position_and_number_of_equidistant_neighbors : optimal_positions_and_number_of_equidistant_neighbors) {
+    for (const std::pair<const Position, uint8_t>& optimal_position_and_number_of_equidistant_neighbors : optimal_positions_and_number_of_equidistant_neighbors) {
       if (optimal_position_and_number_of_equidistant_neighbors.second == maximum_number_of_equidistant_neighbors) {
         optimal_positions_.insert(optimal_position_and_number_of_equidistant_neighbors.first);
       }
@@ -536,7 +536,7 @@ private:
     Distance minimum_distance_from_other_players_homes_{std::numeric_limits<Distance>::max()};
     const std::unordered_map<Position, std::map<Player, Distance>>::const_iterator position_to_players_home_distances{positions_to_players_home_distances_.find(position)};
     if (position_to_players_home_distances != positions_to_players_home_distances_.cend()) {
-      for (const std::pair<Player, Distance>& player_and_home_distance : position_to_players_home_distances->second) {
+      for (const std::pair<const Player, Distance>& player_and_home_distance : position_to_players_home_distances->second) {
         if (player != player_and_home_distance.first && player_and_home_distance.second > minimum_distance_from_other_players_homes_) {
           minimum_distance_from_other_players_homes_ = player_and_home_distance.second;
         }

@@ -82,7 +82,7 @@ private:
     uint8_t number_of_planetary_anomaly_wormhole_empty_tiles{0};
     uint8_t number_of_equidistant_positions{0};
     uint8_t number_of_in_slice_positions{0};
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+    for (const std::pair<const Position, Tile>& position_and_tile : positions_to_tiles_) {
       if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty()) {
         ++number_of_planetary_anomaly_wormhole_empty_tiles;
       }
@@ -257,7 +257,7 @@ private:
   /// \brief Require that each player have at least one pathway to Mecatol Rex that is devoid of supernovas. A supernova along the pathway to Mecatol Rex lengthens the pathway, making it undesirable.
   bool pathways_to_mecatol_rex_are_clear() const noexcept {
     bool each_player_has_at_least_one_usable_pathway{true};
-    for (const std::pair<Player, std::vector<Pathway>>& player_and_mecatol_rex_pathways : players_to_mecatol_rex_pathways_) {
+    for (const std::pair<const Player, std::vector<Pathway>>& player_and_mecatol_rex_pathways : players_to_mecatol_rex_pathways_) {
       if (!player_and_mecatol_rex_pathways.second.empty()) {
         bool player_has_no_usable_pathways{true};
         for (const Pathway& pathway : player_and_mecatol_rex_pathways.second) {
@@ -289,7 +289,7 @@ private:
     for (const Player& player : players_) {
       players_to_number_of_wormholes_adjacent_to_home.emplace(player, 0);
     }
-    for (const std::pair<Player, std::set<Position>>& player_and_forward_positions : players_to_forward_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_forward_positions : players_to_forward_positions_) {
       for (const Position& position : player_and_forward_positions.second) {
         const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
@@ -298,7 +298,7 @@ private:
         }
       }
     }
-    for (const std::pair<Player, std::set<Position>>& player_and_lateral_positions : players_to_lateral_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_lateral_positions : players_to_lateral_positions_) {
       for (const Position& position : player_and_lateral_positions.second) {
         const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
@@ -307,7 +307,7 @@ private:
         }
       }
     }
-    for (const std::pair<Player, int8_t>& player_and_number_of_wormholes_adjacent_to_home : players_to_number_of_wormholes_adjacent_to_home) {
+    for (const std::pair<const Player, int8_t>& player_and_number_of_wormholes_adjacent_to_home : players_to_number_of_wormholes_adjacent_to_home) {
       if (player_and_number_of_wormholes_adjacent_to_home.second > 1) {
         return false;
       }
@@ -334,7 +334,7 @@ private:
       players_to_effective_number_of_systems.emplace(player, 0.0f);
       players_to_effective_number_of_planets.emplace(player, 0.0f);
     }
-    for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
+    for (const std::pair<const Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
       const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position_and_relevant_players.first)};
       const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
       // Exclude the Mecatol Rex system, hyperlanes, and other irrelevant system categories.
@@ -365,7 +365,7 @@ private:
       players_to_useful_resources.emplace(player, 0.0f);
       players_to_useful_influence.emplace(player, 0.0f);
     }
-    for (const std::pair<Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
+    for (const std::pair<const Position, std::set<Player>>& position_and_relevant_players : positions_to_relevant_players_) {
       const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position_and_relevant_players.first)};
       const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
       // Exclude the Mecatol Rex system, hyperlanes, and other irrelevant system categories.
@@ -423,7 +423,7 @@ private:
 
   /// \brief If a system is in a player's slice, that player gains its score. If a system is equidistant, each relevant player gets a fraction of its score.
   void add_base_system_scores() noexcept {
-    for (const std::pair<Position, Tile>& position_and_tile : positions_to_tiles_) {
+    for (const std::pair<const Position, Tile>& position_and_tile : positions_to_tiles_) {
       const std::unordered_map<Position, std::map<Player, Distance>>::const_iterator position_and_players_home_distances{positions_to_players_home_distances_.find(position_and_tile.first)};
       if (position_and_tile.second.is_planetary_anomaly_wormhole_or_empty() && position_and_players_home_distances != positions_to_players_home_distances_.cend()) {
         const std::unordered_map<Position, std::set<Player>>::const_iterator position_to_relevant_players{positions_to_relevant_players_.find(position_and_tile.first)};
@@ -446,7 +446,7 @@ private:
     for (const Player& player : players_) {
       players_and_best_expansion_scores.emplace(player, 0.0f);
     }
-    for (const std::pair<Player, std::set<Position>>& player_and_preferred_expansion_positions : players_to_preferred_expansion_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_preferred_expansion_positions : players_to_preferred_expansion_positions_) {
       for (const Position& position : player_and_preferred_expansion_positions.second) {
         const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
@@ -456,7 +456,7 @@ private:
         }
       }
     }
-    for (const std::pair<Player, std::set<Position>>& player_and_alternate_expansion_positions : players_to_alternate_expansion_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_alternate_expansion_positions : players_to_alternate_expansion_positions_) {
       for (const Position& position : player_and_alternate_expansion_positions.second) {
         const std::unordered_map<Position, Tile>::const_iterator position_and_tile{positions_to_tiles_.find(position)};
         const std::unordered_set<System>::const_iterator system{Systems.find({position_and_tile->second.system_id()})};
@@ -466,14 +466,14 @@ private:
         }
       }
     }
-    for (const std::pair<Player, float>& player_and_best_expansion_score : players_and_best_expansion_scores) {
+    for (const std::pair<const Player, float>& player_and_best_expansion_score : players_and_best_expansion_scores) {
       player_scores_[player_and_best_expansion_score.first] += player_and_best_expansion_score.second;
     }
   }
 
   /// \brief If a player can construct a space dock on their preferred expansion positions, the score is increased.
   void add_preferred_expansion_position_scores() noexcept {
-    for (const std::pair<Player, std::set<Position>>& player_and_preferred_expansion_positions : players_to_preferred_expansion_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_preferred_expansion_positions : players_to_preferred_expansion_positions_) {
       if (!player_and_preferred_expansion_positions.second.empty()) {
         float average_preferred_expansion_position_score{0.0f};
         for (const Position& position : player_and_preferred_expansion_positions.second) {
@@ -490,7 +490,7 @@ private:
 
   /// \brief If a player can construct a space dock on their alternate expansion positions, the score is increased.
   void add_alternate_expansion_position_scores() noexcept {
-    for (const std::pair<Player, std::set<Position>>& player_and_alternate_expansion_positions : players_to_alternate_expansion_positions_) {
+    for (const std::pair<const Player, std::set<Position>>& player_and_alternate_expansion_positions : players_to_alternate_expansion_positions_) {
       if (!player_and_alternate_expansion_positions.second.empty()) {
         float average_alternate_expansion_position_score{0.0f};
         for (const Position& position : player_and_alternate_expansion_positions.second) {
@@ -507,7 +507,7 @@ private:
 
   /// \brief If a player does not have a clear pathway to Mecatol Rex, the score is penalized.
   void add_mecatol_rex_pathway_scores() noexcept {
-    for (const std::pair<Player, std::vector<Pathway>>& player_and_mecatol_rex_pathways : players_to_mecatol_rex_pathways_) {
+    for (const std::pair<const Player, std::vector<Pathway>>& player_and_mecatol_rex_pathways : players_to_mecatol_rex_pathways_) {
       if (!player_and_mecatol_rex_pathways.second.empty()) {
         float best_pathway_score{std::numeric_limits<float>::lowest()};
         for (const Pathway& pathway : player_and_mecatol_rex_pathways.second) {
@@ -566,7 +566,7 @@ private:
     float maximum_score{std::numeric_limits<float>::lowest()};
     float average_score{0.0f};
     float minimum_score{std::numeric_limits<float>::max()};
-    for (const std::pair<Player, float> player_score : player_scores_) {
+    for (const std::pair<const Player, float>& player_score : player_scores_) {
       if (player_score.second > maximum_score) {
         maximum_score = player_score.second;
       }
@@ -581,7 +581,7 @@ private:
 
   std::string print_player_scores() const noexcept {
     std::string text;
-    for (const std::pair<Player, float> player_score : player_scores_) {
+    for (const std::pair<const Player, float>& player_score : player_scores_) {
       if (!text.empty()) {
         text += " ";
       }
