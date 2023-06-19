@@ -411,7 +411,7 @@ const std::unordered_set<System> Systems{
   { "91B-2", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
   { "91B-3", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
   { "91B-4", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
-  { "91B-5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}}
+  { "91B-5", GameVersion::ProphecyOfKingsExpansion, SystemCategory::Hyperlane, {}, {}, {}},
 };
 
 } // namespace TI4Cartographer

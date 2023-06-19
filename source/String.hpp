@@ -7,19 +7,23 @@ namespace TI4Cartographer {
 /// \brief Make all characters in a string lowercase.
 std::string lowercase(const std::string& text) noexcept {
   std::string new_text{text};
-  std::transform(new_text.begin(), new_text.end(), new_text.begin(), [](const char character)->char{return std::tolower(character);});
+  std::transform(
+    new_text.begin(), new_text.end(), new_text.begin(),
+    [](const char character) -> char { return std::tolower(character); });
   return new_text;
 }
 
 /// \brief Remove all whitespace from a string.
 std::string remove_whitespace(const std::string& text) noexcept {
   std::string new_text{text};
-  new_text.erase(remove_if(new_text.begin(), new_text.end(), ::isspace), new_text.end());
+  new_text.erase(
+    remove_if(new_text.begin(), new_text.end(), ::isspace), new_text.end());
   return new_text;
 }
 
 /// \brief Remove all non-alphanumeric characters from a string.
-std::string remove_non_alphanumeric_characters(const std::string& text) noexcept {
+std::string remove_non_alphanumeric_characters(
+  const std::string& text) noexcept {
   std::string new_text;
   for (const char character : text) {
     if (::isalnum(character)) {
@@ -30,7 +34,8 @@ std::string remove_non_alphanumeric_characters(const std::string& text) noexcept
 }
 
 /// \brief Remove all occurrences of a specific character from a string.
-std::string remove_character(const std::string& text, const char character_to_remove) noexcept {
+std::string remove_character(
+  const std::string& text, const char character_to_remove) noexcept {
   std::string new_text;
   for (const char character : text) {
     if (character != character_to_remove) {
@@ -41,26 +46,31 @@ std::string remove_character(const std::string& text, const char character_to_re
 }
 
 /// \brief Replace each occurrence of a character with another character.
-std::string replace_character(const std::string& text, const char original, const char replacement) noexcept {
+std::string replace_character(const std::string& text, const char original,
+                              const char replacement) noexcept {
   std::string new_text{text};
-  std::transform(new_text.begin(), new_text.end(), new_text.begin(), [original, replacement](const char character)->char{
-    if (character == original) {
-      return replacement;
-    }
-    return character;
-  });
+  std::transform(new_text.begin(), new_text.end(), new_text.begin(),
+                 [original, replacement](const char character) -> char {
+                   if (character == original) {
+                     return replacement;
+                   }
+                   return character;
+                 });
   return new_text;
 }
 
 /// \brief Split a string into words using whitespace as a delimiter.
 std::vector<std::string> split_by_whitespace(const std::string& text) noexcept {
   std::istringstream stream{text};
-  std::vector<std::string> words{std::istream_iterator<std::string>{stream}, std::istream_iterator<std::string>{}};
+  std::vector<std::string> words{std::istream_iterator<std::string>{stream},
+                                 std::istream_iterator<std::string>{}};
   return words;
 }
 
-/// \brief Pad a string to a given length using trailing spaces. If the string is already longer than the given length, nothing is changed.
-std::string pad_to_length(const std::string& text, const uint64_t length) noexcept {
+/// \brief Pad a string to a given length using trailing spaces. If the string
+/// is already longer than the given length, nothing is changed.
+std::string pad_to_length(
+  const std::string& text, const uint64_t length) noexcept {
   std::string new_text{text};
   if (length > new_text.size()) {
     new_text.append(length - new_text.size(), ' ');
@@ -74,7 +84,8 @@ std::string snake_case(const std::string& text) noexcept {
 }
 
 /// \brief Print a real number to a given precision.
-std::string real_number_to_string(const float value, const int8_t precision = 2) noexcept {
+std::string real_number_to_string(
+  const float value, const int8_t precision = 2) noexcept {
   std::ostringstream stream;
   stream << std::fixed << std::setprecision(precision) << value;
   return stream.str();
@@ -104,7 +115,8 @@ std::string score_imbalance_ratio_to_string(const float value) noexcept {
   return stream.str();
 }
 
-template <class Type> std::string print_vector(const std::vector<Type>& data) noexcept {
+template<class Type>
+std::string print_vector(const std::vector<Type>& data) noexcept {
   std::string text;
   for (const Type& element : data) {
     if (!text.empty()) {
@@ -115,7 +127,8 @@ template <class Type> std::string print_vector(const std::vector<Type>& data) no
   return text;
 }
 
-template <class Type> std::string print_set(const std::set<Type>& data) noexcept {
+template<class Type>
+std::string print_set(const std::set<Type>& data) noexcept {
   std::string text;
   for (const Type& element : data) {
     if (!text.empty()) {
@@ -126,7 +139,8 @@ template <class Type> std::string print_set(const std::set<Type>& data) noexcept
   return text;
 }
 
-template <class Type> std::string print_unordered_set(const std::unordered_set<Type>& data) noexcept {
+template<class Type>
+std::string print_unordered_set(const std::unordered_set<Type>& data) noexcept {
   std::string text;
   for (const Type& element : data) {
     if (!text.empty()) {
@@ -137,4 +151,4 @@ template <class Type> std::string print_unordered_set(const std::unordered_set<T
   return text;
 }
 
-} // namespace TI4Cartographer
+}  // namespace TI4Cartographer
