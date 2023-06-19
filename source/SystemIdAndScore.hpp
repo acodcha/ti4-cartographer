@@ -18,12 +18,12 @@ public:
 
   struct sort_by_descending_score {
     bool operator()(
-      const SystemIdAndScore& system_id_and_score_1,
-      const SystemIdAndScore& system_id_and_score_2) const noexcept {
+        const SystemIdAndScore& system_id_and_score_1,
+        const SystemIdAndScore& system_id_and_score_2) const noexcept {
       if (system_id_and_score_1.score() < system_id_and_score_2.score()) {
         return false;
       } else if (
-        system_id_and_score_1.score() > system_id_and_score_2.score()) {
+          system_id_and_score_1.score() > system_id_and_score_2.score()) {
         return true;
       } else {
         return system_id_and_score_1.id() < system_id_and_score_2.id();
@@ -52,7 +52,7 @@ namespace std {
 
 template<> struct hash<TI4Cartographer::SystemIdAndScore> {
   size_t operator()(
-    const TI4Cartographer::SystemIdAndScore& system_id_and_score) const {
+      const TI4Cartographer::SystemIdAndScore& system_id_and_score) const {
     return hash<std::string>()(system_id_and_score.id());
   }
 };

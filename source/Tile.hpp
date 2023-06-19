@@ -42,7 +42,7 @@ public:
       system_categories_.insert(SystemCategory::Hyperlane);
       is_hyperlane_ = true;
       const std::unordered_set<System>::const_iterator system{
-        Systems.find({system_id_})};
+          Systems.find({system_id_})};
       if (system == Systems.cend()) {
         error("System ID " + system_id + " does not exist. Trying to assign this system to the tile at position " + position.print() + ".");
       }
@@ -65,7 +65,7 @@ public:
   }
 
   bool system_categories_contains(
-    const SystemCategory system_category) const noexcept {
+      const SystemCategory system_category) const noexcept {
     if (system_categories_.find(system_category) != system_categories_.cend()) {
       return true;
     } else {
@@ -136,10 +136,10 @@ private:
 
   void check_system_category() const {
     const std::unordered_set<System>::const_iterator system{
-      Systems.find({system_id_})};
+        Systems.find({system_id_})};
     if (system != Systems.cend()) {
       const std::set<SystemCategory>::const_iterator system_category{
-        system_categories_.find(system->category())};
+          system_categories_.find(system->category())};
       if (system_category == system_categories_.cend()) {
         error("System " + system->print()
               + " is of the wrong type for the tile at position "

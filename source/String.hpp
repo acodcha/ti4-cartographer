@@ -8,8 +8,8 @@ namespace TI4Cartographer {
 std::string lowercase(const std::string& text) noexcept {
   std::string new_text{text};
   std::transform(
-    new_text.begin(), new_text.end(), new_text.begin(),
-    [](const char character) -> char { return std::tolower(character); });
+      new_text.begin(), new_text.end(), new_text.begin(),
+      [](const char character) -> char { return std::tolower(character); });
   return new_text;
 }
 
@@ -17,13 +17,13 @@ std::string lowercase(const std::string& text) noexcept {
 std::string remove_whitespace(const std::string& text) noexcept {
   std::string new_text{text};
   new_text.erase(
-    remove_if(new_text.begin(), new_text.end(), ::isspace), new_text.end());
+      remove_if(new_text.begin(), new_text.end(), ::isspace), new_text.end());
   return new_text;
 }
 
 /// \brief Remove all non-alphanumeric characters from a string.
 std::string remove_non_alphanumeric_characters(
-  const std::string& text) noexcept {
+    const std::string& text) noexcept {
   std::string new_text;
   for (const char character : text) {
     if (::isalnum(character)) {
@@ -35,7 +35,7 @@ std::string remove_non_alphanumeric_characters(
 
 /// \brief Remove all occurrences of a specific character from a string.
 std::string remove_character(
-  const std::string& text, const char character_to_remove) noexcept {
+    const std::string& text, const char character_to_remove) noexcept {
   std::string new_text;
   for (const char character : text) {
     if (character != character_to_remove) {
@@ -70,7 +70,7 @@ std::vector<std::string> split_by_whitespace(const std::string& text) noexcept {
 /// \brief Pad a string to a given length using trailing spaces. If the string
 /// is already longer than the given length, nothing is changed.
 std::string pad_to_length(
-  const std::string& text, const uint64_t length) noexcept {
+    const std::string& text, const uint64_t length) noexcept {
   std::string new_text{text};
   if (length > new_text.size()) {
     new_text.append(length - new_text.size(), ' ');
@@ -85,7 +85,7 @@ std::string snake_case(const std::string& text) noexcept {
 
 /// \brief Print a real number to a given precision.
 std::string real_number_to_string(
-  const float value, const int8_t precision = 2) noexcept {
+    const float value, const int8_t precision = 2) noexcept {
   std::ostringstream stream;
   stream << std::fixed << std::setprecision(precision) << value;
   return stream.str();

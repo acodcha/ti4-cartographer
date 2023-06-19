@@ -66,7 +66,7 @@ public:
     uint8_t counter{0};
     for (const std::string& system_id : data_) {
       const std::unordered_set<System>::const_iterator found{
-        Systems.find({system_id})};
+          Systems.find({system_id})};
       if (found != Systems.cend()) {
         if (counter > 0) {
           stream << std::endl;

@@ -11,8 +11,8 @@ public:
 
   double value_seconds() const noexcept {
     const std::chrono::microseconds duration{
-      std::chrono::duration_cast<std::chrono::microseconds>(
-        std::chrono::high_resolution_clock::now() - start_)};
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::high_resolution_clock::now() - start_)};
     return duration.count() / 1000000.0;
   }
 

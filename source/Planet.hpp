@@ -10,11 +10,11 @@ class Planet {
 public:
   Planet() noexcept {}
 
-  Planet(
-    const std::string& name, const int8_t resources, const int8_t influence,
-    const std::optional<TechnologyType>& technology_specialty,
-    const std::optional<PlanetTrait>& trait,
-    const std::optional<LegendaryPlanet>& legendary) noexcept
+  Planet(const std::string& name, const int8_t resources,
+         const int8_t influence,
+         const std::optional<TechnologyType>& technology_specialty,
+         const std::optional<PlanetTrait>& trait,
+         const std::optional<LegendaryPlanet>& legendary) noexcept
     : name_(name), resources_(resources), influence_(influence),
       technology_specialty_(technology_specialty), trait_(trait),
       legendary_(legendary) {
@@ -60,7 +60,7 @@ public:
   std::string print() const noexcept {
     std::string text{name_};
     text +=
-      " (" + std::to_string(resources_) + "/" + std::to_string(influence_);
+        " (" + std::to_string(resources_) + "/" + std::to_string(influence_);
     if (technology_specialty_.has_value()) {
       text += "/" + abbreviation(technology_specialty_);
     }
@@ -76,7 +76,7 @@ public:
 
   struct sort_by_name {
     bool operator()(
-      const Planet& planet_1, const Planet& planet_2) const noexcept {
+        const Planet& planet_1, const Planet& planet_2) const noexcept {
       return planet_1.name_ < planet_2.name_;
     }
   };
