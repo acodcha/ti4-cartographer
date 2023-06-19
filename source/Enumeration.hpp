@@ -10,7 +10,7 @@ const std::unordered_map<Enumeration, std::string> labels;
 template<typename Enumeration>
 std::string label(const Enumeration& type) noexcept {
   const typename std::unordered_map<Enumeration, std::string>::const_iterator
-    found{labels<Enumeration>.find(type)};
+      found{labels<Enumeration>.find(type)};
   if (found != labels<Enumeration>.cend()) {
     return found->second;
   } else {
@@ -33,7 +33,7 @@ const std::unordered_map<Enumeration, std::string> abbreviations;
 template<typename Enumeration>
 std::string abbreviation(const Enumeration& type) noexcept {
   const typename std::unordered_map<Enumeration, std::string>::const_iterator
-    found{abbreviations<Enumeration>.find(type)};
+      found{abbreviations<Enumeration>.find(type)};
   if (found != abbreviations<Enumeration>.cend()) {
     return found->second;
   } else {
@@ -56,9 +56,9 @@ const std::unordered_map<std::string, Enumeration> spellings;
 template<typename Enumeration>
 std::optional<Enumeration> type(const std::string& spelling) noexcept {
   const std::string new_spelling{
-    lowercase(remove_non_alphanumeric_characters(spelling))};
+      lowercase(remove_non_alphanumeric_characters(spelling))};
   const typename std::unordered_map<std::string, Enumeration>::const_iterator
-    enumeration{spellings<Enumeration>.find(new_spelling)};
+      enumeration{spellings<Enumeration>.find(new_spelling)};
   if (enumeration != spellings<Enumeration>.cend()) {
     return {enumeration->second};
   } else {

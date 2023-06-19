@@ -79,8 +79,8 @@ private:
     uint8_t number_of_players{6};
     std::string layout_string{"regular"};
     for (
-      std::vector<std::string>::const_iterator argument = arguments_.cbegin();
-      argument < arguments_.cend(); ++argument) {
+        std::vector<std::string>::const_iterator argument = arguments_.cbegin();
+        argument < arguments_.cend(); ++argument) {
       if (*argument == Arguments::QuietMode) {
         Communicator::get().initialize(CommunicatorMode::Quiet);
       } else if (*argument == Arguments::UsageInformation) {
@@ -91,8 +91,8 @@ private:
                  && argument + 1 < arguments_.cend()) {
         number_of_players = static_cast<uint8_t>(std::stoi(*(argument + 1)));
         check_number_of_players(number_of_players);
-      } else if (
-        *argument == Arguments::LayoutKey && argument + 1 < arguments_.cend()) {
+      } else if (*argument == Arguments::LayoutKey
+                 && argument + 1 < arguments_.cend()) {
         layout_string = *(argument + 1);
       } else if (*argument == Arguments::AggressionKey
                  && argument + 1 < arguments_.cend()) {
@@ -119,7 +119,7 @@ private:
       aggression_ = found.value();
     } else {
       message_usage_information_and_error(
-        "Unknown board aggression: " + aggression);
+          "Unknown board aggression: " + aggression);
     }
   }
 
@@ -129,29 +129,29 @@ private:
       game_version_ = found.value();
     } else {
       message_usage_information_and_error(
-        "Unknown game version: " + game_version);
+          "Unknown game version: " + game_version);
     }
   }
 
   void check_game_version(const uint8_t number_of_players) const {
     if (number_of_players >= 7 && game_version_ == GameVersion::BaseGame) {
       message_usage_information_and_error(
-        "7 and 8 player games require the "
-        + label(GameVersion::ProphecyOfKingsExpansion) + ".");
+          "7 and 8 player games require the "
+          + label(GameVersion::ProphecyOfKingsExpansion) + ".");
     }
   }
 
   void initialize_layout(
-    const uint8_t number_of_players, const std::string& layout_string) {
+      const uint8_t number_of_players, const std::string& layout_string) {
     const std::string label{
-      std::to_string(number_of_players) + "players"
-      + lowercase(remove_non_alphanumeric_characters(layout_string))};
+        std::to_string(number_of_players) + "players"
+        + lowercase(remove_non_alphanumeric_characters(layout_string))};
     const std::optional<Layout> found{type<Layout>(label)};
     if (found.has_value()) {
       layout_ = found.value();
     } else {
       message_usage_information_and_error(
-        "Unknown board layout: " + layout_string);
+          "Unknown board layout: " + layout_string);
     }
   }
 
@@ -159,8 +159,8 @@ private:
     verbose_message(Separator);
     verbose_message(ProgramName);
     verbose_message(
-      "Generates randomized balanced boards for the Twilight Imperium 4th "
-      "Edition board game.");
+        "Generates randomized balanced boards for the Twilight Imperium 4th "
+        "Edition board game.");
     verbose_message("Compiled: " + CompilationDateAndTime);
     verbose_message("Command: " + command());
   }
@@ -169,20 +169,23 @@ private:
     const std::string space{"  "};
     verbose_message("Usage:");
     verbose_message(
-      space + executable_name_ + space + Arguments::NumberOfPlayersPattern
-      + space + Arguments::LayoutPattern + space + Arguments::AggressionPattern
-      + space + Arguments::GameVersionPattern + space + Arguments::QuietMode);
+        space + executable_name_ + space + Arguments::NumberOfPlayersPattern
+        + space + Arguments::LayoutPattern + space
+        + Arguments::AggressionPattern + space + Arguments::GameVersionPattern
+        + space + Arguments::QuietMode);
     const uint_least64_t length{std::max(
-      {Arguments::UsageInformation.length(),
-       Arguments::NumberOfPlayersPattern.length(),
-       Arguments::LayoutPattern.length(), Arguments::AggressionPattern.length(),
-       Arguments::GameVersionPattern.length(), Arguments::QuietMode.length()})};
+        {Arguments::UsageInformation.length(),
+         Arguments::NumberOfPlayersPattern.length(),
+         Arguments::LayoutPattern.length(),
+         Arguments::AggressionPattern.length(),
+         Arguments::GameVersionPattern.length(),
+         Arguments::QuietMode.length()})};
     verbose_message("Arguments:");
     verbose_message(space + pad_to_length(Arguments::UsageInformation, length)
                     + space + "Displays this information and exits.");
     verbose_message(
-      space + pad_to_length(Arguments::NumberOfPlayersPattern, length) + space
-      + "Required. Specifies the number of players. Choices are 2-8.");
+        space + pad_to_length(Arguments::NumberOfPlayersPattern, length) + space
+        + "Required. Specifies the number of players. Choices are 2-8.");
     verbose_message(space + pad_to_length(Arguments::LayoutPattern, length) + space + "Optional. Specifies the board layout. Choices vary by number of players, but typically include regular, small, or large. The default is regular.");
     verbose_message(space + space + "2 players: regular");
     verbose_message(space + space + "3 players: regular, small, or large");
@@ -207,7 +210,7 @@ private:
 
   void message_start_information() const noexcept {
     verbose_message(
-      "The number of players and board layout is: " + label(layout_));
+        "The number of players and board layout is: " + label(layout_));
     verbose_message("The aggression is: " + label(aggression_));
     verbose_message("The game version is: " + label(game_version_));
   }

@@ -11,14 +11,14 @@ enum class CommunicatorMode : uint8_t { Verbose, Quiet };
 
 template<>
 const std::unordered_map<CommunicatorMode, std::string> labels<CommunicatorMode>{
-  {CommunicatorMode::Verbose, "Verbose"},
-  {CommunicatorMode::Quiet,   "Quiet"  }
+    {CommunicatorMode::Verbose, "Verbose"},
+    {CommunicatorMode::Quiet,   "Quiet"  }
 };
 
 template<> const std::unordered_map<std::string, CommunicatorMode>
-  spellings<CommunicatorMode>{
-    {"verbose", CommunicatorMode::Verbose},
-    {"quiet",   CommunicatorMode::Quiet  }
+    spellings<CommunicatorMode>{
+        {"verbose", CommunicatorMode::Verbose},
+        {"quiet",   CommunicatorMode::Quiet  }
 };
 
 /// \brief Singleton class that tracks whether the quiet or verbose mode is used

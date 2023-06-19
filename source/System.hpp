@@ -127,14 +127,14 @@ public:
 
   struct sort_by_id {
     bool operator()(
-      const System& system_1, const System& system_2) const noexcept {
+        const System& system_1, const System& system_2) const noexcept {
       return system_1.id_ < system_2.id_;
     }
   };
 
   struct sort_by_score {
     bool operator()(
-      const System& system_1, const System& system_2) const noexcept {
+        const System& system_1, const System& system_2) const noexcept {
       return system_1.score() < system_2.score();
     }
   };
@@ -166,9 +166,9 @@ private:
   }
 
   void initialize_score() noexcept {
-    score_ =
-      individual_planet_scores() + number_of_planets_score() + anomalies_score()
-      + wormholes_score() + potential_expansion_score();
+    score_ = individual_planet_scores() + number_of_planets_score()
+             + anomalies_score() + wormholes_score()
+             + potential_expansion_score();
   }
 
   /// \brief The base system score is the sum of the individual planet scores.
