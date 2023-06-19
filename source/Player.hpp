@@ -12,10 +12,10 @@ enum class Player : uint8_t {
   Player5 = 5,
   Player6 = 6,
   Player7 = 7,
-  Player8 = 8
+  Player8 = 8,
 };
 
-template <> const std::unordered_map<Player, std::string> labels<Player>{
+template<> const std::unordered_map<Player, std::string> labels<Player>{
   {Player::Player1, "Player 1"},
   {Player::Player2, "Player 2"},
   {Player::Player3, "Player 3"},
@@ -23,26 +23,26 @@ template <> const std::unordered_map<Player, std::string> labels<Player>{
   {Player::Player5, "Player 5"},
   {Player::Player6, "Player 6"},
   {Player::Player7, "Player 7"},
-  {Player::Player8, "Player 8"}
+  {Player::Player8, "Player 8"},
 };
 
-template <> const std::unordered_map<std::string, Player> spellings<Player>{
+template<> const std::unordered_map<std::string, Player> spellings<Player>{
   {"player1", Player::Player1},
-  {"1", Player::Player1},
+  {"1",       Player::Player1},
   {"player2", Player::Player2},
-  {"2", Player::Player2},
+  {"2",       Player::Player2},
   {"player3", Player::Player3},
-  {"3", Player::Player3},
+  {"3",       Player::Player3},
   {"player4", Player::Player4},
-  {"4", Player::Player4},
+  {"4",       Player::Player4},
   {"player5", Player::Player5},
-  {"5", Player::Player5},
+  {"5",       Player::Player5},
   {"player6", Player::Player6},
-  {"6", Player::Player6},
+  {"6",       Player::Player6},
   {"player7", Player::Player7},
-  {"7", Player::Player7},
+  {"7",       Player::Player7},
   {"player8", Player::Player8},
-  {"8", Player::Player8}
+  {"8",       Player::Player8},
 };
 
 std::set<Player> players(const uint8_t number_of_players) {
@@ -74,4 +74,4 @@ std::set<Player> players(const uint8_t number_of_players) {
   return players_;
 }
 
-} // namespace TI4Cartographer
+}  // namespace TI4Cartographer

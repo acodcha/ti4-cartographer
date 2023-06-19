@@ -4,23 +4,22 @@
 
 namespace TI4Cartographer {
 
-enum class GameVersion : uint8_t {
-  BaseGame,
-  ProphecyOfKingsExpansion
-};
+enum class GameVersion : uint8_t { BaseGame, ProphecyOfKingsExpansion };
 
-template <> const std::unordered_map<GameVersion, std::string> labels<GameVersion>{
-  {GameVersion::BaseGame, "Base Game"},
+template<>
+const std::unordered_map<GameVersion, std::string> labels<GameVersion>{
+  {GameVersion::BaseGame,                 "Base Game"                  },
   {GameVersion::ProphecyOfKingsExpansion, "Prophecy of Kings Expansion"}
 };
 
-template <> const std::unordered_map<std::string, GameVersion> spellings<GameVersion>{
-  {"basegame", GameVersion::BaseGame},
-  {"base", GameVersion::BaseGame},
+template<>
+const std::unordered_map<std::string, GameVersion> spellings<GameVersion>{
+  {"basegame",                 GameVersion::BaseGame                },
+  {"base",                     GameVersion::BaseGame                },
   {"prophecyofkingsexpansion", GameVersion::ProphecyOfKingsExpansion},
-  {"prophecyofkings", GameVersion::ProphecyOfKingsExpansion},
-  {"expansion", GameVersion::ProphecyOfKingsExpansion},
-  {"pok", GameVersion::ProphecyOfKingsExpansion}
+  {"prophecyofkings",          GameVersion::ProphecyOfKingsExpansion},
+  {"expansion",                GameVersion::ProphecyOfKingsExpansion},
+  {"pok",                      GameVersion::ProphecyOfKingsExpansion}
 };
 
-} // namespace TI4Cartographer
+}  // namespace TI4Cartographer

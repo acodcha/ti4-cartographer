@@ -11,65 +11,40 @@
 namespace TI4Cartographer {
 
 class System {
-
 public:
-
   System() noexcept {}
 
   System(const std::string& id) noexcept : id_(id) {}
 
-  System(
-    const std::string& id,
-    const GameVersion game_version,
-    const SystemCategory category,
-    const std::set<Planet, Planet::sort_by_name>& planets,
-    const std::set<Anomaly> anomalies,
-    const std::set<Wormhole> wormholes,
-    const std::optional<Faction>& faction = {}
-  ) noexcept :
-    id_(id),
-    game_version_(game_version),
-    category_(category),
-    planets_(planets),
-    anomalies_(anomalies),
-    wormholes_(wormholes),
-    faction_(faction)
-  {
+  System(const std::string& id, const GameVersion game_version,
+         const SystemCategory category,
+         const std::set<Planet, Planet::sort_by_name>& planets,
+         const std::set<Anomaly> anomalies, const std::set<Wormhole> wormholes,
+         const std::optional<Faction>& faction = {}) noexcept
+    : id_(id), game_version_(game_version), category_(category),
+      planets_(planets), anomalies_(anomalies), wormholes_(wormholes),
+      faction_(faction) {
     check_number_of_planets();
     initialize_score();
   }
 
-  const std::string& id() const noexcept {
-    return id_;
-  }
+  const std::string& id() const noexcept { return id_; }
 
-  GameVersion game_version() const noexcept {
-    return game_version_;
-  }
+  GameVersion game_version() const noexcept { return game_version_; }
 
-  SystemCategory category() const noexcept {
-    return category_;
-  }
+  SystemCategory category() const noexcept { return category_; }
 
   const std::set<Planet, Planet::sort_by_name>& planets() const noexcept {
     return planets_;
   }
 
-  const std::set<Anomaly>& anomalies() const noexcept {
-    return anomalies_;
-  }
+  const std::set<Anomaly>& anomalies() const noexcept { return anomalies_; }
 
-  const std::set<Wormhole>& wormholes() const noexcept {
-    return wormholes_;
-  }
+  const std::set<Wormhole>& wormholes() const noexcept { return wormholes_; }
 
-  const std::optional<Faction>& faction() const noexcept {
-    return faction_;
-  }
+  const std::optional<Faction>& faction() const noexcept { return faction_; }
 
-  float score() const noexcept {
-    return score_;
-  }
+  float score() const noexcept { return score_; }
 
   int8_t highest_planet_resources() const noexcept {
     int8_t highest_planet_resources_{0};
@@ -140,9 +115,7 @@ public:
     return text;
   }
 
-  std::string print() const noexcept {
-    return "#" + id_ + ":  " + name();
-  }
+  std::string print() const noexcept { return "#" + id_ + ":  " + name(); }
 
   bool operator==(const System& other) const noexcept {
     return id_ == other.id_;
@@ -153,19 +126,20 @@ public:
   }
 
   struct sort_by_id {
-    bool operator()(const System& system_1, const System& system_2) const noexcept {
+    bool operator()(
+      const System& system_1, const System& system_2) const noexcept {
       return system_1.id_ < system_2.id_;
     }
   };
 
   struct sort_by_score {
-    bool operator()(const System& system_1, const System& system_2) const noexcept {
+    bool operator()(
+      const System& system_1, const System& system_2) const noexcept {
       return system_1.score() < system_2.score();
     }
   };
 
 private:
-
   /// \brief Each system must have a unique ID.
   std::string id_{};
 
@@ -179,7 +153,8 @@ private:
 
   std::set<Wormhole> wormholes_;
 
-  /// \brief If this system is a home system or the Creuss Gate system, this is its faction.
+  /// \brief If this system is a home system or the Creuss Gate system, this is
+  /// its faction.
   std::optional<Faction> faction_;
 
   float score_{0.0f};
@@ -191,7 +166,9 @@ private:
   }
 
   void initialize_score() noexcept {
-    score_ = individual_planet_scores() + number_of_planets_score() + anomalies_score() + wormholes_score() + potential_expansion_score();
+    score_ =
+      individual_planet_scores() + number_of_planets_score() + anomalies_score()
+      + wormholes_score() + potential_expansion_score();
   }
 
   /// \brief The base system score is the sum of the individual planet scores.
@@ -203,7 +180,8 @@ private:
     return score;
   }
 
-  /// \brief It is preferable to have multiple planets in one system than to have the same number of one-planet systems.
+  /// \brief It is preferable to have multiple planets in one system than to
+  /// have the same number of one-planet systems.
   float number_of_planets_score() const noexcept {
     if (planets_.size() == 2) {
       return 0.5f;
@@ -214,7 +192,8 @@ private:
     }
   }
 
-  /// \brief Some anomalies are generally beneficial or harmful, whereas others depend heavily on their positioning.
+  /// \brief Some anomalies are generally beneficial or harmful, whereas others
+  /// depend heavily on their positioning.
   float anomalies_score() const noexcept {
     float total{0.0f};
     for (const Anomaly anomaly : anomalies_) {
@@ -223,26 +202,28 @@ private:
     return total;
   }
 
-  /// \brief If the system contains one or more wormholes, adjust the score accordingly.
+  /// \brief If the system contains one or more wormholes, adjust the score
+  /// accordingly.
   float wormholes_score() const noexcept {
     return wormholes_.size() * WormholeScore;
   }
 
-  /// \brief If the system is a good candidate for an expansion, increase the score slightly.
+  /// \brief If the system is a good candidate for an expansion, increase the
+  /// score slightly.
   float potential_expansion_score() const noexcept {
     return 0.05f * expansion_score();
   }
 
-}; // class System
+};  // class System
 
-} // namespace TI4Cartographer
+}  // namespace TI4Cartographer
 
 namespace std {
 
-  template <> struct hash<TI4Cartographer::System> {
-    size_t operator()(const TI4Cartographer::System& system) const {
-      return hash<string>()(system.id());
-    }
-  };
+template<> struct hash<TI4Cartographer::System> {
+  size_t operator()(const TI4Cartographer::System& system) const {
+    return hash<string>()(system.id());
+  }
+};
 
-} // namespace std
+}  // namespace std

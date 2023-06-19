@@ -8,32 +8,35 @@ enum class TechnologyType : uint8_t {
   Propulsion,
   Biotic,
   Cybernetic,
-  Warfare
+  Warfare,
 };
 
-template <> const std::unordered_map<TechnologyType, std::string> labels<TechnologyType>{
+template<>
+const std::unordered_map<TechnologyType, std::string> labels<TechnologyType>{
   {TechnologyType::Propulsion, "Propulsion"},
-  {TechnologyType::Biotic, "Biotic"},
+  {TechnologyType::Biotic,     "Biotic"    },
   {TechnologyType::Cybernetic, "Cybernetic"},
-  {TechnologyType::Warfare, "Warfare"}
+  {TechnologyType::Warfare,    "Warfare"   },
 };
 
-template <> const std::unordered_map<TechnologyType, std::string> abbreviations<TechnologyType>{
-  {TechnologyType::Propulsion, "B"},
-  {TechnologyType::Biotic, "G"},
-  {TechnologyType::Cybernetic, "Y"},
-  {TechnologyType::Warfare, "R"}
+template<> const std::unordered_map<TechnologyType, std::string>
+  abbreviations<TechnologyType>{
+    {TechnologyType::Propulsion, "B"},
+    {TechnologyType::Biotic,     "G"},
+    {TechnologyType::Cybernetic, "Y"},
+    {TechnologyType::Warfare,    "R"},
 };
 
-template <> const std::unordered_map<std::string, TechnologyType> spellings<TechnologyType>{
+template<>
+const std::unordered_map<std::string, TechnologyType> spellings<TechnologyType>{
   {"propulsion", TechnologyType::Propulsion},
-  {"blue", TechnologyType::Propulsion},
-  {"biotic", TechnologyType::Biotic},
-  {"green", TechnologyType::Biotic},
+  {"blue",       TechnologyType::Propulsion},
+  {"biotic",     TechnologyType::Biotic    },
+  {"green",      TechnologyType::Biotic    },
   {"cybernetic", TechnologyType::Cybernetic},
-  {"yellow", TechnologyType::Cybernetic},
-  {"warfare", TechnologyType::Warfare},
-  {"red", TechnologyType::Warfare}
+  {"yellow",     TechnologyType::Cybernetic},
+  {"warfare",    TechnologyType::Warfare   },
+  {"red",        TechnologyType::Warfare   },
 };
 
-} // namespace TI4Cartographer
+}  // namespace TI4Cartographer

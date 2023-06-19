@@ -6,13 +6,13 @@ namespace TI4Cartographer {
 
 /// \brief Utility for measuring runtime. Starts counting when constructed.
 class Chronometre {
-
 public:
-
   Chronometre() noexcept : start_(std::chrono::high_resolution_clock::now()) {}
 
   double value_seconds() const noexcept {
-    const std::chrono::microseconds duration{std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start_)};
+    const std::chrono::microseconds duration{
+      std::chrono::duration_cast<std::chrono::microseconds>(
+        std::chrono::high_resolution_clock::now() - start_)};
     return duration.count() / 1000000.0;
   }
 
@@ -23,9 +23,8 @@ public:
   }
 
 private:
-
   std::chrono::high_resolution_clock::time_point start_;
 
-}; // class Chronometre
+};  // class Chronometre
 
-} // namespace TI4Cartographer
+}  // namespace TI4Cartographer

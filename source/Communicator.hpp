@@ -5,32 +5,28 @@
 namespace TI4Cartographer {
 
 /// \brief Throw an exception.
-inline void error(const std::string &text) {
-  throw std::runtime_error(text);
-}
+inline void error(const std::string& text) { throw std::runtime_error(text); }
 
-enum class CommunicatorMode : uint8_t {
-  Verbose,
-  Quiet
-};
+enum class CommunicatorMode : uint8_t { Verbose, Quiet };
 
-template <> const std::unordered_map<CommunicatorMode, std::string> labels<CommunicatorMode>{
+template<>
+const std::unordered_map<CommunicatorMode, std::string> labels<CommunicatorMode>{
   {CommunicatorMode::Verbose, "Verbose"},
-  {CommunicatorMode::Quiet, "Quiet"}
+  {CommunicatorMode::Quiet,   "Quiet"  }
 };
 
-template <> const std::unordered_map<std::string, CommunicatorMode> spellings<CommunicatorMode>{
-  {"verbose", CommunicatorMode::Verbose},
-  {"quiet", CommunicatorMode::Quiet}
+template<> const std::unordered_map<std::string, CommunicatorMode>
+  spellings<CommunicatorMode>{
+    {"verbose", CommunicatorMode::Verbose},
+    {"quiet",   CommunicatorMode::Quiet  }
 };
 
-/// \brief Singleton class that tracks whether the quiet or verbose mode is used for console messages.
+/// \brief Singleton class that tracks whether the quiet or verbose mode is used
+/// for console messages.
 class Communicator {
-
 public:
-
   /// \brief Obtain an instance of this singleton class.
-  static Communicator& get(){
+  static Communicator& get() {
     static Communicator communicator;
     return communicator;
   }
@@ -43,20 +39,13 @@ public:
     }
   };
 
-  bool is_initialized() const noexcept {
-    return is_initialized_;
-  }
+  bool is_initialized() const noexcept { return is_initialized_; }
 
-  CommunicatorMode mode() const noexcept {
-    return mode_;
-  }
+  CommunicatorMode mode() const noexcept { return mode_; }
 
-  std::string print() const noexcept {
-    return label(mode_);
-  }
+  std::string print() const noexcept { return label(mode_); }
 
 private:
-
   bool is_initialized_{false};
 
   CommunicatorMode mode_{CommunicatorMode::Verbose};
@@ -69,7 +58,7 @@ private:
 
   Communicator& operator=(const Communicator&) noexcept = delete;
 
-}; // class Communicator
+};  // class Communicator
 
 /// \brief Print a general-purpose message to the console when in verbose mode.
 inline void verbose_message(const std::string& text) noexcept {
@@ -92,4 +81,4 @@ inline void debug_message(const std::string& text) noexcept {
   }
 }
 
-} // namespace TI4Cartographer
+}  // namespace TI4Cartographer
