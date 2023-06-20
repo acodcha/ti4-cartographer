@@ -1,8 +1,8 @@
 ---
 # Copyright © 2023 Alexandre Coderre-Chabot
 #
-# This file is licensed under the MIT license and was obtained from:
-#     https://github.com/acodcha/clang-format
+# This file is licensed under the MIT license. For more information, visit:
+#     https://mit-license.org
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +20,14 @@
 #     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 #     DEALINGS IN THE SOFTWARE.
 #
+# This file was originally obtained from:
+#     https://github.com/acodcha/clang-format
+#
 # This is a style configuration file for use with LLVM's ClangFormat automatic
 # source code formatter. For more information about ClangFormat, visit:
 #     https://clang.llvm.org/docs/ClangFormat.html
 #
-# This file is compatible with ClangFormat version 14.0.0 or any later version.
+# This file is compatible with ClangFormat version 17.0.0 or any later version.
 # To format your source code files, copy this file to the root directory of your
 # source code repository, name it either '.clang-format' or '_clang-format', and
 # run:
