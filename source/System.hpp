@@ -28,23 +28,37 @@ public:
     initialize_score();
   }
 
-  const std::string& id() const noexcept { return id_; }
+  const std::string& id() const noexcept {
+    return id_;
+  }
 
-  GameVersion game_version() const noexcept { return game_version_; }
+  GameVersion game_version() const noexcept {
+    return game_version_;
+  }
 
-  SystemCategory category() const noexcept { return category_; }
+  SystemCategory category() const noexcept {
+    return category_;
+  }
 
   const std::set<Planet, Planet::sort_by_name>& planets() const noexcept {
     return planets_;
   }
 
-  const std::set<Anomaly>& anomalies() const noexcept { return anomalies_; }
+  const std::set<Anomaly>& anomalies() const noexcept {
+    return anomalies_;
+  }
 
-  const std::set<Wormhole>& wormholes() const noexcept { return wormholes_; }
+  const std::set<Wormhole>& wormholes() const noexcept {
+    return wormholes_;
+  }
 
-  const std::optional<Faction>& faction() const noexcept { return faction_; }
+  const std::optional<Faction>& faction() const noexcept {
+    return faction_;
+  }
 
-  float score() const noexcept { return score_; }
+  float score() const noexcept {
+    return score_;
+  }
 
   int8_t highest_planet_resources() const noexcept {
     int8_t highest_planet_resources_{0};
@@ -115,7 +129,9 @@ public:
     return text;
   }
 
-  std::string print() const noexcept { return "#" + id_ + ":  " + name(); }
+  std::string print() const noexcept {
+    return "#" + id_ + ":  " + name();
+  }
 
   bool operator==(const System& other) const noexcept {
     return id_ == other.id_;
@@ -166,9 +182,9 @@ private:
   }
 
   void initialize_score() noexcept {
-    score_ = individual_planet_scores() + number_of_planets_score()
-             + anomalies_score() + wormholes_score()
-             + potential_expansion_score();
+    score_ =
+        individual_planet_scores() + number_of_planets_score()
+        + anomalies_score() + wormholes_score() + potential_expansion_score();
   }
 
   /// \brief The base system score is the sum of the individual planet scores.
@@ -220,7 +236,8 @@ private:
 
 namespace std {
 
-template<> struct hash<TI4Cartographer::System> {
+template <>
+struct hash<TI4Cartographer::System> {
   size_t operator()(const TI4Cartographer::System& system) const {
     return hash<string>()(system.id());
   }

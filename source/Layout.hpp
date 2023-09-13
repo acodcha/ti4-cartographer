@@ -25,7 +25,8 @@ enum class Layout : uint8_t {
   Players8Large,
 };
 
-template<> const std::unordered_map<Layout, std::string> labels<Layout>{
+template <>
+const std::unordered_map<Layout, std::string> labels<Layout>{
     {Layout::Players2Regular, "2 Players Regular"},
     {Layout::Players3Regular, "3 Players Regular"},
     {Layout::Players3Small,   "3 Players Small"  },
@@ -45,7 +46,8 @@ template<> const std::unordered_map<Layout, std::string> labels<Layout>{
     {Layout::Players8Large,   "8 Players Large"  },
 };
 
-template<> const std::unordered_map<std::string, Layout> spellings<Layout>{
+template <>
+const std::unordered_map<std::string, Layout> spellings<Layout>{
     {"2playersregular", Layout::Players2Regular},
     {"3playersregular", Layout::Players3Regular},
     {"3playerssmall",   Layout::Players3Small  },

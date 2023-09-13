@@ -14,7 +14,7 @@ enum class SystemCategory : uint8_t {
   Hyperlane,
 };
 
-template<>
+template <>
 const std::unordered_map<SystemCategory, std::string> labels<SystemCategory>{
     {SystemCategory::Planetary,            "Planetary System"             },
     {SystemCategory::AnomalyWormholeEmpty, "Anomaly/Wormhole/Empty System"},
@@ -25,7 +25,7 @@ const std::unordered_map<SystemCategory, std::string> labels<SystemCategory>{
     {SystemCategory::Hyperlane,            "Hyperlane Tile"               },
 };
 
-template<>
+template <>
 const std::unordered_map<std::string, SystemCategory> spellings<SystemCategory>{
     {"planetary",                  SystemCategory::Planetary           },
     {"planetarysystem",            SystemCategory::Planetary           },

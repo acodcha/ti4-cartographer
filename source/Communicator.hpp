@@ -5,20 +5,27 @@
 namespace TI4Cartographer {
 
 /// \brief Throw an exception.
-inline void error(const std::string& text) { throw std::runtime_error(text); }
+inline void error(const std::string& text) {
+  throw std::runtime_error(text);
+}
 
-enum class CommunicatorMode : uint8_t { Verbose, Quiet };
-
-template<>
-const std::unordered_map<CommunicatorMode, std::string> labels<CommunicatorMode>{
-    {CommunicatorMode::Verbose, "Verbose"},
-    {CommunicatorMode::Quiet,   "Quiet"  }
+enum class CommunicatorMode : uint8_t {
+  Verbose,
+  Quiet,
 };
 
-template<> const std::unordered_map<std::string, CommunicatorMode>
+template <>
+const std::unordered_map<CommunicatorMode, std::string>
+    labels<CommunicatorMode>{
+        {CommunicatorMode::Verbose, "Verbose"},
+        {CommunicatorMode::Quiet,   "Quiet"  },
+};
+
+template <>
+const std::unordered_map<std::string, CommunicatorMode>
     spellings<CommunicatorMode>{
         {"verbose", CommunicatorMode::Verbose},
-        {"quiet",   CommunicatorMode::Quiet  }
+        {"quiet",   CommunicatorMode::Quiet  },
 };
 
 /// \brief Singleton class that tracks whether the quiet or verbose mode is used
@@ -39,11 +46,17 @@ public:
     }
   };
 
-  bool is_initialized() const noexcept { return is_initialized_; }
+  bool is_initialized() const noexcept {
+    return is_initialized_;
+  }
 
-  CommunicatorMode mode() const noexcept { return mode_; }
+  CommunicatorMode mode() const noexcept {
+    return mode_;
+  }
 
-  std::string print() const noexcept { return label(mode_); }
+  std::string print() const noexcept {
+    return label(mode_);
+  }
 
 private:
   bool is_initialized_{false};

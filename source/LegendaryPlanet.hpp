@@ -4,9 +4,14 @@
 
 namespace TI4Cartographer {
 
-enum class LegendaryPlanet : uint8_t { HopesEnd, Mallice, Mirage, Primor };
+enum class LegendaryPlanet : uint8_t {
+  HopesEnd,
+  Mallice,
+  Mirage,
+  Primor,
+};
 
-template<>
+template <>
 const std::unordered_map<LegendaryPlanet, std::string> labels<LegendaryPlanet>{
     {LegendaryPlanet::HopesEnd, "Hope's End"},
     {LegendaryPlanet::Mallice,  "Mallice"   },
@@ -14,7 +19,8 @@ const std::unordered_map<LegendaryPlanet, std::string> labels<LegendaryPlanet>{
     {LegendaryPlanet::Primor,   "Primor"    },
 };
 
-template<> const std::unordered_map<std::string, LegendaryPlanet>
+template <>
+const std::unordered_map<std::string, LegendaryPlanet>
     spellings<LegendaryPlanet>{
         {"hopesend", LegendaryPlanet::HopesEnd},
         {"mallice",  LegendaryPlanet::Mallice },

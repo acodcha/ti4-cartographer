@@ -42,11 +42,17 @@ public:
     check_layout_and_game_version();
   }
 
-  Layout layout() const noexcept { return layout_; }
+  Layout layout() const noexcept {
+    return layout_;
+  }
 
-  Aggression aggression() const noexcept { return aggression_; }
+  Aggression aggression() const noexcept {
+    return aggression_;
+  }
 
-  GameVersion game_version() const noexcept { return game_version_; }
+  GameVersion game_version() const noexcept {
+    return game_version_;
+  }
 
 private:
   std::string executable_name_;

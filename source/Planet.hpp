@@ -21,25 +21,37 @@ public:
     initialize_score();
   }
 
-  const std::string& name() const noexcept { return name_; }
+  const std::string& name() const noexcept {
+    return name_;
+  }
 
-  int8_t resources() const noexcept { return resources_; }
+  int8_t resources() const noexcept {
+    return resources_;
+  }
 
-  int8_t influence() const noexcept { return influence_; }
+  int8_t influence() const noexcept {
+    return influence_;
+  }
 
   const std::optional<TechnologyType>& technology_specialty() const noexcept {
     return technology_specialty_;
   }
 
-  const std::optional<PlanetTrait>& trait() const noexcept { return trait_; }
+  const std::optional<PlanetTrait>& trait() const noexcept {
+    return trait_;
+  }
 
   const std::optional<LegendaryPlanet>& legendary() const noexcept {
     return legendary_;
   }
 
-  float score() const noexcept { return score_; }
+  float score() const noexcept {
+    return score_;
+  }
 
-  bool is_legendary() const noexcept { return legendary_.has_value(); }
+  bool is_legendary() const noexcept {
+    return legendary_.has_value();
+  }
 
   int8_t useful_resources() const noexcept {
     if (resources_ > influence_) {
@@ -111,7 +123,9 @@ private:
 
   /// \brief High influence planets are useful for voting during the Agenda
   /// phase.
-  float voting_score() const noexcept { return 0.25f * influence_; }
+  float voting_score() const noexcept {
+    return 0.25f * influence_;
+  }
 
   /// \brief Planets with a propulsion technology specialty are preferable over
   /// other technology specialties, which are in turn preferable to no
@@ -191,7 +205,8 @@ private:
 
 namespace std {
 
-template<> struct hash<TI4Cartographer::Planet> {
+template <>
+struct hash<TI4Cartographer::Planet> {
   size_t operator()(const TI4Cartographer::Planet& planet) const {
     return hash<std::string>()(planet.name());
   }

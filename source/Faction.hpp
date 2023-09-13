@@ -31,7 +31,8 @@ enum class Faction : uint8_t {
   ArgentFlight,
 };
 
-template<> const std::unordered_map<Faction, std::string> labels<Faction>{
+template <>
+const std::unordered_map<Faction, std::string> labels<Faction>{
     {Faction::FederationOfSol,      "Federation of Sol"      },
     {Faction::MentakCoalition,      "Mentak Coalition"       },
     {Faction::YinBrotherhood,       "Yin Brotherhood"        },
@@ -58,7 +59,8 @@ template<> const std::unordered_map<Faction, std::string> labels<Faction>{
     {Faction::ArgentFlight,         "Argent Flight"          },
 };
 
-template<> const std::unordered_map<std::string, Faction> spellings<Faction>{
+template <>
+const std::unordered_map<std::string, Faction> spellings<Faction>{
     {"federationofsol",      Faction::FederationOfSol     },
     {"mentakcoalition",      Faction::MentakCoalition     },
     {"yinbrotherhood",       Faction::YinBrotherhood      },
