@@ -11,7 +11,7 @@ enum class TechnologyType : uint8_t {
   Warfare,
 };
 
-template<>
+template <>
 const std::unordered_map<TechnologyType, std::string> labels<TechnologyType>{
     {TechnologyType::Propulsion, "Propulsion"},
     {TechnologyType::Biotic,     "Biotic"    },
@@ -19,7 +19,8 @@ const std::unordered_map<TechnologyType, std::string> labels<TechnologyType>{
     {TechnologyType::Warfare,    "Warfare"   },
 };
 
-template<> const std::unordered_map<TechnologyType, std::string>
+template <>
+const std::unordered_map<TechnologyType, std::string>
     abbreviations<TechnologyType>{
         {TechnologyType::Propulsion, "B"},
         {TechnologyType::Biotic,     "G"},
@@ -27,7 +28,7 @@ template<> const std::unordered_map<TechnologyType, std::string>
         {TechnologyType::Warfare,    "R"},
 };
 
-template<>
+template <>
 const std::unordered_map<std::string, TechnologyType> spellings<TechnologyType>{
     {"propulsion", TechnologyType::Propulsion},
     {"blue",       TechnologyType::Propulsion},

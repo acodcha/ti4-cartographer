@@ -309,8 +309,8 @@ private:
                   && checked.find(neighbor_position) == checked.cend()) {
                 // This neighbor is of the relevant category and has not yet
                 // been checked.
-                const std::unordered_set<System>::const_iterator neighbor_system{
-                    Systems.find(
+                const std::unordered_set<System>::const_iterator
+                    neighbor_system{Systems.find(
                         {neighbor_position_and_tile->second.system_id()})};
                 if ((contains_anomaly
                      && neighbor_system->contains_one_or_more_anomalies())
@@ -432,8 +432,9 @@ private:
     }
     for (const std::pair<const Position, std::set<Player>>&
              position_and_relevant_players : positions_to_relevant_players_) {
-      const std::unordered_map<Position, Tile>::const_iterator position_and_tile{
-          positions_to_tiles_.find(position_and_relevant_players.first)};
+      const std::unordered_map<Position, Tile>::const_iterator
+          position_and_tile{
+              positions_to_tiles_.find(position_and_relevant_players.first)};
       const std::unordered_set<System>::const_iterator system{
           Systems.find({position_and_tile->second.system_id()})};
       // Exclude the Mecatol Rex system, hyperlanes, and other irrelevant system
@@ -476,8 +477,9 @@ private:
     }
     for (const std::pair<const Position, std::set<Player>>&
              position_and_relevant_players : positions_to_relevant_players_) {
-      const std::unordered_map<Position, Tile>::const_iterator position_and_tile{
-          positions_to_tiles_.find(position_and_relevant_players.first)};
+      const std::unordered_map<Position, Tile>::const_iterator
+          position_and_tile{
+              positions_to_tiles_.find(position_and_relevant_players.first)};
       const std::unordered_set<System>::const_iterator system{
           Systems.find({position_and_tile->second.system_id()})};
       // Exclude the Mecatol Rex system, hyperlanes, and other irrelevant system
@@ -567,8 +569,9 @@ private:
               * number_of_relevant_players_factor(
                   position_to_relevant_players->second.size())};
           for (const Player& player : position_to_relevant_players->second) {
-            const std::map<Player, Distance>::const_iterator player_and_distance{
-                position_and_players_home_distances->second.find(player)};
+            const std::map<Player, Distance>::const_iterator
+                player_and_distance{
+                    position_and_players_home_distances->second.find(player)};
             if (player_and_distance
                 != position_and_players_home_distances->second.cend()) {
               player_scores_[player] +=

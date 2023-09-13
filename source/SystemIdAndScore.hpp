@@ -12,9 +12,13 @@ public:
   SystemIdAndScore(const std::string& id, const float score) noexcept
     : id_(id), score_(score) {}
 
-  const std::string& id() const noexcept { return id_; }
+  const std::string& id() const noexcept {
+    return id_;
+  }
 
-  const float score() const noexcept { return score_; }
+  const float score() const noexcept {
+    return score_;
+  }
 
   struct sort_by_descending_score {
     bool operator()(
@@ -50,7 +54,8 @@ private:
 
 namespace std {
 
-template<> struct hash<TI4Cartographer::SystemIdAndScore> {
+template <>
+struct hash<TI4Cartographer::SystemIdAndScore> {
   size_t operator()(
       const TI4Cartographer::SystemIdAndScore& system_id_and_score) const {
     return hash<std::string>()(system_id_and_score.id());

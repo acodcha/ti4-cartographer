@@ -15,7 +15,8 @@ enum class Player : uint8_t {
   Player8 = 8,
 };
 
-template<> const std::unordered_map<Player, std::string> labels<Player>{
+template <>
+const std::unordered_map<Player, std::string> labels<Player>{
     {Player::Player1, "Player 1"},
     {Player::Player2, "Player 2"},
     {Player::Player3, "Player 3"},
@@ -26,7 +27,8 @@ template<> const std::unordered_map<Player, std::string> labels<Player>{
     {Player::Player8, "Player 8"},
 };
 
-template<> const std::unordered_map<std::string, Player> spellings<Player>{
+template <>
+const std::unordered_map<std::string, Player> spellings<Player>{
     {"player1", Player::Player1},
     {"1",       Player::Player1},
     {"player2", Player::Player2},

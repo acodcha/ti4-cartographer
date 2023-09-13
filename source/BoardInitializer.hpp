@@ -85,12 +85,14 @@ protected:
   /// \brief Preferred expansion positions are positions where a player would
   /// ideally want to construct their second space dock and use as a forward
   /// base.
-  std::map<Player, std::set<Position>> players_to_preferred_expansion_positions_;
+  std::map<Player, std::set<Position>>
+      players_to_preferred_expansion_positions_;
 
   /// \brief Alternate expansion positions are positiosn where a player would
   /// ideally want to construct their third space dock and use as a forward
   /// base.
-  std::map<Player, std::set<Position>> players_to_alternate_expansion_positions_;
+  std::map<Player, std::set<Position>>
+      players_to_alternate_expansion_positions_;
 
   bool is_equidistant(const Position& position) const noexcept {
     return equidistant_positions_.find(position)
@@ -312,9 +314,8 @@ private:
       verbose_message("- " + position.print());
     }
     verbose_message("In-slice positions:");
-    for (
-        const std::pair<const Player, std::set<Position>>& player_and_positions :
-        players_to_in_slice_positions_) {
+    for (const std::pair<const Player, std::set<Position>>&
+             player_and_positions : players_to_in_slice_positions_) {
       verbose_message("- " + label(player_and_positions.first) + ": "
                       + print_set(player_and_positions.second));
     }
@@ -370,16 +371,14 @@ private:
       }
     }
     verbose_message("Forward positions:");
-    for (
-        const std::pair<const Player, std::set<Position>>& player_and_positions :
-        players_to_forward_positions_) {
+    for (const std::pair<const Player, std::set<Position>>&
+             player_and_positions : players_to_forward_positions_) {
       verbose_message("- " + label(player_and_positions.first) + ": "
                       + print_set(player_and_positions.second));
     }
     verbose_message("Lateral positions:");
-    for (
-        const std::pair<const Player, std::set<Position>>& player_and_positions :
-        players_to_lateral_positions_) {
+    for (const std::pair<const Player, std::set<Position>>&
+             player_and_positions : players_to_lateral_positions_) {
       verbose_message("- " + label(player_and_positions.first) + ": "
                       + print_set(player_and_positions.second));
     }
@@ -731,8 +730,8 @@ private:
       const Player player, const Position& position) const noexcept {
     Distance minimum_distance_from_other_players_homes_{
         std::numeric_limits<Distance>::max()};
-    const std::unordered_map<Position, std::map<Player, Distance>>::const_iterator
-        position_to_players_home_distances{
+    const std::unordered_map<Position, std::map<Player, Distance>>::
+        const_iterator position_to_players_home_distances{
             positions_to_players_home_distances_.find(position)};
     if (position_to_players_home_distances
         != positions_to_players_home_distances_.cend()) {

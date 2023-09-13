@@ -24,9 +24,13 @@ public:
       : std::vector<std::string>::const_iterator(i) {}
   };
 
-  bool empty() const noexcept { return data_.empty(); }
+  bool empty() const noexcept {
+    return data_.empty();
+  }
 
-  std::size_t size() const noexcept { return data_.size(); }
+  std::size_t size() const noexcept {
+    return data_.size();
+  }
 
   const std::string& at(const std::size_t index) const {
     return data_.at(index);
@@ -36,15 +40,25 @@ public:
     return const_iterator(data_.cbegin());
   }
 
-  const_iterator begin() const noexcept { return cbegin(); }
+  const_iterator begin() const noexcept {
+    return cbegin();
+  }
 
-  const_iterator cend() const noexcept { return const_iterator(data_.cend()); }
+  const_iterator cend() const noexcept {
+    return const_iterator(data_.cend());
+  }
 
-  const_iterator end() const noexcept { return cend(); }
+  const_iterator end() const noexcept {
+    return cend();
+  }
 
-  const std::string& front() const noexcept { return data_.front(); }
+  const std::string& front() const noexcept {
+    return data_.front();
+  }
 
-  const std::string& back() const noexcept { return data_.back(); }
+  const std::string& back() const noexcept {
+    return data_.back();
+  }
 
   const std::string& operator[](const std::size_t index) const {
     return data_[index];

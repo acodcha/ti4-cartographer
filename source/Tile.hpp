@@ -58,7 +58,9 @@ public:
     check_system_category();
   }
 
-  const Position& position() const noexcept { return position_; }
+  const Position& position() const noexcept {
+    return position_;
+  }
 
   const std::set<SystemCategory>& system_categories() const noexcept {
     return system_categories_;
@@ -77,13 +79,17 @@ public:
     return is_planetary_anomaly_wormhole_or_empty_;
   }
 
-  bool is_hyperlane() const noexcept { return is_hyperlane_; }
+  bool is_hyperlane() const noexcept {
+    return is_hyperlane_;
+  }
 
   const std::set<Position>& hyperlane_neighbors() const noexcept {
     return hyperlane_neighbors_;
   }
 
-  const std::string& system_id() const noexcept { return system_id_; }
+  const std::string& system_id() const noexcept {
+    return system_id_;
+  }
 
   const std::optional<Player>& home_player() const noexcept {
     return home_player_;
@@ -154,7 +160,8 @@ private:
 
 namespace std {
 
-template<> struct hash<TI4Cartographer::Tile> {
+template <>
+struct hash<TI4Cartographer::Tile> {
   size_t operator()(const TI4Cartographer::Tile& tile) const {
     return hash<TI4Cartographer::Position>()(tile.position());
   }

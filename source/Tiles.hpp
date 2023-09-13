@@ -7,9 +7,11 @@
 namespace TI4Cartographer {
 
 /// \brief All the tiles on the board.
-template<Layout layout> const std::set<Tile> Tiles;
+template <Layout layout>
+const std::set<Tile> Tiles;
 
-template<> const std::set<Tile> Tiles<Layout::Players2Regular>{
+template <>
+const std::set<Tile> Tiles<Layout::Players2Regular>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 3}},
@@ -31,7 +33,8 @@ template<> const std::set<Tile> Tiles<Layout::Players2Regular>{
     {Position{4, 19}},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players3Regular>{
+template <>
+const std::set<Tile> Tiles<Layout::Players3Regular>{
     {Position{0, 0}},
     {Position{1, 0}, "85A-3"},
     {Position{1, 1},
@@ -80,7 +83,8 @@ template<> const std::set<Tile> Tiles<Layout::Players3Regular>{
     {Position{3, 17}, "83A-3"},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players3Small>{
+template <>
+const std::set<Tile> Tiles<Layout::Players3Small>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -102,7 +106,8 @@ template<> const std::set<Tile> Tiles<Layout::Players3Small>{
     {Position{2, 11}},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players3Large>{
+template <>
+const std::set<Tile> Tiles<Layout::Players3Large>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -133,7 +138,8 @@ template<> const std::set<Tile> Tiles<Layout::Players3Large>{
     {Position{3, 16}},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players4Regular>{
+template <>
+const std::set<Tile> Tiles<Layout::Players4Regular>{
     {Position{0, 0}},
     {Position{1, 0}, "85A-3"},
     {Position{1, 1}, {Position{1, 5}, Position{2, 0}}},
@@ -177,7 +183,8 @@ template<> const std::set<Tile> Tiles<Layout::Players4Regular>{
     {Position{3, 17}, "83A-3"},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players4Small>{
+template <>
+const std::set<Tile> Tiles<Layout::Players4Small>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -207,7 +214,8 @@ template<> const std::set<Tile> Tiles<Layout::Players4Small>{
     {Position{3, 17}, Player::Player3},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players4Large>{
+template <>
+const std::set<Tile> Tiles<Layout::Players4Large>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -247,7 +255,8 @@ template<> const std::set<Tile> Tiles<Layout::Players4Large>{
     {Position{3, 17}, Player::Player3},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players5Regular>{
+template <>
+const std::set<Tile> Tiles<Layout::Players5Regular>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -289,7 +298,8 @@ template<> const std::set<Tile> Tiles<Layout::Players5Regular>{
     {Position{3, 17}},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players5Small>{
+template <>
+const std::set<Tile> Tiles<Layout::Players5Small>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -323,7 +333,8 @@ template<> const std::set<Tile> Tiles<Layout::Players5Small>{
     {Position{3, 17}},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players5Large>{
+template <>
+const std::set<Tile> Tiles<Layout::Players5Large>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -363,7 +374,8 @@ template<> const std::set<Tile> Tiles<Layout::Players5Large>{
     {Position{3, 17}},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players6Regular>{
+template <>
+const std::set<Tile> Tiles<Layout::Players6Regular>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -403,7 +415,8 @@ template<> const std::set<Tile> Tiles<Layout::Players6Regular>{
     {Position{3, 17}},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players6Large>{
+template <>
+const std::set<Tile> Tiles<Layout::Players6Large>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -467,7 +480,8 @@ template<> const std::set<Tile> Tiles<Layout::Players6Large>{
     {Position{4, 23}},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players7Regular>{
+template <>
+const std::set<Tile> Tiles<Layout::Players7Regular>{
     {Position{0, 0},
      {Position{2, 0}, Position{2, 6}, Position{2, 7}, Position{2, 11}}},
     {Position{1, 0}, "85B-0"},
@@ -520,7 +534,8 @@ template<> const std::set<Tile> Tiles<Layout::Players7Regular>{
     {Position{4, 23}},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players7Small>{
+template <>
+const std::set<Tile> Tiles<Layout::Players7Small>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -575,7 +590,8 @@ template<> const std::set<Tile> Tiles<Layout::Players7Small>{
     {Position{4, 22}, Player::Player5},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players7Large>{
+template <>
+const std::set<Tile> Tiles<Layout::Players7Large>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},
@@ -641,7 +657,8 @@ template<> const std::set<Tile> Tiles<Layout::Players7Large>{
     {Position{4, 23}, "83A-3"},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players8Regular>{
+template <>
+const std::set<Tile> Tiles<Layout::Players8Regular>{
     {Position{0, 0},
      {Position{2, 0}, Position{2, 1}, Position{2, 5}, Position{2, 6},
       Position{2, 7}, Position{2, 11}}},
@@ -701,7 +718,8 @@ template<> const std::set<Tile> Tiles<Layout::Players8Regular>{
     {Position{4, 23}},
 };
 
-template<> const std::set<Tile> Tiles<Layout::Players8Large>{
+template <>
+const std::set<Tile> Tiles<Layout::Players8Large>{
     {Position{0, 0}},
     {Position{1, 0}},
     {Position{1, 1}},

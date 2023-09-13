@@ -7,9 +7,10 @@ namespace TI4Cartographer {
 /// \brief Make all characters in a string lowercase.
 std::string lowercase(const std::string& text) noexcept {
   std::string new_text{text};
-  std::transform(
-      new_text.begin(), new_text.end(), new_text.begin(),
-      [](const char character) -> char { return std::tolower(character); });
+  std::transform(new_text.begin(), new_text.end(), new_text.begin(),
+                 [](const char character) -> char {
+                   return std::tolower(character);
+                 });
   return new_text;
 }
 
@@ -115,7 +116,7 @@ std::string score_imbalance_ratio_to_string(const float value) noexcept {
   return stream.str();
 }
 
-template<class Type>
+template <class Type>
 std::string print_vector(const std::vector<Type>& data) noexcept {
   std::string text;
   for (const Type& element : data) {
@@ -127,7 +128,7 @@ std::string print_vector(const std::vector<Type>& data) noexcept {
   return text;
 }
 
-template<class Type>
+template <class Type>
 std::string print_set(const std::set<Type>& data) noexcept {
   std::string text;
   for (const Type& element : data) {
@@ -139,7 +140,7 @@ std::string print_set(const std::set<Type>& data) noexcept {
   return text;
 }
 
-template<class Type>
+template <class Type>
 std::string print_unordered_set(const std::unordered_set<Type>& data) noexcept {
   std::string text;
   for (const Type& element : data) {

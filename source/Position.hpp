@@ -19,11 +19,17 @@ public:
   constexpr Position(const int8_t layer, const int8_t azimuth) noexcept
     : layer_(layer), azimuth_(azimuth) {}
 
-  int8_t layer() const noexcept { return layer_; }
+  int8_t layer() const noexcept {
+    return layer_;
+  }
 
-  int8_t azimuth() const noexcept { return azimuth_; }
+  int8_t azimuth() const noexcept {
+    return azimuth_;
+  }
 
-  bool is_valid() const noexcept { return azimuth_ <= maximum_azimuth(layer_); }
+  bool is_valid() const noexcept {
+    return azimuth_ <= maximum_azimuth(layer_);
+  }
 
   /// \brief Returns true if this position is at one of the six "corners" of
   /// this layer.
@@ -203,7 +209,8 @@ const Position MecatolRexPosition{0, 0};
 
 namespace std {
 
-template<> struct hash<TI4Cartographer::Position> {
+template <>
+struct hash<TI4Cartographer::Position> {
   size_t operator()(const TI4Cartographer::Position& position) const {
     return hash<int8_t>()(position.layer())
            ^ hash<int8_t>()(position.azimuth());
