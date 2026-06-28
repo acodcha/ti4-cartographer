@@ -94,15 +94,40 @@ protected:
     switch (game_version) {
       case GameVersion::BaseGame:
         for (const System& system : Systems) {
-          if (system.game_version() == GameVersion::BaseGame
-              && system.category() == system_category) {
+          if (system.category() == system_category
+              && system.game_version() == GameVersion::BaseGame) {
             all_relevant_system_ids_.push_back(system.id());
           }
         }
         break;
       case GameVersion::ProphecyOfKingsExpansion:
         for (const System& system : Systems) {
-          if (system.category() == system_category) {
+          if (system.category() == system_category
+              && (system.game_version() == GameVersion::BaseGame
+                  || system.game_version()
+                         == GameVersion::ProphecyOfKingsExpansion)) {
+            all_relevant_system_ids_.push_back(system.id());
+          }
+        }
+        break;
+      case GameVersion::ThundersEdgeExpansion:
+        for (const System& system : Systems) {
+          if (system.category() == system_category
+              && (system.game_version() == GameVersion::BaseGame
+                  || system.game_version()
+                         == GameVersion::ThundersEdgeExpansion)) {
+            all_relevant_system_ids_.push_back(system.id());
+          }
+        }
+        break;
+      case GameVersion::ProphecyOfKingsAndThundersEdgeExpansions:
+        for (const System& system : Systems) {
+          if (system.category() == system_category
+              && (system.game_version() == GameVersion::BaseGame
+                  || system.game_version()
+                         == GameVersion::ProphecyOfKingsExpansion
+                  || system.game_version()
+                         == GameVersion::ThundersEdgeExpansion)) {
             all_relevant_system_ids_.push_back(system.id());
           }
         }

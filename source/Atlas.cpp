@@ -23,10 +23,8 @@ public:
             ++planetary_system_planets;
             planetary_system_resources += planet.useful_resources();
             planetary_system_influence += planet.useful_influence();
-
-            if (planet.technology_specialty().has_value()) {
-              ++planetary_system_technology_specialties;
-            }
+            planetary_system_technology_specialties +=
+                planet.technology_specialties().size();
           }
         } else if (found->category() == SystemCategory::AnomalyWormholeEmpty) {
           ++number_of_anomaly_wormhole_empty_systems;
@@ -37,10 +35,8 @@ public:
                 planet.useful_resources();
             anomaly_wormhole_empty_system_influence +=
                 planet.useful_influence();
-
-            if (planet.technology_specialty().has_value()) {
-              ++anomaly_wormhole_empty_system_technology_specialties;
-            }
+            anomaly_wormhole_empty_system_technology_specialties +=
+                planet.technology_specialties().size();
           }
         }
       }

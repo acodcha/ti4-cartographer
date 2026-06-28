@@ -130,7 +130,14 @@ public:
   }
 
   std::string print() const noexcept {
-    return "#" + id_ + ":  " + name();
+    std::string result;
+    if (id_.size() == 1) {
+      result += "  ";
+    } else if (id_.size() == 2) {
+      result += " ";
+    }
+    result += "#" + id_ + ":  " + name();
+    return result;
   }
 
   bool operator==(const System& other) const noexcept {
