@@ -9,26 +9,34 @@ enum class Wormhole : uint8_t {
   Beta,
   Gamma,
   Delta,
+  Epsilon,
+  FractureEgress,
 };
 
 template <>
 const std::unordered_map<Wormhole, std::string> labels<Wormhole>{
-    {Wormhole::Alpha, "Alpha Wormhole"},
-    {Wormhole::Beta,  "Beta Wormhole" },
-    {Wormhole::Gamma, "Gamma Wormhole"},
-    {Wormhole::Delta, "Delta Wormhole"},
+    {Wormhole::Alpha,          "Alpha Wormhole"  },
+    {Wormhole::Beta,           "Beta Wormhole"   },
+    {Wormhole::Gamma,          "Gamma Wormhole"  },
+    {Wormhole::Delta,          "Delta Wormhole"  },
+    {Wormhole::Epsilon,        "Epsilon Wormhole"},
+    {Wormhole::FractureEgress, "Fracture Egress" },
 };
 
 template <>
 const std::unordered_map<std::string, Wormhole> spellings<Wormhole>{
-    {"alpha",         Wormhole::Alpha},
-    {"alphawormhole", Wormhole::Alpha},
-    {"beta",          Wormhole::Beta },
-    {"betawormhole",  Wormhole::Beta },
-    {"gamma",         Wormhole::Gamma},
-    {"gammawormhole", Wormhole::Gamma},
-    {"delta",         Wormhole::Delta},
-    {"deltawormhole", Wormhole::Delta},
+    {"alpha",           Wormhole::Alpha         },
+    {"alphawormhole",   Wormhole::Alpha         },
+    {"beta",            Wormhole::Beta          },
+    {"betawormhole",    Wormhole::Beta          },
+    {"gamma",           Wormhole::Gamma         },
+    {"gammawormhole",   Wormhole::Gamma         },
+    {"delta",           Wormhole::Delta         },
+    {"deltawormhole",   Wormhole::Delta         },
+    {"epsilon",         Wormhole::Epsilon       },
+    {"epsilonwormhole", Wormhole::Epsilon       },
+    {"fractureegress",  Wormhole::FractureEgress},
+    {"egress",          Wormhole::FractureEgress},
 };
 
 // Wormholes are generally beneficial because they provide additional movement

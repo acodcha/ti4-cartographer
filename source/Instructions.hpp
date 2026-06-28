@@ -63,7 +63,8 @@ private:
 
   Aggression aggression_{Aggression::Moderate};
 
-  GameVersion game_version_{GameVersion::ProphecyOfKingsExpansion};
+  GameVersion game_version_{
+      GameVersion::ProphecyOfKingsAndThundersEdgeExpansions};
 
   void assign_arguments(int argc, char* argv[]) noexcept {
     if (argc > 1) {
@@ -143,7 +144,8 @@ private:
     if (number_of_players >= 7 && game_version_ == GameVersion::BaseGame) {
       message_usage_information_and_error(
           "7 and 8 player games require the "
-          + label(GameVersion::ProphecyOfKingsExpansion) + ".");
+          + label(GameVersion::ProphecyOfKingsExpansion) + " or the "
+          + label(GameVersion::ThundersEdgeExpansion) + ".");
     }
   }
 
@@ -225,7 +227,8 @@ private:
     if (!layout_and_game_version_are_compatible(layout_, game_version_)) {
       error("The board layout and the game version are incompatible. The "
             + label(layout_) + " board layout requires the "
-            + label(GameVersion::ProphecyOfKingsExpansion) + ".");
+            + label(GameVersion::ProphecyOfKingsExpansion) + " or the "
+            + label(GameVersion::ThundersEdgeExpansion) + ".");
     }
   }
 

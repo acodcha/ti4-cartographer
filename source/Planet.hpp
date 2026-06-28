@@ -12,11 +12,11 @@ public:
 
   Planet(const std::string& name, const int8_t resources,
          const int8_t influence,
-         const std::optional<TechnologyType>& technology_specialty,
-         const std::optional<PlanetTrait>& trait,
+         const std::vector<TechnologyType>& technology_specialties,
+         const std::set<PlanetTrait>& traits,
          const std::optional<LegendaryPlanet>& legendary) noexcept
     : name_(name), resources_(resources), influence_(influence),
-      technology_specialty_(technology_specialty), trait_(trait),
+      technology_specialties_(technology_specialties), traits_(traits),
       legendary_(legendary) {
     initialize_score();
   }
@@ -33,12 +33,12 @@ public:
     return influence_;
   }
 
-  const std::optional<TechnologyType>& technology_specialty() const noexcept {
-    return technology_specialty_;
+  const std::vector<TechnologyType>& technology_specialties() const noexcept {
+    return technology_specialties_;
   }
 
-  const std::optional<PlanetTrait>& trait() const noexcept {
-    return trait_;
+  const std::set<PlanetTrait>& traits() const noexcept {
+    return traits_;
   }
 
   const std::optional<LegendaryPlanet>& legendary() const noexcept {
@@ -73,11 +73,17 @@ public:
     std::string text{name_};
     text +=
         " (" + std::to_string(resources_) + "/" + std::to_string(influence_);
-    if (technology_specialty_.has_value()) {
-      text += "/" + abbreviation(technology_specialty_);
+    if (!technology_specialties_.empty()) {
+      text += "/";
     }
-    if (trait_.has_value()) {
-      text += " " + abbreviation(trait_);
+    for (const TechnologyType technology_specialty : technology_specialties_) {
+      text += abbreviation(technology_specialty);
+    }
+    if (!traits_.empty()) {
+      text += " ";
+    }
+    for (const PlanetTrait trait : traits_) {
+      text += abbreviation(trait);
     }
     if (is_legendary()) {
       text += " Legendary";
@@ -101,9 +107,9 @@ private:
 
   int8_t influence_{0};
 
-  std::optional<TechnologyType> technology_specialty_;
+  std::vector<TechnologyType> technology_specialties_;
 
-  std::optional<PlanetTrait> trait_;
+  std::set<PlanetTrait> traits_;
 
   std::optional<LegendaryPlanet> legendary_;
 
@@ -131,42 +137,72 @@ private:
   /// other technology specialties, which are in turn preferable to no
   /// technology specialty.
   float technology_specialty_score() const noexcept {
-    if (technology_specialty_.has_value()) {
-      switch (technology_specialty_.value()) {
+    float best_score{0.0f};
+    for (const TechnologyType technology_specialty : technology_specialties_) {
+      switch (technology_specialty) {
         case TechnologyType::Propulsion:
-          return 2.0f;
+          if (best_score < 2.0f) {
+            best_score = 2.0f;
+          }
           break;
         case TechnologyType::Biotic:
-          return 1.0f;
+          if (best_score < 1.0f) {
+            best_score = 1.0f;
+          }
           break;
         case TechnologyType::Cybernetic:
-          return 1.0f;
+          if (best_score < 1.0f) {
+            best_score = 1.0f;
+          }
           break;
         case TechnologyType::Warfare:
-          return 1.0f;
+          if (best_score < 1.0f) {
+            best_score = 1.0f;
+          }
           break;
       }
     }
-    return 0.0f;
+    if (technology_specialties_.size() >= 2) {
+      best_score += 0.5f;
+    }
+    return best_score;
   }
 
   /// \brief Cultural planets are slightly preferable to hazardous planets,
-  /// which are in turn preferable to industrial planets.
+  /// which are in turn preferable to industrial planets, which are in turn
+  /// preferable to space stations.
   float trait_score() const noexcept {
-    if (trait_.has_value()) {
-      switch (trait_.value()) {
+    float best_score{0.0f};
+    for (const PlanetTrait trait : traits_) {
+      switch (trait) {
         case PlanetTrait::Cultural:
-          return 0.15f;
+          if (best_score < 0.15f) {
+            best_score = 0.15f;
+          }
           break;
         case PlanetTrait::Hazardous:
-          return 0.1f;
+          if (best_score < 0.1f) {
+            best_score = 0.1f;
+          }
           break;
         case PlanetTrait::Industrial:
-          return 0.05f;
+          if (best_score < 0.05f) {
+            best_score = 0.05f;
+          }
+          break;
+        case PlanetTrait::SpaceStation:
+          if (best_score < 0.0f) {
+            best_score = 0.0f;
+          }
+          break;
+        case PlanetTrait::Relic:
+          if (best_score < 1.0f) {
+            best_score = 1.0f;
+          }
           break;
       }
     }
-    return 0.0f;
+    return best_score;
   }
 
   /// \brief Legendary planets are relevant to scoring objectives.
@@ -193,6 +229,30 @@ private:
           break;
         case LegendaryPlanet::Primor:
           return 1.5f;
+          break;
+        case LegendaryPlanet::ThundersEdge:
+          return 3.0f;
+          break;
+        case LegendaryPlanet::Faunus:
+          return 1.5f;
+          break;
+        case LegendaryPlanet::Garbozia:
+          return 2.5f;
+          break;
+        case LegendaryPlanet::Emelpar:
+          return 2.0f;
+          break;
+        case LegendaryPlanet::Tempesta:
+          return 1.5f;
+          break;
+        case LegendaryPlanet::MecatolRex:
+          return 1.5f;
+          break;
+        case LegendaryPlanet::Industrex:
+          return 2.0f;
+          break;
+        case LegendaryPlanet::Styx:
+          return 3.0f;
           break;
       }
     }

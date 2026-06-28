@@ -9,6 +9,7 @@ enum class Anomaly : uint8_t {
   GravityRift,
   Nebula,
   Supernova,
+  EntropicScar,
 };
 
 template <>
@@ -17,6 +18,7 @@ const std::unordered_map<Anomaly, std::string> labels<Anomaly>{
     {Anomaly::GravityRift,   "Gravity Rift"  },
     {Anomaly::Nebula,        "Nebula"        },
     {Anomaly::Supernova,     "Supernova"     },
+    {Anomaly::EntropicScar,  "Entropic Scar" },
 };
 
 template <>
@@ -25,6 +27,7 @@ const std::unordered_map<std::string, Anomaly> spellings<Anomaly>{
     {"gravityrift",   Anomaly::GravityRift  },
     {"nebula",        Anomaly::Nebula       },
     {"supernova",     Anomaly::Supernova    },
+    {"entropicscar",  Anomaly::EntropicScar },
 };
 
 namespace {
@@ -45,11 +48,19 @@ namespace {
 // Supernova: Prevents movement and therefore reduces your options, so generally
 // undesirable. However, the Embers of Muaat strongly prefers this anomaly due
 // to its faction ability and technology.
+//
+// Entropic Scar:
+// - Unit abilities cannot be used. Neutral.
+// - Prevents wormholes from being placed; bad.
+// - Allows you to gain a faction-specific technology at the cost of a strategy
+//   token during the Status Phase. Very good, especially for factions that have
+//   faction-specific technologies with many prerequisites.
 const std::map<Anomaly, float> anomaly_scores{
     {Anomaly::AsteroidField, -0.75f},
     {Anomaly::GravityRift,   -0.25f},
     {Anomaly::Nebula,        -0.5f },
     {Anomaly::Supernova,     -1.0f },
+    {Anomaly::EntropicScar,  1.0f  },
 };
 
 }  // namespace
